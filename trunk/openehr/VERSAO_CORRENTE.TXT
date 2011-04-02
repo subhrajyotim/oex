@@ -1,0 +1,2 @@
+515 (svn merge -r514:515 http://www.openehr.org/svn/ref_impl_java/TRUNK .)
+517 (svn merge -r516:517 http://www.openehr.org/svn/ref_impl_java/TRUNK .)

@@ -1,0 +1,1 @@
+This project changes the original openehr-rm-core to make it JPA compatible.
