@@ -1,0 +1,3 @@
+Eclipse
+   (a) Mude para UTF-8 para evitar erro no Eclipse (adl-parser)
+       (properties de adl-parser, mude encoding para UTF-8)

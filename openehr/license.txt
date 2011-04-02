@@ -1,0 +1,4 @@
+This is the same as openEHR's trunk (http://openehr.org) with a 
+few exceptions. All of the changes were due to make openEHR
+friendly to JPA persistence.
+
