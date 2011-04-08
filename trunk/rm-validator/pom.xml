@@ -63,14 +63,14 @@
                     <version>1.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>org.openehr</groupId>
+                <groupId>openehr</groupId>
                 <artifactId>dadl-binding</artifactId>
-                <version>0.1-SNAPSHOT</version>
+                <version>1.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>org.openehr</groupId>
+                <groupId>openehr</groupId>
                 <artifactId>dadl-parser</artifactId>
-                <version>0.1-SNAPSHOT</version>
+                <version>1.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                     <groupId>junit</groupId>
