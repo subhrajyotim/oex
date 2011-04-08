@@ -1,4 +1,4 @@
-﻿archetype (adl_version=1.4)
+archetype (adl_version=1.4)
 	openEHR-EHR-OBSERVATION.heart_rate.v2
 
 concept
