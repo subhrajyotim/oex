@@ -12,14 +12,14 @@ public class IntervalSampleTest {
 
     @Test
     public void testHasANotB() {
-        Interval<String> i = new Interval<String>("a","a");
+        Interval<String> i = new Interval<String>("a", "a");
         assertTrue(i.has("a"));
         assertFalse(i.has("b"));
     }
 
     @Test
     public void testHasNotAAndB() {
-        Interval<String> i = new Interval<String>("a","b",false,false);
+        Interval<String> i = new Interval<String>("a", "b", false, false);
         assertFalse(i.has("a"));
         assertFalse(i.has("b"));
         assertFalse(i.isLowerIncluded());
@@ -30,7 +30,7 @@ public class IntervalSampleTest {
 
     @Test
     public void testc() {
-        Interval<String> i = new Interval<String>("a",null);
+        Interval<String> i = new Interval<String>("a", null);
         assertFalse(i.isLowerUnbounded());
         assertTrue(i.isUpperUnbounded());
         assertTrue(i.isLowerIncluded());
