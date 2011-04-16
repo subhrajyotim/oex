@@ -7,20 +7,20 @@ import org.openehr.rm.support.identification.ISO_OID;
 import org.openehr.rm.support.identification.InternetID;
 
 /**
- *
+ * Some tests just to learn UID.
  * @author kyriosdata
  */
 public class UIDTest {
 
     @Test
-    public void testSimples() {
-        String luid = java.util.UUID.randomUUID().toString();
-        System.out.println(luid);
-        UID uid = new UUID(luid);
-
+    public void minimalUID() {
+        UID uid = new UUID(getUUID());
         uid = new ISO_OID("1.2");
-
         uid = new InternetID("ufg.br");
+    }
+
+    private String getUUID() {
+        return java.util.UUID.randomUUID().toString();
     }
 
 }
