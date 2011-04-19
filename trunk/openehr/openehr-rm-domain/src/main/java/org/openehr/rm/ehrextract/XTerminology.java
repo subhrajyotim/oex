@@ -22,7 +22,8 @@ import org.openehr.rm.datastructure.itemstructure.ItemStructure;
  * @author Rong Chen
  * @version 1.0
  */
-public class XTerminology {
+public class XTerminology implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 
     //PROJETO PEP
     private long key_id;

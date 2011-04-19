@@ -29,7 +29,8 @@ import java.util.Map;
  * @author Rong Chen
  * @version 1.0
  */
-public class XAccessControl {
+public class XAccessControl implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     
     //PROJETO PEP
     private long key_id;

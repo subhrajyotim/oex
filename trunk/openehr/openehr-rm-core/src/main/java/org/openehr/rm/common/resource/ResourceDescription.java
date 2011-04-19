@@ -25,7 +25,8 @@ import org.openehr.rm.Attribute;
  * @author Yin Su Lim
  * @version 1.0
  */
-public class ResourceDescription {
+public class ResourceDescription implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
 	
 	// PROJETO PEP
 	private long key_id;
