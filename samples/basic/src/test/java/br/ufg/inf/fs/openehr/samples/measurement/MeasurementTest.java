@@ -1,5 +1,8 @@
 package br.ufg.inf.fs.openehr.samples.measurement;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 import org.openehr.rm.support.measurement.MeasurementService;
 
 /**
@@ -7,23 +10,22 @@ import org.openehr.rm.support.measurement.MeasurementService;
  * implementação inválida é fornecida abaixo.
  *
  */
-public class MeasurementSample implements MeasurementService {
+public class MeasurementTest implements MeasurementService {
 
     public boolean isValidUnitsString(String units) {
-        return true;
+        return "w$x".equals(units);
     }
 
     public boolean unitsEquivalent(String units1, String units2) {
         return units1.equalsIgnoreCase(units2);
     }
 
-    public static void main(String[] args) {
-        MeasurementService ms = new MeasurementSample();
+    @Test
+    public void simpleImplementationPossible() {
+        MeasurementService ms = new MeasurementTest();
 
-        boolean valida = ms.isValidUnitsString("w$x");
-        System.out.println("w$x é uma medida válida: " + valida);
-
-        valida = ms.unitsEquivalent("km", "Km");
-        System.out.println("km é equivalente a Km: " + valida);
+        assertTrue(ms.isValidUnitsString("w$x"));
+        assertFalse(ms.isValidUnitsString("cm"));
+        assertTrue(ms.unitsEquivalent("km", "Km"));
     }
 }

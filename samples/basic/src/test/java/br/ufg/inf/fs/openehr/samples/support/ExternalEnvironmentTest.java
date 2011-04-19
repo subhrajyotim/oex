@@ -1,5 +1,8 @@
 package br.ufg.inf.fs.openehr.samples.support;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 import java.util.List;
 import java.util.Map;
 import org.openehr.rm.support.ExternalEnvironment;
@@ -19,9 +22,10 @@ import org.openehr.rm.support.terminology.TerminologyService;
  * running.
  * 
  */
-public class ExternalEnvironmentSample
+public class ExternalEnvironmentTest
 {
-    public static void main( String[] args )
+    @Test
+    public void automaticallyGeneratedInterfaceImplementations()
     {
         final TerminologyService ts = new TerminologyService() {
 
@@ -80,7 +84,7 @@ public class ExternalEnvironmentSample
             }
         };
 
-        System.out.println(ee.terminologyService() != null);
-        System.out.println(ee.measurementService() != null);
+        assertNotNull(ee.terminologyService());
+        assertNotNull(ee.measurementService());
     }
 }
