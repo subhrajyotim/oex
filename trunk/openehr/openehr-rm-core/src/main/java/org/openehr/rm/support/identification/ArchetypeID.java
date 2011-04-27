@@ -385,6 +385,10 @@ public final class ArchetypeID extends ObjectID {
     private String domainConcept;       // calculated
     private String conceptName;
     private List<String> specialisation;
+
+    public List<String> getSpecialisation() {
+        return specialisation;
+    }
     private String versionID;
 
     private byte[] spec;

@@ -147,6 +147,10 @@ public final class ItemTable extends ItemStructure {
     }
 
     	List<DvText> names = new ArrayList<DvText>();
+
+    public List<DvText> getNames() {
+        return names;
+    }
     	private List<DvText> fetchNames(List<? extends Item> items) {
         for (Item item : items) {
             names.add(item.getName());

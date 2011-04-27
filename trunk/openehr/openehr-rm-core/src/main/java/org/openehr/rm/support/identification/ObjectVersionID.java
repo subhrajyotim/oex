@@ -152,6 +152,18 @@ public class ObjectVersionID extends UIDBasedID {
 	private UID objectID;
 	private VersionTreeID versionTreeID;
 	private HierObjectID creatingSystemID;
+
+    public HierObjectID getCreatingSystemID() {
+        return creatingSystemID;
+    }
+
+    public UID getObjectID() {
+        return objectID;
+    }
+
+    public VersionTreeID getVersionTreeID() {
+        return versionTreeID;
+    }
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

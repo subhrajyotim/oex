@@ -480,6 +480,14 @@ public class VersionedObject<T> extends RMObject {
     private HashMap<ObjectVersionID, Version<T>> idVersionMap;
     private int trunkCounter;
     private ObjectVersionID latestTrunkUid;
+
+    public ObjectVersionID getLatestTrunkUid() {
+        return latestTrunkUid;
+    }
+
+    public SortedMap<DvDateTime, Version<T>> getTimeVersionMap() {
+        return timeVersionMap;
+    }
 }
 
 /*
