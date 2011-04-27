@@ -320,6 +320,10 @@ public class DvQuantity extends DvAmount<DvQuantity> {
     private int precision;    // add final
     private final String units;
     private MeasurementService measurementService; // add final
+
+    public MeasurementService getMeasurementService() {
+        return measurementService;
+    }
 }
 
 /*

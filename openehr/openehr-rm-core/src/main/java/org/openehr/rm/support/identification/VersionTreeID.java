@@ -218,6 +218,10 @@ public class VersionTreeID extends RMObject {
     //POJO end
     
     private String PATTERN = "[1-9](\\d)*(\\.(\\d)+\\.(\\d)+)?";
+
+    public String getPATTERN() {
+        return PATTERN;
+    }
     
     /* field */
     private String value;

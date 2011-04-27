@@ -144,6 +144,10 @@ public class HierObjectID extends UIDBasedID {
     /* fields */
     private UID root;   // mandatory
     private String extension;
+
+    public UID getRoot() {
+        return root;
+    }
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

@@ -524,7 +524,7 @@ public final class DvDuration extends DvAmount<DvDuration> {
 		return result;
 	}
 
-	Period getPeriod() {
+	public Period getPeriod() {
 		return period;
 	}
 
