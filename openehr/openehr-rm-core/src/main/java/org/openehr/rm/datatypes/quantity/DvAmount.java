@@ -121,8 +121,8 @@ public abstract class DvAmount<T extends DvAmount> extends DvQuantified<T> {
     public abstract Class getDiffType();    
     
 	/* fields */
-	private final double accuracy;
-    private final boolean accuracyPercent;
+	private double accuracy;
+    private boolean accuracyPercent;
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

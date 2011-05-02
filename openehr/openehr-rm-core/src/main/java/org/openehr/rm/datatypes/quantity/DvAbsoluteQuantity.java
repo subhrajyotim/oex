@@ -82,7 +82,7 @@ public abstract class DvAbsoluteQuantity<T extends DvAbsoluteQuantity,
     
     
     /* fields */
-    private final S accuracy;    
+    private S accuracy;    
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

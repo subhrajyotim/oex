@@ -107,7 +107,7 @@ public abstract class DvQuantified<T extends DvQuantified> extends DvOrdered<T> 
     }
 
     /* fields */
-    private final String magnitudeStatus;
+    private String magnitudeStatus;
     
     
     
