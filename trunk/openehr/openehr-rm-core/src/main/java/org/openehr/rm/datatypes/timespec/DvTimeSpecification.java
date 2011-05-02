@@ -82,7 +82,7 @@ public abstract class DvTimeSpecification extends DataValue {
     public abstract boolean institutionSpecified();
 
     /* fields */
-    private final DvParsable value;
+    private DvParsable value;
 }
 
 /*

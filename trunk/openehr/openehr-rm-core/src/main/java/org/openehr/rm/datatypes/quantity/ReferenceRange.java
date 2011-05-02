@@ -144,8 +144,8 @@ public final class ReferenceRange <T extends DvOrdered> extends DataValue {
     public static final String NORMAL = "normal";
 
     /* fields */
-    private final DvText meaning;
-    private final DvInterval<T> range;
+    private DvText meaning;
+    private DvInterval<T> range;
 }
 
 /*

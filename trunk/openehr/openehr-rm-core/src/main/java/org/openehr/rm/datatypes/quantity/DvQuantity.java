@@ -318,7 +318,7 @@ public class DvQuantity extends DvAmount<DvQuantity> {
     /* fields */
     private double magnitude; // add final
     private int precision;    // add final
-    private final String units;
+    private String units;
     private MeasurementService measurementService; // add final
 
     public MeasurementService getMeasurementService() {

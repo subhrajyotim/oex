@@ -122,7 +122,7 @@ public final class GenericEntry extends ContentItem {
 		return false;
 	}
 
-	private final ItemTree data;
+	private ItemTree data;
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****

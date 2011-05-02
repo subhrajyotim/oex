@@ -84,7 +84,7 @@ public class GenericID extends ObjectID {
     }
 	
 	/* fields */
-	private final String scheme;
+	private String scheme;
 }
 /*
  *  ***** BEGIN LICENSE BLOCK *****
