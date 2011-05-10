@@ -2,13 +2,9 @@ package org.openehr.validation;
 
 import br.ufg.inf.fs.pep.archetypeRepository.ArchetypeRepository;
 import br.ufg.inf.fs.pep.archetypeRepository.PepArchetypeRepository;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.junit.Before;
 import org.junit.Ignore;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
@@ -30,6 +26,7 @@ public class PepValidatorTest extends PepBaseTest {
         this.validator = new DataValidatorImpl();
     }
 
+    @Ignore
     @Test
     public void testDvDateTime() throws Exception{
         DvDateTime dateTime = new DvDateTime();
@@ -48,6 +45,7 @@ public class PepValidatorTest extends PepBaseTest {
         System.out.println("");
     }
 
+    @Ignore
     @Test
     public void testDvText() throws Exception{
         DvText text = new DvText("Universidade Federal de Goiás");
