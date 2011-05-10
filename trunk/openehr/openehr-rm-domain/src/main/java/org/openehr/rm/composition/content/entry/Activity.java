@@ -136,7 +136,7 @@ public class Activity extends Locatable {
 
 	//POJO start
 	Activity() {
-	};
+	}
 
 	void setDescription(ItemStructure description) {
 		this.description = description;
