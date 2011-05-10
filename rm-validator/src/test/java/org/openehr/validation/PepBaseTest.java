@@ -1,12 +1,10 @@
 package org.openehr.validation;
 
-import java.io.InputStream;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.openehr.am.archetype.Archetype;
+import org.junit.Test;
 import org.openehr.rm.common.archetyped.Archetyped;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
 import org.openehr.rm.datastructure.itemstructure.representation.Cluster;
@@ -24,14 +22,18 @@ import org.openehr.rm.demographic.PartyIdentity;
 import org.openehr.rm.demographic.Person;
 import org.openehr.rm.support.identification.ArchetypeID;
 import org.openehr.rm.support.identification.ObjectVersionID;
-import se.acode.openehr.parser.ADLParser;
 
 /**
  *
  * @author Danillo Guimarães
  */
 public class PepBaseTest {
-    
+
+    @Test
+    public void testBase(){
+        
+    }
+
     protected Person getPerson(){
 
         Person person = null;
