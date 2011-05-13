@@ -16,14 +16,19 @@ package org.openehr.validation;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import org.apache.commons.lang.Validate;
 
 import org.apache.log4j.Logger;
 import org.openehr.am.archetype.*;
+import org.openehr.am.archetype.assertion.Assertion;
 import org.openehr.am.archetype.constraintmodel.*;
 import org.openehr.am.archetype.ontology.ArchetypeOntology;
 import org.openehr.am.archetype.ontology.ArchetypeTerm;
+import org.openehr.rm.common.archetyped.Archetyped;
 import org.openehr.rm.common.archetyped.Locatable;
+import org.openehr.rm.datastructure.itemstructure.representation.Cluster;
 import org.openehr.rm.support.basic.Interval;
+import org.openehr.rm.support.identification.ArchetypeID;
 
 /**
  * Implementation of an archetype-based data validator
@@ -271,9 +276,17 @@ public class DataValidatorImpl implements DataValidator {
 			
 			validatePrimitive((CPrimitiveObject) cobj, value, path, errors);
 			
-		} else {
-			log.error("Unknown CObject type..");
-		}
+		} else if ( cobj instanceof ArchetypeSlot ){
+
+                    this.validateArchetypeSlot((ArchetypeSlot) cobj, value, path, errors);
+
+		} else if ( cobj instanceof ArchetypeInternalRef ){
+
+                    this.validateArchetypeInternalRef((ArchetypeInternalRef)cobj, value, path, errors);
+
+                } else {
+                    log.error("Unknown CObject type..");
+                }
 	}
 	
 	void validateDomain(CDomainType cdomain, Object value, String path, 
@@ -300,7 +313,20 @@ public class DataValidatorImpl implements DataValidator {
 					ErrorType.PRIMITIVE_TYPE_VALUE_ERROR)); // DUMMY ERROR TYPE
 		}
 	}
-	
+
+        void validateArchetypeSlot( ArchetypeSlot slot, Object value, String path,
+                List<ValidationError> errors ){
+
+            log.debug("validate ArchetypeSlot..");
+            List<ValidationError> errorsSlot = null;
+        }
+
+        void validateArchetypeInternalRef( ArchetypeInternalRef internalRef, Object value, String path,
+                List<ValidationError> errors ){
+            log.debug("validate ArchetypeInternalRef..");
+            List<ValidationError> errorsInternalRef = null;
+        }
+
 	Object fetchAttribute(Object object, CAttribute cattr) throws Exception {
 		String getter = "get" + upperFirstLetter(cattr.getRmAttributeName());
 		Method method = null;
