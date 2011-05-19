@@ -14,7 +14,6 @@
  */
 package org.openehr.rm.datatypes.quantity;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -321,14 +320,6 @@ public class DvQuantity extends DvAmount<DvQuantity> {
     private int precision;    // add final
     private String units;
     private MeasurementService measurementService; // add final
-    
-	public MeasurementService getMeasurementService() {
-		throw new NotImplementedException();
-	}
-
-	public void setMeasurementService(MeasurementService measurementService) {
-		throw new NotImplementedException();
-	}
 }
 
 /*
