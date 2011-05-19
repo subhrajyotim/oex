@@ -389,17 +389,8 @@ public final class ArchetypeID extends ObjectID {
     public List<String> getSpecialisation() {
         return specialisation;
     }
+    
     private String versionID;
-
-    private byte[] spec;
-
-    public byte[] getSpec() {
-        return spec;
-    }
-
-    public void setSpec(byte[] spec) {
-        this.spec = spec;
-    }
 
     public void jpaSetSpecialisation(List<String> specialisation) {
         this.specialisation = specialisation;
