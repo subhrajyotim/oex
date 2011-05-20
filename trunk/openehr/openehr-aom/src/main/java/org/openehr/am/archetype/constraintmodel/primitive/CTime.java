@@ -97,7 +97,13 @@ public final class CTime extends CPrimitive {
      */
     public boolean validValue(Object value) {
         // todo: validate by pattern
-        final DvTime time = (DvTime) value;
+        final DvTime time;
+        if ( value instanceof String ){
+            time = new DvTime(value.toString());
+        } else {
+            time = (DvTime)value;
+        }
+
         return ( interval == null && list == null )
                 || ( interval != null && interval.has(time) )
                 || ( list != null && list.contains(time) );
