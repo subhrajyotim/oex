@@ -102,7 +102,8 @@ public final class CDateTime extends CPrimitive {
     public boolean validValue(Object value) {
         // todo: validate by pattern
         final DvDateTime date = (DvDateTime) value;
-        return ( interval != null && interval.has(date) )
+        return ( interval == null && list == null )
+                || ( interval != null && interval.has(date) )
                 || ( list != null && list.contains(date) );
     }    
 

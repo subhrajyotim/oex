@@ -86,7 +86,14 @@ public final class CDuration extends CPrimitive {
 	 * @return true if valid
 	 */
 	public boolean validValue(Object value) {
-		return false; // todo: implement this method
+            // todo: validate by pattern
+            final DvDuration duration;
+            if ( value instanceof String ){
+                duration = new DvDuration(value.toString());
+            } else {
+                duration = (DvDuration) value;
+            }
+            return ( interval == null ) || ( interval!=null && interval.has(duration) );
 	}	
 
 	/**
