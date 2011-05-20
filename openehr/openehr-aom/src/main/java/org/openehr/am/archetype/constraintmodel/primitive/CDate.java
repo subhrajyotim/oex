@@ -122,7 +122,14 @@ public final class CDate extends CPrimitive {
                 return false;
             }
         } else {
-            final DvDate date = (DvDate) value;
+
+            final DvDate date;
+            if ( value instanceof String ){
+                date = new DvDate(value.toString());
+            } else {
+                date = (DvDate) value;
+            }
+            
             return ( interval != null && interval.has(date) )
                     || ( list != null && list.contains(date) );
         }
