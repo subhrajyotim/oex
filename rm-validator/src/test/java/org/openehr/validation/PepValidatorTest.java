@@ -3,11 +3,7 @@ package org.openehr.validation;
 import static org.junit.Assert.*;
 import br.ufg.inf.fs.pep.archetypeRepository.ArchetypeRepository;
 import br.ufg.inf.fs.pep.archetypeRepository.PepArchetypeRepository;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,7 +28,6 @@ public class PepValidatorTest extends PepBaseTest {
         this.validator = new DataValidatorImpl();
     }
 
-    @Ignore
     @Test
     public void testDvDateTime() throws Exception{
         DvDateTime dateTime = new DvDateTime();
@@ -44,10 +39,9 @@ public class PepValidatorTest extends PepBaseTest {
         List<ValidationError> errors = null;
         
         errors = this.validator.validate(element, archetype);
-        assertTrue("The list must be null", errors.isEmpty());
+        assertTrue("The list must not contain error", errors.isEmpty());
     }
 
-//    @Ignore
     @Test
     public void testDvText() throws Exception{
         DvText text = new DvText("Universidade Federal de Goiás");
@@ -58,7 +52,7 @@ public class PepValidatorTest extends PepBaseTest {
 
         List<ValidationError> errors = null;
         errors = this.validator.validate(element, archetype);
-        assertTrue("The list must be null", errors.isEmpty());
+        assertTrue("The list must not contain error", errors.isEmpty());
     }
 
     @Ignore

@@ -263,30 +263,33 @@ public class DataValidatorImpl implements DataValidator {
 			List<ValidationError> errors, Archetype archetype) throws Exception {
 		
 		log.debug("validate CObject..");
-		
-		if(cobj instanceof CComplexObject) {
-		
-			validateComplex((CComplexObject) cobj, value, path, errors, archetype);
-		
-		} else if(cobj instanceof CDomainType) {
-			
-			validateDomain((CDomainType) cobj, value, path, errors);
-		
-		} else if(cobj instanceof CPrimitiveObject) {
-			
-			validatePrimitive((CPrimitiveObject) cobj, value, path, errors);
-			
-		} else if ( cobj instanceof ArchetypeSlot ){
 
-                    this.validateArchetypeSlot((ArchetypeSlot) cobj, value, path, errors);
+                if ( cobj.isAnyAllowed() ){
+                    if(cobj instanceof CComplexObject) {
 
-		} else if ( cobj instanceof ArchetypeInternalRef ){
+                            validateComplex((CComplexObject) cobj, value, path, errors, archetype);
 
-                    this.validateArchetypeInternalRef((ArchetypeInternalRef)cobj, value, path, errors);
+                    } else if(cobj instanceof CDomainType) {
 
-                } else {
-                    log.error("Unknown CObject type..");
+                            validateDomain((CDomainType) cobj, value, path, errors);
+
+                    } else if(cobj instanceof CPrimitiveObject) {
+
+                            validatePrimitive((CPrimitiveObject) cobj, value, path, errors);
+
+                    } else if ( cobj instanceof ArchetypeSlot ){
+
+                        this.validateArchetypeSlot((ArchetypeSlot) cobj, value, path, errors);
+
+                    } else if ( cobj instanceof ArchetypeInternalRef ){
+
+                        this.validateArchetypeInternalRef((ArchetypeInternalRef)cobj, value, path, errors);
+
+                    } else {
+                        log.error("Unknown CObject type..");
+                    }
                 }
+
 	}
 	
 	void validateDomain(CDomainType cdomain, Object value, String path, 
