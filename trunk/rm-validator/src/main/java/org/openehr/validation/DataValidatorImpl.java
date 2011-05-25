@@ -131,17 +131,8 @@ public class DataValidatorImpl implements DataValidator {
 		
 		Cardinality cardinality = cattr.getCardinality();
 		List<CObject> children = cattr.getChildren();
-		Collection<Object> values = (Collection<Object>)attribute;
+		Collection<Object> values = (Collection<Object>) attribute;
 		
-//		if(cardinality.isList()) {
-//			values = (List<Object>) attribute;
-//		} else if(cardinality.isSet()) {
-//			values = (Set<Object>) attribute;
-//		} else {
-//			log.warn("bag unsupported, type: " + attribute.getClass());
-//			values = (List<Object>) attribute;
-//		}
-//
 		Interval<Integer> interval = cardinality.getInterval();
 		
 		log.debug("cardinality.interval: " + interval);
