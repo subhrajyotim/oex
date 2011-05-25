@@ -120,7 +120,7 @@ public class PepBaseTest {
         Element countryElement = new Element("at0007", "País", new DvCodedText("Brazil", new CodePhrase("local", "ac0004")));
         itemsEnderecoList.add(countryElement);
         ItemTree enderecoItemTree = new ItemTree("at0001", new DvText("Itens de endereco"), itemsEnderecoList);
-        Address address = new Address(null, "at0030", tipoEnderecoCodedText, null, null, null, null, enderecoItemTree);
+        Address address = new Address(null, "openEHR-DEMOGRAPHIC-ADDRESS.address.v1", tipoEnderecoCodedText, null, null, null, null, enderecoItemTree);
         return address;
     }
 
