@@ -74,7 +74,7 @@ public class PepBaseTest {
         ObjectVersionID objectVersionID = new ObjectVersionID("939cec48-d629-4a3f-89f1-28c573387680::" +
     			"10aec661-5458-4ff6-8e63-c2265537196d::1");
 
-        person = new Person(objectVersionID, "at0000", new DvText("person demographic data"), new Archetyped( new ArchetypeID("openEHR-DEMOGRAPHIC-PERSON.person.v1"), "1.0.0.0"), null, null, identities, contacts, null, null, itemTreeDetails, null, null);
+        person = new Person(objectVersionID, "openEHR-DEMOGRAPHIC-PERSON.person.v1.adl", new DvText("person demographic data"), new Archetyped( new ArchetypeID("openEHR-DEMOGRAPHIC-PERSON.person.v1"), "1.0.0.0"), null, null, identities, contacts, null, null, itemTreeDetails, null, null);
 
         return person;
     }
@@ -153,7 +153,7 @@ public class PepBaseTest {
         Element fullNameElement = new Element("at0010", "Full Name", new DvText("Edson Arantes do Nascimento"));
         nameComponentsList.add(fullNameElement);
         ItemTree nameComponentsItemTree = new ItemTree("at0001", "Name components", nameComponentsList);
-        PartyIdentity partyIdentity = new PartyIdentity(null, "at0002", nameIdentifierDvCodedText, new Archetyped(new ArchetypeID("openEHR-DEMOGRAPHIC-PARTY_IDENTITY.person_name.v1"), "1.0.0.0"), null, null, person, nameComponentsItemTree);
+        PartyIdentity partyIdentity = new PartyIdentity(null, "openEHR-DEMOGRAPHIC-PARTY_IDENTITY.person_name.v1", nameIdentifierDvCodedText, new Archetyped(new ArchetypeID("openEHR-DEMOGRAPHIC-PARTY_IDENTITY.person_name.v1"), "1.0.0.0"), null, null, person, nameComponentsItemTree);
         return partyIdentity;
     }
 
@@ -176,7 +176,7 @@ public class PepBaseTest {
         DvCodedText typeIdentificationCodeText = new DvCodedText("CPF", new CodePhrase("local", "ac0000"));
         Element typeIdentificationElement = new Element("at0004", new DvText("Tipo de identificacao"), typeIdentificationCodeText);
         itemsPersonIdentifier.add(typeIdentificationElement);
-        personIdentifier = new Cluster("at0010", new DvText("Identificador da pessoa"), itemsPersonIdentifier);
+        personIdentifier = new Cluster("openEHR-DEMOGRAPHIC-CLUSTER.person_identifier_iso.v1", new DvText("Identificador da pessoa"), itemsPersonIdentifier);
         return personIdentifier;
     }
 
@@ -194,7 +194,7 @@ public class PepBaseTest {
         Element elementSourceNotification = new Element("at0002", "Fonte da notificação", sourceNotificationCodedText);
         itemspersonDeathDataIso.add(elementSourceNotification);
         itemspersonDeathDataIso.add(personOtherDeathData);
-        personDeathDataIso = new Cluster("at0010", new DvText("Dados da morte"), itemspersonDeathDataIso);
+        personDeathDataIso = new Cluster("openEHR-DEMOGRAPHIC-CLUSTER.person_death_data_iso.v1", new DvText("Dados da morte"), itemspersonDeathDataIso);
         return personDeathDataIso;
     }
 
@@ -217,7 +217,7 @@ public class PepBaseTest {
         DvText certificateNumberText = new DvText("11a2");
         Element certificateNumberElement = new Element("at0004", new DvText("Numero de certificado"), certificateNumberText);
         itemsPersonOtherDeathData.add(certificateNumberElement);
-        personOtherDeathData = new Cluster("at0003", new DvText("Outros dados de morte"), itemsPersonOtherDeathData);
+        personOtherDeathData = new Cluster("openEHR-DEMOGRAPHIC-CLUSTER.person_other_death_data.v1", new DvText("Outros dados de morte"), itemsPersonOtherDeathData);
         return personOtherDeathData;
     }
 
@@ -244,7 +244,8 @@ public class PepBaseTest {
         Element indicaNascimentoElement = new Element("at0005", new DvText("Indica Nascimento"), indicaSeguimetnoNascimento);
         itemsPersonBirthData.add(indicaNascimentoElement);
         itemsPersonBirthData.add(personBirthDataBr);
-        personBirthData = new Cluster("at0010", new DvText("Dados do nascimento"), itemsPersonBirthData);
+        personBirthData = new Cluster("openEHR-DEMOGRAPHIC-CLUSTER.person_birth_data_iso.v1",
+                new DvText("Dados do nascimento"), itemsPersonBirthData);
         return personBirthData;
     }
 
@@ -273,7 +274,7 @@ public class PepBaseTest {
         DvText sectionNumberText = new DvText("136");
         Element sectionNumberElement = new Element("at0006", new DvText("Numero da secao"), sectionNumberText);
         itemsPersonBirthDataBr.add(sectionNumberElement);
-        personBirthDataBr = new Cluster("at0006", new DvText("Brazilian birth certificate other data"), itemsPersonBirthDataBr);
+        personBirthDataBr = new Cluster("openEHR-DEMOGRAPHIC-CLUSTER.person_other_birth_data_br.v1", new DvText("Brazilian birth certificate other data"), itemsPersonBirthDataBr);
         return personBirthDataBr;
     }
 
@@ -293,7 +294,7 @@ public class PepBaseTest {
         DvText textComentIdentificacao = new DvText("Baixa estatura e careca");
         Element elementComentIdentificacao = new Element("at0003", new DvText("Comentários de Identificação"), textComentIdentificacao);
         personAdditionalList.add(elementComentIdentificacao);
-        personAdditionalDataIso = new Cluster("at0010", new DvText("Dados Adicionais"), personAdditionalList);
+        personAdditionalDataIso = new Cluster("openEHR-DEMOGRAPHIC-CLUSTER.person_additional_data_iso.v1", new DvText("Dados Adicionais"), personAdditionalList);
         return personAdditionalDataIso;
     }
 

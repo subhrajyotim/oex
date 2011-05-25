@@ -5,7 +5,6 @@ import br.ufg.inf.fs.pep.archetypeRepository.ArchetypeRepository;
 import br.ufg.inf.fs.pep.archetypeRepository.PepArchetypeRepository;
 import java.util.List;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
@@ -55,7 +54,6 @@ public class PepValidatorTest extends PepBaseTest {
         assertTrue("The list must not contain error", errors.isEmpty());
     }
 
-    @Ignore
     @Test
     public void testPerson() throws Exception{
         Person person = this.getPerson();
@@ -64,10 +62,6 @@ public class PepValidatorTest extends PepBaseTest {
 
         List<ValidationError> errors = null;
         errors = this.validator.validate(person, archetype);
-
-        for (ValidationError validationError : errors) {
-            System.out.println( validationError.getErrorType() );
-        }
 
 //        assertTrue("The list must be null", errors.isEmpty());
     }
