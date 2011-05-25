@@ -16,19 +16,14 @@ package org.openehr.validation;
 
 import java.lang.reflect.Method;
 import java.util.*;
-import org.apache.commons.lang.Validate;
 
 import org.apache.log4j.Logger;
 import org.openehr.am.archetype.*;
-import org.openehr.am.archetype.assertion.Assertion;
 import org.openehr.am.archetype.constraintmodel.*;
 import org.openehr.am.archetype.ontology.ArchetypeOntology;
 import org.openehr.am.archetype.ontology.ArchetypeTerm;
-import org.openehr.rm.common.archetyped.Archetyped;
 import org.openehr.rm.common.archetyped.Locatable;
-import org.openehr.rm.datastructure.itemstructure.representation.Cluster;
 import org.openehr.rm.support.basic.Interval;
-import org.openehr.rm.support.identification.ArchetypeID;
 
 /**
  * Implementation of an archetype-based data validator
@@ -136,17 +131,17 @@ public class DataValidatorImpl implements DataValidator {
 		
 		Cardinality cardinality = cattr.getCardinality();
 		List<CObject> children = cattr.getChildren();
-		Collection<Object> values = null;
+		Collection<Object> values = (Collection<Object>)attribute;
 		
-		if(cardinality.isList()) {
-			values = (List<Object>) attribute;
-		} else if(cardinality.isSet()) {
-			values = (Set<Object>) attribute;
-		} else {
-			log.warn("bag unsupported, type: " + attribute.getClass());
-			values = (List<Object>) attribute;
-		}
-		
+//		if(cardinality.isList()) {
+//			values = (List<Object>) attribute;
+//		} else if(cardinality.isSet()) {
+//			values = (Set<Object>) attribute;
+//		} else {
+//			log.warn("bag unsupported, type: " + attribute.getClass());
+//			values = (List<Object>) attribute;
+//		}
+//
 		Interval<Integer> interval = cardinality.getInterval();
 		
 		log.debug("cardinality.interval: " + interval);
