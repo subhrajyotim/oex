@@ -250,7 +250,7 @@ public class DataValidatorImpl implements DataValidator {
 		
 		log.debug("validate CObject..");
 
-                if ( cobj.isAnyAllowed() ){
+                if ( !cobj.isAnyAllowed() ){
                     if(cobj instanceof CComplexObject) {
 
                             validateComplex((CComplexObject) cobj, value, path, errors, archetype);
