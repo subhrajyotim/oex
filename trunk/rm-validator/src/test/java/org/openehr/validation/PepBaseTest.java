@@ -86,7 +86,7 @@ public class PepBaseTest {
          */
         DvCodedText tipoEnderecoCodedText = new DvCodedText("Comercial", new CodePhrase("local", "at0461"));
         List linhaEnderecosList = new ArrayList();
-        Element complexTypeElement = new Element("at0021", "Complex", new DvCodedText("Complex", new CodePhrase("local", "ac0000")));
+        Element complexTypeElement = new Element("at0021", "Complex", new DvCodedText("local", new CodePhrase("local", "at0500")));
         linhaEnderecosList.add(complexTypeElement);
         Element nroComplexElement = new Element("at0022", "Nro complex", new DvText("080"));
         linhaEnderecosList.add(nroComplexElement);
@@ -98,7 +98,7 @@ public class PepBaseTest {
         linhaEnderecosList.add(levelTypeElement);
         Element lotNumberElement = new Element("at0026", "Lot number", new DvText("20"));
         linhaEnderecosList.add(lotNumberElement);
-        Element streetTypeElement = new Element("at0027", "Street type", new DvCodedText("rua", new CodePhrase("local", "ac0001")));
+        Element streetTypeElement = new Element("at0027", "Street type", new DvCodedText("logradouro", new CodePhrase("local", "at0501")));
         linhaEnderecosList.add(streetTypeElement);
         Element streeNameElement = new Element("at0028", "Street name", new DvText("Rua anhanguera"));
         linhaEnderecosList.add(streeNameElement);
@@ -115,9 +115,9 @@ public class PepBaseTest {
         itemsEnderecoList.add(postalCodeElement);
         Element cityElement = new Element("at0005", "Cidade", new DvText("Goiania"));
         itemsEnderecoList.add(cityElement);
-        Element stateElement = new Element("at0006", "Estado", new DvCodedText("Goias", new CodePhrase("local", "ac0003")));
+        Element stateElement = new Element("at0006", "Estado", new DvCodedText("Goias", new CodePhrase("local", "at0503")));
         itemsEnderecoList.add(stateElement);
-        Element countryElement = new Element("at0007", "País", new DvCodedText("Brazil", new CodePhrase("local", "ac0004")));
+        Element countryElement = new Element("at0007", "País", new DvCodedText("Brazil", new CodePhrase("local", "at0504")));
         itemsEnderecoList.add(countryElement);
         ItemTree enderecoItemTree = new ItemTree("at0001", new DvText("Itens de endereco"), itemsEnderecoList);
         Address address = new Address(null, "openEHR-DEMOGRAPHIC-ADDRESS.address.v1", tipoEnderecoCodedText, null, null, null, null, enderecoItemTree);
@@ -160,23 +160,23 @@ public class PepBaseTest {
     protected Cluster getPersonIdentifierIso() {
         /**
          * person identifier
-         * openEHR-DEMOGRAPHIC-CLUSTER.person_identifier_iso.v1
+         * openEHR-DEMOGRAPHIC-CLUSTER.person_identifier.v1.adl
          */
         Cluster personIdentifier = null;
         List itemsPersonIdentifier = new ArrayList();
         DvText designationText = new DvText("Designation");
         Element elementDesignation = new Element("at0001", "Designation", designationText);
         itemsPersonIdentifier.add(elementDesignation);
-        DvCodedText geographicAreaCodeText = new DvCodedText("62", new CodePhrase("local", "at00013"));
+        DvCodedText geographicAreaCodeText = new DvCodedText("62", new CodePhrase("local", "at0013"));
         Element geographicAreaElement = new Element("at0002", new DvText("Area Geografica"), geographicAreaCodeText);
         itemsPersonIdentifier.add(geographicAreaElement);
         DvText issuerText = new DvText("Issuer");
         Element issuerElement = new Element("at0003", "Issuer", issuerText);
         itemsPersonIdentifier.add(issuerElement);
-        DvCodedText typeIdentificationCodeText = new DvCodedText("CPF", new CodePhrase("local", "ac0000"));
+        DvCodedText typeIdentificationCodeText = new DvCodedText("Receita Federal", new CodePhrase("local", "at0020"));
         Element typeIdentificationElement = new Element("at0004", new DvText("Tipo de identificacao"), typeIdentificationCodeText);
         itemsPersonIdentifier.add(typeIdentificationElement);
-        personIdentifier = new Cluster("openEHR-DEMOGRAPHIC-CLUSTER.person_identifier_iso.v1", new DvText("Identificador da pessoa"), itemsPersonIdentifier);
+        personIdentifier = new Cluster("openEHR-DEMOGRAPHIC-CLUSTER.person_identifier.v1", new DvText("Identificador da pessoa"), itemsPersonIdentifier);
         return personIdentifier;
     }
 
@@ -205,13 +205,13 @@ public class PepBaseTest {
          */
         Cluster personOtherDeathData = null;
         List itemsPersonOtherDeathData = new ArrayList();
-        DvCodedText countryOfDeathCodedText = new DvCodedText("Brasil", new CodePhrase("local", "ac0000"));
+        DvCodedText countryOfDeathCodedText = new DvCodedText("Brasil", new CodePhrase("local", "at0010"));
         Element countryOfDeathElement = new Element("at0001", new DvText("Pais de morte"), countryOfDeathCodedText);
         itemsPersonOtherDeathData.add(countryOfDeathElement);
-        DvCodedText stateOfDeathCodedText = new DvCodedText("Goias", new CodePhrase("local", "ac0001"));
+        DvCodedText stateOfDeathCodedText = new DvCodedText("Goias", new CodePhrase("local", "at0021"));
         Element stateOfDeathElement = new Element("at0002", new DvText("Estado de morte"), stateOfDeathCodedText);
         itemsPersonOtherDeathData.add(stateOfDeathElement);
-        DvCodedText cityOfDeathCodedText = new DvCodedText("Goiania", new CodePhrase("local", "ac0002"));
+        DvCodedText cityOfDeathCodedText = new DvCodedText("Goiania", new CodePhrase("local", "at0030"));
         Element cityOfDeathElement = new Element("at0003", new DvText("Cidade de morte"), cityOfDeathCodedText);
         itemsPersonOtherDeathData.add(cityOfDeathElement);
         DvText certificateNumberText = new DvText("11a2");
@@ -231,13 +231,13 @@ public class PepBaseTest {
         DvDate dataNascimentoDate = new DvDate(1984, 10, 10);
         Element dataNascimentoElement = new Element("at0001", new DvText("Data de nascimento"), dataNascimentoDate);
         itemsPersonBirthData.add(dataNascimentoElement);
-        DvCodedText paisNascimentoCodeText = new DvCodedText("Brasil", new CodePhrase("local", "ac0000"));
+        DvCodedText paisNascimentoCodeText = new DvCodedText("Brasil", new CodePhrase("local", "at0010"));
         Element paisNascimentoElement = new Element("at0002", new DvText("Pais de nascimento"), paisNascimentoCodeText);
         itemsPersonBirthData.add(paisNascimentoElement);
-        DvCodedText nascimentoMultiploCodeText = new DvCodedText("Gemeos", new CodePhrase("local", "ac0001"));
+        DvCodedText nascimentoMultiploCodeText = new DvCodedText("Gemeos", new CodePhrase("local", "at0020"));
         Element nascimentoMultiploElement = new Element("at0003", new DvText("Nascimento Multiplo"), nascimentoMultiploCodeText);
         itemsPersonBirthData.add(nascimentoMultiploElement);
-        DvCodedText ordemNascimentoCodeText = new DvCodedText("1", new CodePhrase("local", "ac0002"));
+        DvCodedText ordemNascimentoCodeText = new DvCodedText("Primeiro", new CodePhrase("local", "at0030"));
         Element ordemNascimentoElement = new Element("at0004", new DvText("Ordem nascimento"), ordemNascimentoCodeText);
         itemsPersonBirthData.add(ordemNascimentoElement);
         DvBoolean indicaSeguimetnoNascimento = new DvBoolean(true);
@@ -256,10 +256,10 @@ public class PepBaseTest {
          */
         Cluster personBirthDataBr = null;
         List itemsPersonBirthDataBr = new ArrayList();
-        DvCodedText stateCodedText = new DvCodedText("Goias", new CodePhrase("constraint", "ac0001"));
+        DvCodedText stateCodedText = new DvCodedText("Goias", new CodePhrase("local", "at0010"));
         Element elementState = new Element("at0001", new DvText("State"), stateCodedText);
         itemsPersonBirthDataBr.add(elementState);
-        DvCodedText cityCodedText = new DvCodedText("Goiania", new CodePhrase("constraint", "ac0002"));
+        DvCodedText cityCodedText = new DvCodedText("Goiania", new CodePhrase("local", "at0020"));
         Element elementCity = new Element("at0002", new DvText("City"), cityCodedText);
         itemsPersonBirthDataBr.add(elementCity);
         DvText registryOfficeText = new DvText("CARTÓRIO ANTÔNIO DO PRADO");

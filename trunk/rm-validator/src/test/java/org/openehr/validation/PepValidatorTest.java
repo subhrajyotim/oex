@@ -5,6 +5,7 @@ import br.ufg.inf.fs.pep.archetypeRepository.ArchetypeRepository;
 import br.ufg.inf.fs.pep.archetypeRepository.PepArchetypeRepository;
 import java.util.List;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
@@ -27,6 +28,7 @@ public class PepValidatorTest extends PepBaseTest {
         this.validator = new DataValidatorImpl();
     }
 
+    @Ignore
     @Test
     public void testDvDateTime() throws Exception{
         DvDateTime dateTime = new DvDateTime();
@@ -41,6 +43,7 @@ public class PepValidatorTest extends PepBaseTest {
         assertTrue("The list must not contain error", errors.isEmpty());
     }
 
+    @Ignore
     @Test
     public void testDvText() throws Exception{
         DvText text = new DvText("Universidade Federal de Goiás");
