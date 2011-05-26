@@ -14,6 +14,7 @@
  */
 package org.openehr.validation;
 
+import br.ufg.inf.fs.pep.archetypeRepository.PepArchetypeRepository;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -24,6 +25,7 @@ import org.openehr.am.archetype.ontology.ArchetypeOntology;
 import org.openehr.am.archetype.ontology.ArchetypeTerm;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.support.basic.Interval;
+import org.openehr.rm.support.identification.ArchetypeID;
 
 /**
  * Implementation of an archetype-based data validator
@@ -172,7 +174,7 @@ public class DataValidatorImpl implements DataValidator {
 		
 			log.debug("validating sub-cobj at: " + cobj.path());			
 			
-			objects = findMatchingNodes(values, cobj.getNodeID());
+			objects = findMatchingNodes(values, cobj );
 			
 			// TODO occurrences should be checked here
 			// the difficult is to locate possible match 
@@ -200,7 +202,7 @@ public class DataValidatorImpl implements DataValidator {
 			}
 			
 			for(Object obj : objects) {
-				newPath = path + "[" + cobj.getNodeID() + "]";
+				newPath = path + "[" + cobj.getNodeId() + "]";
 				validateObject(cobj, obj, newPath, errors, archetype);
 			} 
 		}
@@ -228,16 +230,37 @@ public class DataValidatorImpl implements DataValidator {
 	 * @param code
 	 * @return empty list if not found
 	 */
-	List<Object> findMatchingNodes(Collection<Object> values, String code) {		
+	List<Object> findMatchingNodes(Collection<Object> values, CObject cObj) {
 		List<Object> objects = new ArrayList<Object>(); 
 		Locatable lo = null;		
 		for(Object value : values) {
 			if(value instanceof Locatable) {
 				lo = (Locatable) value;
-				if(code.equals(lo.getArchetypeNodeId())) {
-					log.debug("value found for code: " + code);
-					objects.add(lo);
-				}
+
+                                if ( cObj instanceof ArchetypeSlot ){
+                                    //TODO Tratar se o tipo slot é valido
+//                                    ArchetypeSlot slot = (ArchetypeSlot)cObj;
+//                                    slot.getIncludes();
+//                                    slot.getExcludes();
+                                    log.debug("ArchetypeSlot : " + lo.getArchetypeNodeId());
+                                    try{
+                                        new ArchetypeID(lo.getArchetypeNodeId());
+                                        objects.add(lo);
+                                    }catch(Exception ex){
+                                        //
+                                    }
+
+                                } else if ( cObj instanceof ArchetypeInternalRef ){
+
+                                } else {
+
+                                    if( cObj.getNodeId().equals( lo.getArchetypeNodeId() ) ) {
+                                            log.debug("value found for code: " + cObj.getNodeId());
+                                            objects.add(lo);
+                                    }
+
+                                }
+
 			} else {
 				log.warn("trying to find matching value on un-pathable obj..");
 			}
@@ -282,7 +305,6 @@ public class DataValidatorImpl implements DataValidator {
 			List<ValidationError> errors) {
 		
 		log.debug("validate CDomaingType..");
-		
 		if( ! cdomain.validValue(value)) {
 			
 			log.debug("error found at " + cdomain.path());
@@ -304,10 +326,24 @@ public class DataValidatorImpl implements DataValidator {
 	}
 
         void validateArchetypeSlot( ArchetypeSlot slot, Object value, String path,
-                List<ValidationError> errors ){
+                List<ValidationError> errors ) throws Exception{
 
             log.debug("validate ArchetypeSlot..");
-            List<ValidationError> errorsSlot = null;
+            Locatable lo = (Locatable)value;
+            String archetypeId = lo.getArchetypeNodeId();
+            Archetype archetype = new PepArchetypeRepository().getArchetype( archetypeId );
+
+            List<ValidationError> errorsSlot = this.validate(lo, archetype);
+
+//            System.out.println( archetypeId );
+//            for (ValidationError validationError : errorsSlot) {
+//                System.out.println( validationError.getErrorType().toString() );
+//            }
+//            System.out.println("");
+
+            errors.addAll(errorsSlot);
+
+            
         }
 
         void validateArchetypeInternalRef( ArchetypeInternalRef internalRef, Object value, String path,
@@ -317,10 +353,16 @@ public class DataValidatorImpl implements DataValidator {
         }
 
 	Object fetchAttribute(Object object, CAttribute cattr) throws Exception {
-		String getter = "get" + upperFirstLetter(cattr.getRmAttributeName());
-		Method method = null;
-		method = object.getClass().getMethod(getter, null);
-		return method.invoke(object, null);
+            String[] names = cattr.getRmAttributeName().split("_");
+            StringBuilder attrName = new StringBuilder();
+            for (String name : names) {
+                attrName.append( upperFirstLetter(name) );
+            }
+
+            String getter = "get" + attrName.toString();
+            Method method = null;
+            method = object.getClass().getMethod(getter, null);
+            return method.invoke(object, null);
 	}
 	
 	String upperFirstLetter(String value) {
