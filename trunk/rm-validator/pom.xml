@@ -44,7 +44,7 @@
             </dependency>
             <dependency>
                     <groupId>pep</groupId>
-                    <artifactId>pepArchetypeRepository</artifactId>
+                    <artifactId>archetypes</artifactId>
                     <version>0.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>

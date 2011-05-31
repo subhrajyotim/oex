@@ -1,8 +1,8 @@
 package org.openehr.validation;
 
 import static org.junit.Assert.*;
-import br.ufg.inf.fs.pep.archetypeRepository.ArchetypeRepository;
-import br.ufg.inf.fs.pep.archetypeRepository.PepArchetypeRepository;
+import br.ufg.inf.fs.pep.archetypes.ArchetypeRepository;
+import br.ufg.inf.fs.pep.archetypes.PepArchetypeRepository;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Ignore;
