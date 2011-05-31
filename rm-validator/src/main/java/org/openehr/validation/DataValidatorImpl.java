@@ -14,7 +14,7 @@
  */
 package org.openehr.validation;
 
-import br.ufg.inf.fs.pep.archetypeRepository.PepArchetypeRepository;
+import br.ufg.inf.fs.pep.archetypes.PepArchetypeRepository;
 import java.lang.reflect.Method;
 import java.util.*;
 
