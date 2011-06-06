@@ -7,8 +7,8 @@
 	<artifactId>rm-validator</artifactId>
 	<packaging>jar</packaging>
 	<version>0.1-SNAPSHOT</version>
-	<name>openEHR Reference Model Objects Validator</name>
-	<url>http://svn.openehr.org/ref_impl_java/TRUNK/project_page.htm</url>
+	<name>Validação de objetos RM</name>
+	<url>http://oex.googlecode.com</url>
 	<developers>
             <developer>
                 <id>rong.chen</id>
