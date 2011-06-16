@@ -55,6 +55,7 @@ public class PepValidatorTest extends PepBaseTest {
         assertTrue("The list must not contain error", errors.isEmpty());
     }
 
+    @Ignore
     @Test
     public void testPerson() throws Exception{
         Person person = this.getPerson();
