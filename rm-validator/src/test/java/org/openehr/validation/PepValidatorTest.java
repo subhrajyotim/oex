@@ -28,7 +28,6 @@ public class PepValidatorTest extends PepBaseTest {
         this.validator = new DataValidatorImpl();
     }
 
-    @Ignore
     @Test
     public void testDvDateTime() throws Exception{
         DvDateTime dateTime = new DvDateTime();
@@ -43,7 +42,6 @@ public class PepValidatorTest extends PepBaseTest {
         assertTrue("The list must not contain error", errors.isEmpty());
     }
 
-    @Ignore
     @Test
     public void testDvText() throws Exception{
         DvText text = new DvText("Universidade Federal de Goiás");
@@ -66,7 +64,13 @@ public class PepValidatorTest extends PepBaseTest {
         List<ValidationError> errors = null;
         errors = this.validator.validate(person, archetype);
 
-//        assertTrue("The list must be null", errors.isEmpty());
+        for (ValidationError validationError : errors) {
+            System.out.println( validationError.getErrorType() +
+                    " \nRuntime path : " + validationError.getRuntimePath() +
+                    "\nArchetype path : " + validationError.getArchetypePath() );
+            System.out.println("");
+        }
+        assertTrue("The list must be null", errors.isEmpty());
     }
     
 }
