@@ -8,6 +8,7 @@ import br.ufg.inf.fs.pep.archetypes.PepArchetypeRepository;
 import java.util.List;
 import java.util.Set;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.rm.datastructure.itemstructure.ItemStructure;
@@ -78,6 +79,7 @@ public class PepValidatorTest extends PepBaseTest {
         assertTrue("The list must be null", errors.isEmpty());
     }
 
+    @Ignore
     @Test
     public void testPersonWithoutItems() throws Exception {
         Person person = this.getPerson();
