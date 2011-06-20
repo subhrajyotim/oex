@@ -60,7 +60,7 @@ public class PepValidatorTest extends PepBaseTest {
         errors = this.validator.validate(element, archetype);
         assertTrue("The list must not contain error", errors.isEmpty());
     }
-
+    @Ignore
     @Test
     public void testPerson() throws Exception {
         Person person = this.getPerson();
@@ -79,7 +79,7 @@ public class PepValidatorTest extends PepBaseTest {
         assertTrue("The list must be null", errors.isEmpty());
     }
 
-    @Ignore
+
     @Test
     public void testPersonWithoutItems() throws Exception {
         Person person = this.getPerson();
