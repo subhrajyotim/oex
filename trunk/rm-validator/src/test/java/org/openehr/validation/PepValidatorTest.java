@@ -10,10 +10,14 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
+import org.openehr.am.archetype.assertion.Assertion;
+import org.openehr.am.archetype.constraintmodel.ArchetypeSlot;
+import org.openehr.am.archetype.constraintmodel.CComplexObject;
 import org.openehr.rm.common.archetyped.Archetyped;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
 import org.openehr.rm.datastructure.itemstructure.representation.Cluster;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
+import org.openehr.rm.datastructure.itemstructure.representation.Item;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.rm.demographic.Address;
@@ -100,6 +104,13 @@ public class PepValidatorTest extends PepBaseTest {
                 + "10aec661-5458-4ff6-8e63-c2265537196d::1");
         person = new Person(objectVersionID, "openEHR-DEMOGRAPHIC-PERSON.person.v1.adl", new DvText("person demographic data"), new Archetyped(new ArchetypeID("openEHR-DEMOGRAPHIC-PERSON.person.v1"), "1.0.0.0"), null, null, identities, contacts, null, null, null, null, null);
 
+        assertTrue(erroEsperadoFoiEncontrado(ErrorType.ATTRIBUTE_MISSING, person));
+    }
+
+    @Test
+    public void testPersonWithoutContacts() throws Exception {
+        Person person = this.getPerson();
+        person.setContacts(null);
         assertTrue(erroEsperadoFoiEncontrado(ErrorType.ATTRIBUTE_MISSING, person));
     }
 
