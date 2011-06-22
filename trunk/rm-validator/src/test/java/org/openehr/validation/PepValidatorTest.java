@@ -8,16 +8,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
-import org.openehr.am.archetype.assertion.Assertion;
-import org.openehr.am.archetype.constraintmodel.ArchetypeSlot;
-import org.openehr.am.archetype.constraintmodel.CComplexObject;
 import org.openehr.rm.common.archetyped.Archetyped;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
-import org.openehr.rm.datastructure.itemstructure.representation.Cluster;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
-import org.openehr.rm.datastructure.itemstructure.representation.Item;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.rm.demographic.Address;
@@ -115,10 +111,37 @@ public class PepValidatorTest extends PepBaseTest {
     }
 
     @Test
+    public void testPersonContactsOccurrencesTooMany() throws Exception {
+        Person person = this.getPerson();
+        Address address = getContact();
+        //adiciona um contaco invalido, ele possui o mesmo identificador(at0003)
+        //do outro contact que está na lista.
+        List listAddresses = new ArrayList();
+        listAddresses.add(address);
+        Contact contactComMesmoArcheptyNodeId = new Contact(null, "at0003", new DvText("Contact"), null, null, null, person, null, listAddresses);
+        person.getContacts().add(contactComMesmoArcheptyNodeId);
+        assertTrue(erroEsperadoFoiEncontrado(ErrorType.OCCURRENCES_TOO_MANY, person));
+    }
+
+    @Test
+    public void testPersonContactsOccurrencesTooFew() throws Exception {
+        Person person = this.getPerson();
+        person.getContacts().clear();
+        assertTrue(erroEsperadoFoiEncontrado(ErrorType.OCCURRENCES_TOO_FEW, person));
+    }
+
+    @Test
     public void testPersonWithoutItems() throws Exception {
         Person person = this.getPerson();
         ((ItemTree) person.getDetails()).setItems(null);
         assertTrue(erroEsperadoFoiEncontrado(ErrorType.ATTRIBUTE_MISSING, person));
+    }
+
+    @Test
+    public void testPersonWithoutIdentities() throws Exception {
+        Person person = this.getPerson();
+        person.getIdentities().clear();
+        assertTrue(erroEsperadoFoiEncontrado(ErrorType.ITEMS_TOO_FEW, person));
     }
 
     /**
@@ -137,11 +160,10 @@ public class PepValidatorTest extends PepBaseTest {
 
         List<ValidationError> errors = null;
         errors = this.validator.validate(person, archetype);
-
+        ;
         for (ValidationError validationError : errors) {
             if (validationError.getErrorType() == errortype) {
                 erroEsperadoFoiCapturado = true;
-
             }
         }
         return erroEsperadoFoiCapturado;
