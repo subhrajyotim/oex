@@ -99,7 +99,7 @@ public class PepValidatorTest extends PepBaseTest {
         ObjectVersionID objectVersionID = new ObjectVersionID("939cec48-d629-4a3f-89f1-28c573387680::"
                 + "10aec661-5458-4ff6-8e63-c2265537196d::1");
         person = new Person(objectVersionID, "openEHR-DEMOGRAPHIC-PERSON.person.v1.adl", new DvText("person demographic data"), new Archetyped(new ArchetypeID("openEHR-DEMOGRAPHIC-PERSON.person.v1"), "1.0.0.0"), null, null, identities, contacts, null, null, null, null, null);
-
+        person.getContacts().iterator().next().getAddresses().clear();
         assertTrue(erroEsperadoFoiEncontrado(ErrorType.ATTRIBUTE_MISSING, person));
     }
 
@@ -160,7 +160,7 @@ public class PepValidatorTest extends PepBaseTest {
 
         List<ValidationError> errors = null;
         errors = this.validator.validate(person, archetype);
-        ;
+        
         for (ValidationError validationError : errors) {
             if (validationError.getErrorType() == errortype) {
                 erroEsperadoFoiCapturado = true;
