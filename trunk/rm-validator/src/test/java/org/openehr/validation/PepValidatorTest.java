@@ -13,8 +13,11 @@ import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.rm.common.archetyped.Archetyped;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
+import org.openehr.rm.datastructure.itemstructure.representation.Cluster;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
+import org.openehr.rm.datatypes.text.CodePhrase;
+import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.datatypes.text.DvText;
 import org.openehr.rm.demographic.Address;
 import org.openehr.rm.demographic.Contact;
@@ -144,6 +147,33 @@ public class PepValidatorTest extends PepBaseTest {
         assertTrue(erroEsperadoFoiEncontrado(ErrorType.ITEMS_TOO_FEW, person));
     }
 
+    @Ignore
+    @Test
+    public void testClusterPersonAdditionaData() throws Exception {
+        Person person = this.getPerson();
+        //adicionei um novo Cluster, mas so pode ter de 0...1 cluster segundo o arquetipo person_additional_data_iso
+        ((ItemTree) person.getDetails()).getItems().add(getPersonAdditionalDataIso());
+        assertTrue(erroEsperadoFoiEncontrado(ErrorType.OCCURRENCES_TOO_MANY, person));
+    }
+
+    @Test
+    public void testClusterPersonAdditionaDataWithoutItems() throws Exception {
+        Person person = this.getPerson();
+        ((ItemTree) person.getDetails()).setItems(null);
+        assertTrue(erroEsperadoFoiEncontrado(ErrorType.ATTRIBUTE_MISSING, person));
+    }
+
+    @Test
+    public void testClusterPersonAdditionaData_ELEMENT_at0001_with_invalid_value() throws Exception {
+        Person person = this.getPerson();
+        Cluster item = (Cluster) ((ItemTree) person.getDetails()).getItems().get(0);
+        //segundo o arquetipo person_additiona_data o element at0001 nao pode ter o valor abaixo
+        DvCodedText stateCodedText = new DvCodedText("Goias", new CodePhrase("local", "at0054"));
+        ((Element) item.getItems().get(0)).setValue(stateCodedText);
+
+        assertTrue(erroEsperadoFoiEncontrado(ErrorType.DOMAIN_TYPE_VALUE_ERROR, person));
+    }
+
     /**
      * Responsável por verificar se o validador está realmente pegando o erro.
      * Para isso é preciso de um Person  com algum inconsistência em relação às
@@ -160,9 +190,11 @@ public class PepValidatorTest extends PepBaseTest {
 
         List<ValidationError> errors = null;
         errors = this.validator.validate(person, archetype);
-        
+
         for (ValidationError validationError : errors) {
+          
             if (validationError.getErrorType() == errortype) {
+
                 erroEsperadoFoiCapturado = true;
             }
         }
