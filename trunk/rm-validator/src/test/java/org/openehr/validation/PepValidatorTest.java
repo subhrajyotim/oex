@@ -168,36 +168,60 @@ public class PepValidatorTest extends PepBaseTest {
         Person person = this.getPerson();
         Cluster item = (Cluster) ((ItemTree) person.getDetails()).getItems().get(0);
         //segundo o arquetipo person_additiona_data o element at0001 nao pode ter o valor abaixo
-        DvCodedText stateCodedText = new DvCodedText("Goias", new CodePhrase("local", "at0054"));
-        ((Element) item.getItems().get(0)).setValue(stateCodedText);
+        DvCodedText value = new DvCodedText("Goias", new CodePhrase("local", "at0014"));
+        ((Element) item.getItems().get(0)).setValue(value);
 
         assertTrue(erroEsperadoFoiEncontrado(ErrorType.DOMAIN_TYPE_VALUE_ERROR, person));
+        value.getDefiningCode().setCodeString("at0009");
+        ((Element) item.getItems().get(0)).setValue(value);
+        assertEquals(getErro(person), ErrorType.DOMAIN_TYPE_VALUE_ERROR);
+    }
+
+    @Test
+    public void testClusterPersonAdditionaData_ELEMENT_at0001_with_valid_value() throws Exception {
+        Person person = this.getPerson();
+        Cluster item = (Cluster) ((ItemTree) person.getDetails()).getItems().get(0);
+        //segundo o arquetipo person_additiona_data o element at0001 nao pode ter o valor abaixo
+        DvCodedText value = new DvCodedText("Goias", new CodePhrase("local", "at0010"));
+        ((Element) item.getItems().get(0)).setValue(value);
+        assertNull(getErro(person));
+        value.getDefiningCode().setCodeString("at0011");
+        ((Element) item.getItems().get(0)).setValue(value);
+        assertNull(getErro(person));
+        value.getDefiningCode().setCodeString("at0012");
+        ((Element) item.getItems().get(0)).setValue(value);
+        assertNull(getErro(person));
+        value.getDefiningCode().setCodeString("at0013");
+        ((Element) item.getItems().get(0)).setValue(value);
+        assertNull(getErro(person));
     }
 
     /**
      * Responsável por verificar se o validador está realmente pegando o erro.
      * Para isso é preciso de um Person  com algum inconsistência em relação às
      * restrições que o arquétipo impoem e o ErrorType equivalente à inconsistência.
-     * @param errortype Tipo de erro que deverá ser compativel com inconsistência
+     * @param errortypeEsperado Tipo de erro que deverá ser compativel com inconsistência
      * injetada no person.
      * @param person Objeto com alguma inconsistência para ser testado.
      * @throws Exception
      */
-    private boolean erroEsperadoFoiEncontrado(ErrorType errortype, Person person) throws Exception {
-        boolean erroEsperadoFoiCapturado = false;
+    private boolean erroEsperadoFoiEncontrado(ErrorType errortypeEsperado, Person person) throws Exception {
+
+        ErrorType erroEncontrado = getErro(person);
+        if (erroEncontrado.equals(errortypeEsperado)) {
+            return true;
+        }
+        return false;
+    }
+
+    private ErrorType getErro(Person person) throws Exception {
         String archetypeId = "openEHR-DEMOGRAPHIC-PERSON.person.v1";
         Archetype archetype = this.repository.getArchetype(archetypeId);
-
         List<ValidationError> errors = null;
         errors = this.validator.validate(person, archetype);
-
         for (ValidationError validationError : errors) {
-          
-            if (validationError.getErrorType() == errortype) {
-
-                erroEsperadoFoiCapturado = true;
-            }
+            return validationError.getErrorType();
         }
-        return erroEsperadoFoiCapturado;
+        return null;
     }
 }
