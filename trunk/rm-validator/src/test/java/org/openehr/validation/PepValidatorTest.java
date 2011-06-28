@@ -15,6 +15,7 @@ import org.openehr.rm.common.archetyped.Archetyped;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
 import org.openehr.rm.datastructure.itemstructure.representation.Cluster;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
+import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.text.DvCodedText;
@@ -201,8 +202,19 @@ public class PepValidatorTest extends PepBaseTest {
         Person person = this.getPerson();
         Cluster s = (Cluster) ((ItemTree) person.getDetails()).getItems().get(1);
         s.getItems().clear();
-        
+
         assertTrue(getConjuntoDeErros(person).contains(ErrorType.ITEMS_TOO_FEW));
+    }
+
+    @Ignore
+    @Test
+    public void testClusterPersonBirthData_Item_Invalid_Element() throws Exception {
+        Person person = this.getPerson();
+        Cluster s = (Cluster) ((ItemTree) person.getDetails()).getItems().get(1);
+        Element dataNascimentoElementInvalid = new Element("at0007", new DvText("Data de nascimento"), new DvDate(1984, 10, 10));
+
+        s.getItems().add(dataNascimentoElementInvalid);
+        assertTrue(getConjuntoDeErros(person).contains(ErrorType.OCCURRENCES_TOO_MANY));
     }
 
     /**
