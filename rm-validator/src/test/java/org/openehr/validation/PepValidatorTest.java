@@ -174,7 +174,7 @@ public class PepValidatorTest extends PepBaseTest {
         assertTrue(erroEsperadoFoiEncontrado(ErrorType.DOMAIN_TYPE_VALUE_ERROR, person));
         value.getDefiningCode().setCodeString("at0009");
         ((Element) item.getItems().get(0)).setValue(value);
-        assertEquals(getErro(person), ErrorType.DOMAIN_TYPE_VALUE_ERROR);
+        assertTrue(getConjuntoDeErros(person).contains(ErrorType.DOMAIN_TYPE_VALUE_ERROR));
     }
 
     @Test
@@ -184,16 +184,25 @@ public class PepValidatorTest extends PepBaseTest {
         //segundo o arquetipo person_additiona_data o element at0001 nao pode ter o valor abaixo
         DvCodedText value = new DvCodedText("Goias", new CodePhrase("local", "at0010"));
         ((Element) item.getItems().get(0)).setValue(value);
-        assertNull(getErro(person));
+        assertTrue(getConjuntoDeErros(person).isEmpty());
         value.getDefiningCode().setCodeString("at0011");
         ((Element) item.getItems().get(0)).setValue(value);
-        assertNull(getErro(person));
+        assertTrue(getConjuntoDeErros(person).isEmpty());
         value.getDefiningCode().setCodeString("at0012");
         ((Element) item.getItems().get(0)).setValue(value);
-        assertNull(getErro(person));
+        assertTrue(getConjuntoDeErros(person).isEmpty());
         value.getDefiningCode().setCodeString("at0013");
         ((Element) item.getItems().get(0)).setValue(value);
-        assertNull(getErro(person));
+        assertTrue(getConjuntoDeErros(person).isEmpty());
+    }
+
+    @Test
+    public void testClusterPersonBirthData_Item_null() throws Exception {
+        Person person = this.getPerson();
+        Cluster s = (Cluster) ((ItemTree) person.getDetails()).getItems().get(1);
+        s.getItems().clear();
+        
+        assertTrue(getConjuntoDeErros(person).contains(ErrorType.ITEMS_TOO_FEW));
     }
 
     /**
@@ -206,22 +215,19 @@ public class PepValidatorTest extends PepBaseTest {
      * @throws Exception
      */
     private boolean erroEsperadoFoiEncontrado(ErrorType errortypeEsperado, Person person) throws Exception {
-
-        ErrorType erroEncontrado = getErro(person);
-        if (erroEncontrado.equals(errortypeEsperado)) {
-            return true;
-        }
-        return false;
+        return getConjuntoDeErros(person).contains(errortypeEsperado);
     }
 
-    private ErrorType getErro(Person person) throws Exception {
+    private Set<ErrorType> getConjuntoDeErros(Person person) throws Exception {
         String archetypeId = "openEHR-DEMOGRAPHIC-PERSON.person.v1";
         Archetype archetype = this.repository.getArchetype(archetypeId);
         List<ValidationError> errors = null;
         errors = this.validator.validate(person, archetype);
+
+        Set<ErrorType> erros = new HashSet<ErrorType>();
         for (ValidationError validationError : errors) {
-            return validationError.getErrorType();
+            erros.add(validationError.getErrorType());
         }
-        return null;
+        return erros;
     }
 }
