@@ -243,10 +243,18 @@ public class PepValidatorTest extends PepBaseTest {
     public void testClusterPersonBirthData_ELEMENT_at0002_with_invalid_value() throws Exception {
         Person person = this.getPerson();
         Cluster item = (Cluster) ((ItemTree) person.getDetails()).getItems().get(1);
-        //segundo o arquetipo person_additiona_data o element at0001 nao pode ter o valor abaixo
         DvCodedText paisNascimentoCodeText = new DvCodedText("Brasil", new CodePhrase("local", "at0002"));
         ((Element) item.getItems().get(1)).setValue(paisNascimentoCodeText);
         assertTrue(getConjuntoDeErros(person).contains(ErrorType.DOMAIN_TYPE_VALUE_ERROR));
+    }
+@Test
+    public void testClusterPersonDeathData_ELEMENT_at0001() throws Exception {
+        Person person = this.getPerson();
+        Cluster item = (Cluster) ((ItemTree) person.getDetails()).getItems().get(2);
+        
+         Element postalCodeElement = new Element("at0001", "Postal Code", new DvText("1022"));
+        item.getItems().add(postalCodeElement);
+        assertTrue(getConjuntoDeErros(person).contains(ErrorType.OCCURRENCES_TOO_MANY));
     }
 
     /**
