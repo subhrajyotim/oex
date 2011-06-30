@@ -426,6 +426,9 @@ public class VersionedObject<T> extends RMObject {
         this.timeVersionMap = timeVersionMap;
     }
 
+    /**
+     * Atributos utilizados apenas para auxiliar na persistencia
+     */
     private List<DvDateTime> JPAKeySetTime;
     private List<Version<T>> JPAValuesTime;
     private List<ObjectVersionID> JPAKeySetId;
