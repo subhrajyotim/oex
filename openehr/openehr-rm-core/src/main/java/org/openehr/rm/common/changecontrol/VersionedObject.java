@@ -426,24 +426,24 @@ public class VersionedObject<T> extends RMObject {
         this.timeVersionMap = timeVersionMap;
     }
 
-    private Set<DvDateTime> JPAKeySetTime;
+    private List<DvDateTime> JPAKeySetTime;
     private List<Version<T>> JPAValuesTime;
-    private Set<ObjectVersionID> JPAKeySetId;
+    private List<ObjectVersionID> JPAKeySetId;
     private List<Version<T>> JPAValuesId;
 
-    public Set<ObjectVersionID> getJPAKeySetId() {
+    public List<ObjectVersionID> getJPAKeySetId() {
         return JPAKeySetId;
     }
 
-    public void setJPAKeySetId(Set<ObjectVersionID> JPAKeySetId) {
+    public void setJPAKeySetId(List<ObjectVersionID> JPAKeySetId) {
         this.JPAKeySetId = JPAKeySetId;
     }
 
-    public Set<DvDateTime> getJPAKeySetTime() {
+    public List<DvDateTime> getJPAKeySetTime() {
         return JPAKeySetTime;
     }
 
-    public void setJPAKeySetTime(Set<DvDateTime> JPAKeySetTime) {
+    public void setJPAKeySetTime(List<DvDateTime> JPAKeySetTime) {
         this.JPAKeySetTime = JPAKeySetTime;
     }
 
