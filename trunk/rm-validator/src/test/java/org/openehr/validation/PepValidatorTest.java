@@ -230,7 +230,16 @@ public class PepValidatorTest extends PepBaseTest {
         assertTrue(getConjuntoDeErros(person).contains(ErrorType.OCCURRENCES_TOO_MANY));
     }
 
-  
+    @Test
+    public void testClusterPersonBirthData_Item_invalid_Element_() throws Exception {
+        Person person = this.getPerson();
+        Cluster s = (Cluster) ((ItemTree) person.getDetails()).getItems().get(1);
+        Element postalCodeElement = new Element("at0001", "Postal Code", new DvText("1022"));
+        s.getItems().add(postalCodeElement);
+        assertTrue(getConjuntoDeErros(person).contains(ErrorType.OCCURRENCES_TOO_MANY));
+    }
+
+
     /**
      * Responsável por verificar se o validador está realmente pegando o erro.
      * Para isso é preciso de um Person  com algum inconsistência em relação às
