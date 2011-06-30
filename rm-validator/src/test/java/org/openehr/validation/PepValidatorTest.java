@@ -272,12 +272,27 @@ public class PepValidatorTest extends PepBaseTest {
         Person person = this.getPerson();
         Cluster item = (Cluster) ((ItemTree) person.getDetails()).getItems().get(2);
 
-        //O arquetipo define que o value do Element[at0002] deveria ser um DV_CODED_TEXT
+        //O arquetipo define que o value do Element[at0002] deveria ser um DV_CODED_TEXT,
+        //mas estou passando um DV_DATE
         ((Element) item.getItems().get(1)).setValue(new DvDate());
 
         assertFalse(getConjuntoDeErros(person).isEmpty());
     }
 
+    @Test
+    public void testClusterPersonDeathData_Items_ELEMENT_at0002 () throws Exception {
+        Person person = this.getPerson();
+        Cluster item = (Cluster) ((ItemTree) person.getDetails()).getItems().get(2);
+
+        //O arquetipo define que o value do Element[at0002] deveria ser um DV_CODED_TEXT,
+        //mas estou passando um DV_DATE
+        DvCodedText paisNascimentoCodeText = new DvCodedText("at0019", new CodePhrase("local", "at0019"));
+        ((Element) item.getItems().get(1)).setValue(paisNascimentoCodeText);
+        for (ErrorType errorType : getConjuntoDeErros(person)) {
+            System.out.println(errorType);
+        }
+        assertTrue(getConjuntoDeErros(person).contains(ErrorType.DOMAIN_TYPE_VALUE_ERROR));
+    }
     /**
      * Responsável por verificar se o validador está realmente pegando o erro.
      * Para isso é preciso de um Person  com algum inconsistência em relação às
