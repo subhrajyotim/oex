@@ -15,6 +15,7 @@ import org.openehr.rm.common.archetyped.Archetyped;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
 import org.openehr.rm.datastructure.itemstructure.representation.Cluster;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
+import org.openehr.rm.datastructure.itemstructure.representation.Item;
 import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.text.CodePhrase;
@@ -51,6 +52,7 @@ public class PepValidatorTest extends PepBaseTest {
         Archetype archetype = this.repository.getArchetype(archetypeId);
 
         List<ValidationError> errors = null;
+
 
         errors = this.validator.validate(element, archetype);
         assertTrue("The list must not contain error", errors.isEmpty());
@@ -214,9 +216,21 @@ public class PepValidatorTest extends PepBaseTest {
         Element dataNascimentoElementInvalid = new Element("at0007", new DvText("Data de nascimento"), new DvDate(1984, 10, 10));
 
         s.getItems().add(dataNascimentoElementInvalid);
+        System.out.println(getConjuntoDeErros(person).size());
         assertTrue(getConjuntoDeErros(person).contains(ErrorType.OCCURRENCES_TOO_MANY));
     }
 
+    @Test
+    public void testClusterPersonBirthData_Item_Element_Ocurrence() throws Exception {
+        Person person = this.getPerson();
+        Cluster s = (Cluster) ((ItemTree) person.getDetails()).getItems().get(1);
+
+        Element postalCodeElement = new Element("at0004", "Postal Code", new DvText("1022"));
+        s.getItems().add(postalCodeElement);
+        assertTrue(getConjuntoDeErros(person).contains(ErrorType.OCCURRENCES_TOO_MANY));
+    }
+
+  
     /**
      * Responsável por verificar se o validador está realmente pegando o erro.
      * Para isso é preciso de um Person  com algum inconsistência em relação às
