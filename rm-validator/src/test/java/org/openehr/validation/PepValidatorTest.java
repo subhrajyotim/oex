@@ -239,6 +239,15 @@ public class PepValidatorTest extends PepBaseTest {
         assertTrue(getConjuntoDeErros(person).contains(ErrorType.OCCURRENCES_TOO_MANY));
     }
 
+    @Test
+    public void testClusterPersonBirthData_ELEMENT_at0002_with_invalid_value() throws Exception {
+        Person person = this.getPerson();
+        Cluster item = (Cluster) ((ItemTree) person.getDetails()).getItems().get(1);
+        //segundo o arquetipo person_additiona_data o element at0001 nao pode ter o valor abaixo
+        DvCodedText paisNascimentoCodeText = new DvCodedText("Brasil", new CodePhrase("local", "at0002"));
+        ((Element) item.getItems().get(1)).setValue(paisNascimentoCodeText);
+        assertTrue(getConjuntoDeErros(person).contains(ErrorType.DOMAIN_TYPE_VALUE_ERROR));
+    }
 
     /**
      * Responsável por verificar se o validador está realmente pegando o erro.
