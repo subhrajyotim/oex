@@ -247,14 +247,35 @@ public class PepValidatorTest extends PepBaseTest {
         ((Element) item.getItems().get(1)).setValue(paisNascimentoCodeText);
         assertTrue(getConjuntoDeErros(person).contains(ErrorType.DOMAIN_TYPE_VALUE_ERROR));
     }
-@Test
-    public void testClusterPersonDeathData_ELEMENT_at0001() throws Exception {
+
+    @Test
+    public void testClusterPersonDeathData_Items_Empty() throws Exception {
+        Person person = this.getPerson();
+        ((Cluster) ((ItemTree) person.getDetails()).getItems().get(2)).getItems().clear();
+
+        assertTrue(getConjuntoDeErros(person).contains(ErrorType.ITEMS_TOO_FEW));
+    }
+
+    @Test//DV_DATE
+    public void testClusterPersonDeathData_Items_ELEMENT_at0001() throws Exception {
         Person person = this.getPerson();
         Cluster item = (Cluster) ((ItemTree) person.getDetails()).getItems().get(2);
-        
-         Element postalCodeElement = new Element("at0001", "Postal Code", new DvText("1022"));
+
+        Element postalCodeElement = new Element("at0001", "Postal Code", new DvText("1022"));
         item.getItems().add(postalCodeElement);
         assertTrue(getConjuntoDeErros(person).contains(ErrorType.OCCURRENCES_TOO_MANY));
+    }
+
+    @Ignore
+    @Test
+    public void testClusterPersonDeathData_Items_ELEMENT_at0002_with_invalid_value() throws Exception {
+        Person person = this.getPerson();
+        Cluster item = (Cluster) ((ItemTree) person.getDetails()).getItems().get(2);
+
+        //O arquetipo define que o value do Element[at0002] deveria ser um DV_CODED_TEXT
+        ((Element) item.getItems().get(1)).setValue(new DvDate());
+
+        assertFalse(getConjuntoDeErros(person).isEmpty());
     }
 
     /**
