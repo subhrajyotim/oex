@@ -1,14 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>openehr</groupId>
 	<artifactId>openehr-rm-domain</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.2-SNAPSHOT</version>
 	<name>openEHR Reference Model Domain</name>
-	<url>http://www.openehr.org/projects/java.html</url>   
+	<url>http://www.openehr.org/projects/java.html</url>
 	<scm>
 		<connection>scm:svn:http://openehr.cambio.se/svn/openehr/TRUNK/openehr-rm-domain</connection>
 		<developerConnection>scm:svn:http://openehr.cambio.se/svn/openehr/TRUNK/openehr-rm-domain</developerConnection>
@@ -19,9 +18,9 @@
 		<url>http://www.openehr.org/</url>
 	</organization>
 	<inceptionYear>2004</inceptionYear>
-	
+
 	<description>Java implementation of the openEHR Reference Model Domain</description>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -49,7 +48,7 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>openehr</groupId>
@@ -57,12 +56,12 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-            <groupId>openehr</groupId>
-            <artifactId>mini-termserv</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>       
-        <dependency>
+			<groupId>openehr</groupId>
+			<artifactId>mini-termserv</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.0</version>
@@ -74,4 +73,17 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<distributionManagement>
+		<repository>
+			<id>t410</id>
+			<name>t410-releases</name>
+			<url>http://fs.inf.ufg.br/artifactory/libs-snapshot-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>t410</id>
+			<name>t410-snapshots</name>
+			<url>http://fs.inf.ufg.br/artifactory/libs-snapshot-local</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
