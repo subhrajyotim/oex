@@ -39,6 +39,7 @@ import org.openehr.rm.support.identification.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.*;
+import org.openehr.rm.ehr.EHRStatus;
 
 /**
  * Reference model class instances builder
@@ -155,6 +156,7 @@ public class RMObjectBuilder {
 				Instruction.class, InstructionDetails.class, Observation.class, AdminEntry.class,
 				Section.class, Composition.class,
 				EventContext.class, ISMTransition.class,
+                                EHRStatus.class,
 
 				// demographic classes
 				Address.class, PartyIdentity.class, Agent.class, Group.class,
