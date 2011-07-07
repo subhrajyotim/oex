@@ -14,11 +14,12 @@
  */
 package org.openehr.rm.ehrextract;
 
-import org.openehr.rm.support.identification.ObjectID;
-import org.openehr.rm.demographic.Party;
-import org.openehr.rm.datastructure.itemstructure.ItemStructure;
-
 import java.util.Map;
+
+import org.openehr.rm.KeyID;
+import org.openehr.rm.datastructure.itemstructure.ItemStructure;
+import org.openehr.rm.demographic.Party;
+import org.openehr.rm.support.identification.ObjectID;
 
 /**
  * Purpose Container class for all demograhic data required in an EHR Extract.
@@ -29,15 +30,8 @@ import java.util.Map;
  * @author Rong Chen
  * @version 1.0
  */
-public class XDemographics implements java.io.Serializable {
+public class XDemographics extends KeyID implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
-
-    //PROJETO PEP
-    private long key_id;
-
-    public long getKey_id() {
-        return key_id;
-    }
 
     private XDemographics() {}
 
