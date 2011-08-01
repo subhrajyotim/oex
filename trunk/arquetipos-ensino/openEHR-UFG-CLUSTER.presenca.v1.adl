@@ -1,0 +1,61 @@
+archetype (adl_version=1.4)
+	openEHR-UFG-CLUSTER.presenca.v1
+concept
+	[at0000]		-- Presença
+language
+	original_language = <[ISO_639-1::pt-br]>
+description
+	original_author = <
+		["name"] = <"Renata Dutra Braga">
+		["organisation"] = <"Universidade Federal de Goiás - UFG">
+		["email"] = <"renatadbraga@gmail.com">
+		["date"] = <"08/07/2011">
+	>
+	details = <
+		["pt-br"] = <
+			language = <[ISO_639-1::pt-br]>
+			purpose = <"Definir o conceito de presença.">
+			use = <"Utilizado para definir informações sobre a presença de uma pessoa">
+			keywords = <"Frequência", "Presença">
+			copyright = <"© 2011 Projeto Prontuário Eletrônico do Paciente (PEP) - UFG">
+		>
+	>
+	lifecycle_state = <"Initial">
+definition	
+	CLUSTER[at0000] matches {	-- Presença
+		items cardinality matches{1..1} matches {
+			ELEMENT[at0001] occurrences matches {1..1} matches {		-- Data
+				value matches {
+					DV_DATE matches {
+						value matches {yyyy-mm-dd}
+					}
+				}					
+			}
+			ELEMENT[at0002] occurrences matches {1..1} matches {		-- Presente?
+				value matches {
+					DV_BOOLEAN matches {
+						value matches {True, False}
+					}
+				}
+			}																	
+		}
+	} -- Fim CLUSTER
+ontology
+	term_definitions = <		
+		["pt-br"] = <
+			items = <
+				["at0000"] = <
+					text = <"Presença">
+					description = <"Define a presença da pessoa em uma data.">
+				>
+				["at0001"] = <
+					text = <"Data">
+					description = <"Define a data para registrar a presença.">
+				>
+				["at0002"] = <
+					text = <"Presente?">
+					description = <"Define se a pessoa esteve presente ou não.">
+				>
+			>
+		>
+	>

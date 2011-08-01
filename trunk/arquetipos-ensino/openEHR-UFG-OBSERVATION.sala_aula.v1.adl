@@ -1,0 +1,146 @@
+archetype (adl_version=1.4)
+	openEHR-UFG-OBSERVATION.sala_aula.v1
+
+concept
+	[at0000]			-- Sala de aula
+
+language
+	original_language = <[ISO_639-1::pt-br]>
+
+description
+	original_author = <
+		["name"] = <"Renata Dutra Braga">
+		["organisation"] = <"Universidade Federal de Goiás - UFG">
+		["email"] = <"renatadbraga@gmail.com">
+		["date"] = <"08/07/2011">
+	>
+	details = <
+		["pt-br"] = <
+			language = <[ISO_639-1::pt-br]>
+			purpose = <"Registrar informações sobre a sala de aula.">
+			use = <"Utilizado para definir e armazenar informações sobre a sala de aula.">
+			keywords = <"Sala de aula", "Espaço para dar aula">
+			copyright = <"© 2011 Projeto Prontuário Eletrônico do Paciente (PEP) - UFG">
+		>
+	>
+	lifecycle_state = <"Initial">
+
+definition
+	OBSERVATION[at0000] matches {								-- Sala de aula
+		data matches {
+			HISTORY[at0001] matches {							-- Histórico da sala
+				events cardinality matches {1..*; unordered} matches {
+					EVENT[at0002] occurrences matches {0..*} matches {		-- Qualquer evento
+						data matches {
+							ITEM_TREE[at0003] matches {		-- Estrutura da sala de aula
+								items cardinality matches {0..*; unordered} matches {
+
+									ELEMENT[at0004] occurrences matches {1..1} matches {		-- Identificador da sala de aula
+										value matches{
+											DV_IDENTIFIER matches{*}
+										}
+									}
+									ELEMENT[at0005] occurrences matches {1..1} matches {		-- Data de inauguração da sala
+										value matches {
+											DV_DATE matches {
+												value matches {yyyy-mm-dd}
+											}
+										}						
+									}
+									ELEMENT[at0006] occurrences matches {0..1} matches {		-- Localização da sala
+										value matches {															
+											DV_URI matches {*}
+										}
+									}
+									ELEMENT[at0007] occurrences matches {1..1} matches {		-- Capacidade de pessoas
+										value matches {									
+											DV_COUNT matches {
+												magnitude matches {|>=1|}
+											}
+										}
+									}
+									ELEMENT[at0008] occurrences matches {1..1} matches {		-- Tamanho da sala
+										value matches {									
+											DV_COUNT matches {
+												magnitude matches {|>=1|}
+											}
+										}
+									}
+									ELEMENT[at0009] occurrences matches {0..1} matches {		-- Descrição sobre a sala de aula
+										value matches {															
+											DV_TEXT matches {*}
+										}
+									}
+									CLUSTER[at0010] occurrences matches {1..*} matches {		-- Componentes da sala
+										items cardinality matches {1..*; unordered} matches {
+																
+											allow_archetype CLUSTER[at101] occurrences matches {1..*} matches {	-- Objetos da sala de aula
+												include
+													archetype_id/value matches {/openEHR-EHR-CLUSTER\.objetos_sala_aula\.v1/}
+											}
+										}
+									} -- Fim CLUSTER Componentes da sala
+								}
+							} -- Fim ITEM_TREE Estrutura da sala de aula
+						}
+					} -- Fim EVENT Qualquer evento
+				}
+			} -- Fim HISTORY Histórico da sala
+		}
+	} -- Fim OBSERVATION
+
+ontology
+	term_definitions = <		
+		["pt-br"] = <
+			items = <
+				["at0000"] = <
+					text = <"Sala de aula">
+					description = <"A sala de aula é um espaço composto por diversos objetos que são utilizados para ministrar um aula, assim como por cadeiras para que os alunos possam se acomodar.">
+				>
+				["at0001"] = <
+					text = <"Histórico da sala">
+					description = <"Mantém o histórico de registros sobre a sala de aula.">
+				>
+				["at0002"] = <
+					text = <"Qualquer evento">
+					description = <"Define qualquer evento sobre a sala de aula.">
+				>
+				["at0003"] = <
+					text = <"Estrutura da sala">
+					description = <"Define a estrutura da sala de aula.">
+				>
+				["at0004"] = <
+					text = <"Número da sala">
+					description = <"Número que identifica a sala de aula.">
+				>
+				["at0005"] = <
+					text = <"Data de inauguração da sala">
+					description = <"Dia, mês e ano em que a sala de aula foi inaugurada.">
+				>
+				["at0006"] = <
+					text = <"Localização da sala">
+					description = <"Define a localização da sala.">
+				>
+				["at0007"] = <
+					text = <"Capacidade da sala">
+					description = <"Define a capacidade de pessoas na sala de aula.">
+				>
+				["at0008"] = <
+					text = <"Tamanho da sala (m²)">
+					description = <"Define o tamanho da sala de aula em metros quadrados.">
+				>
+				["at0009"] = <
+					text = <"Descrição sobre a sala">
+					description = <"Espaço reservado para descrever a sala de aula.">
+				>
+				["at0010"] = <
+					text = <"Componentes da sala">
+					description = <"Define os componentes da sala.">
+				>
+				["at101"] = <
+					text = <"Objetos da sala">
+					description = <"Objetos da sala de aula: cadeiras, louça, datashow, entre outros.">
+				>			
+			>
+		>
+	>

@@ -1,0 +1,121 @@
+archetype (adl_version=1.4)
+	openEHR-DEMOGRAPHIC-PERSON.discente.v1
+concept
+	[at0000]	-- Informações sobre o discente
+language
+	original_language = <[ISO_639-1::pt-br]>
+	translations = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			author = <
+				["name"] = <"Renata Dutra Braga">
+				["organisation"] = <"Universidade Federal de Goiás - UFG">
+				["email"] = <"renatadbraga@gmail.com">
+			>
+		>
+	>
+
+description
+	original_author = <
+		["name"] = <"Renata Dutra Braga">
+		["organisation"] = <"Universidade Federal de Goiás - UFG">
+		["email"] = <"renatadbraga@gmail.com">
+		["date"] = <"13/05/2011">
+	>
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"Representation of demographic data and student's educational records.">
+			use = <"Used in  educational institutions to collect data from  a  student">
+			keywords = <"demographic data", "student data">
+			copyright = <"© 2011 Project Electronic Patient Record (EPR) - UFG">
+		>
+		["pt-br"] = <
+			language = <[ISO_639-1::pt-br]>
+			purpose = <"Representar os dados demográficos e escolares do discente.">
+			use = <"Usado em instituições de ensino para coletar os dados de um aluno.">
+			keywords = <"dados demográficos", "dados de um discente">			
+			copyright = <"© 2011 Projeto Prontuário Eletrônico do Paciente (PEP) - UFG">
+		>
+	>
+
+definition
+	PERSON[at0000] matches {  -- dados demográficos do discente.
+		details matches {
+			allow_archetype ITEM_TREE[at0001] occurrences matches {1..1} matches {
+				include
+					archetype_id/value matches {/(matricula_curso)[a-zA-Z0-9_-]*\.v1/}
+			}
+		}
+		identities cardinality matches {1..*; ordered} matches {
+			allow_archetype PARTY_IDENTITY[at0002] occurrences matches {1..1} matches {
+				include
+					archetype_id/value matches {/(person_name)[a-zA-Z0-9_-]*\.v1/}
+			}
+		}
+		contacts cardinality matches {0..*; ordered} matches {
+			CONTACT[at0003] occurrences matches {1..1} matches {  -- Contacts
+				addresses cardinality matches {0..*; ordered} matches {
+					allow_archetype ADDRESS[at0004] occurrences matches {1..1} matches {
+						include
+							archetype_id/value matches {/(address)([a-zA-Z0-9_]+)*\.v1/}
+							archetype_id/value matches {/(electronic_communication)[a-zA-Z0-9_-]*\.v1/}
+					}
+				}
+			}
+		}
+        
+	}
+
+ontology
+	term_definitions = <
+		["pt-br"] = <
+			items = <
+				["at0000"] = <
+					text = <"Dados da pessoa">
+					description = <"Dados da pessoa.">
+				>
+				["at0001"] = <
+					text = <"Detalhes">
+					description = <"Detalhes demográficos da pessoa.">
+				>
+				["at0002"] = <
+					text = <"Nome">
+					description = <"Conjunto de dados que especificam o nome da pessoa.">
+				>
+				["at0003"] = <
+					text = <"Contatos">
+					description = <"Contatos da pessoa.">
+				>
+				
+				["at0004"] = <
+					text = <"Endereço">
+					description = <"Endereços vinculados a um único contato, ou seja, com o mesmo período de validade.">
+				>				
+			>
+		>
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"Person">
+					description = <"Personal demographic data.">
+				>
+				["at0001"] = <
+					text = <"Demographic details">
+					description = <"A person's demographic details.">
+				>
+				["at0002"] = <
+					text = <"Name">
+					description = <"A person's name.">
+				>
+				["at0003"] = <
+					text = <"Contacts">
+					description = <"A person's contacts.">
+				>				
+				["at0004"] = <
+					text = <"Addresses">
+					description = <"Addresses linked to a single contact, i.e. with the same time validity.">
+				>				
+			>
+		>
+	>
