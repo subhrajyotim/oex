@@ -163,6 +163,18 @@ public class DataValidatorImpl implements DataValidator {
 		}
 		
 		// TODO if(cardinality.isOrdered()) ?!
+                
+                // Cardinality must validate if the container is ordered.
+                if ( cardinality.isList() && values instanceof Set ){
+                    error = new ValidationError(path, cattr.path(), ErrorType.ITEMS_NOT_ORDERED);
+                } else if ( cardinality.isSet() && values instanceof List ){
+                    Set<Object> set = new HashSet<Object>(values);
+                    if(set.size() != values.size()){
+                        error = new ValidationError(path, cattr.path(), ErrorType.ITEMS_NOT_UNIQUE);
+                    }
+                } else if ( cardinality.isBag() && values instanceof Set ){
+                    error = new ValidationError(path, cattr.path(), ErrorType.ITEMS_NOT_NON_UNIQUE);
+                }
 		
 		log.debug("validating total cobj: " + children.size() + 
 				", values: " + values.size());
