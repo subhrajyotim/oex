@@ -15,6 +15,7 @@ import org.openehr.rm.common.archetyped.Archetyped;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
 import org.openehr.rm.datastructure.itemstructure.representation.Cluster;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
+import org.openehr.rm.datatypes.basic.DvBoolean;
 import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.datatypes.text.CodePhrase;
@@ -207,7 +208,6 @@ public class PepValidatorTest extends PepBaseTest {
         assertTrue(getConjuntoDeErros(person).contains(ErrorType.ITEMS_TOO_FEW));
     }
 
-    @Ignore
     @Test
     public void testClusterPersonBirthData_Item_Invalid_Element() throws Exception {
         Person person = this.getPerson();
@@ -216,7 +216,19 @@ public class PepValidatorTest extends PepBaseTest {
 
         s.getItems().add(dataNascimentoElementInvalid);
         System.out.println(getConjuntoDeErros(person).size());
-        assertTrue(getConjuntoDeErros(person).contains(ErrorType.OCCURRENCES_TOO_MANY));
+        assertTrue(getConjuntoDeErros(person).contains(ErrorType.OCCURRENCES_NOT_DESCRIBED));
+    }
+
+    @Test
+    public void testClusterPersonBirthData_Item_Invalid_Element2() throws Exception {
+        Person person = this.getPerson();
+        Cluster s = (Cluster) ((ItemTree) person.getDetails()).getItems().get(1);
+
+        Element indicaNascimentoElement = new Element("at0005", new DvText("Indica Nascimento"), new DvBoolean(true));
+
+        s.getItems().add(indicaNascimentoElement);
+        System.out.println(getConjuntoDeErros(person).size());
+         assertTrue(getConjuntoDeErros(person).isEmpty());
     }
 
     @Test
@@ -279,7 +291,7 @@ public class PepValidatorTest extends PepBaseTest {
     }
 
     @Test
-    public void testClusterPersonDeathData_Items_ELEMENT_at0002 () throws Exception {
+    public void testClusterPersonDeathData_Items_ELEMENT_at0002() throws Exception {
         Person person = this.getPerson();
         Cluster item = (Cluster) ((ItemTree) person.getDetails()).getItems().get(2);
 
