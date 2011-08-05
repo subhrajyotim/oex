@@ -292,6 +292,10 @@ public class PepValidatorTest extends PepBaseTest {
         }
         assertTrue(getConjuntoDeErros(person).contains(ErrorType.DOMAIN_TYPE_VALUE_ERROR));
     }
+    @Test
+    public void testClusterPersonIdentifier_Items_Element(){
+
+    }
     /**
      * Responsável por verificar se o validador está realmente pegando o erro.
      * Para isso é preciso de um Person  com algum inconsistência em relação às
