@@ -17,19 +17,21 @@ package org.openehr.validation;
 /**
  * Enumeration of error types from archetype based reference model objects
  * validation
- * 
+ *
  * @author Rong Chen
  */
 public enum ErrorType {
 	// EXISTENCE
 	ATTRIBUTE_MISSING,
 	ATTRIBUTE_NOT_ALLOWED,
-	// OCCURRENCES
-	ITEMS_TOO_MANY,
+	//CARDINALITY
+        ITEMS_TOO_MANY,
 	ITEMS_TOO_FEW,
 	ITEMS_NOT_ORDERED,
 	ITEMS_NOT_UNIQUE,
         ITEMS_NOT_NON_UNIQUE,
+        // OCCURRENCES
+	OCCURRENCES_NOT_DESCRIBED,
 	OCCURRENCES_TOO_MANY,
 	OCCURRENCES_TOO_FEW,
 	// C_BOOLEAN
@@ -84,7 +86,7 @@ public enum ErrorType {
 	INCORRECT_NAME,
 	// TERM CONSTRAINTS
 	INCORRECT_CODE,
-	
+
 	// TODO: temporary types
 	PRIMITIVE_TYPE_VALUE_ERROR,
 	DOMAIN_TYPE_VALUE_ERROR
