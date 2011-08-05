@@ -215,7 +215,7 @@ public class PepValidatorTest extends PepBaseTest {
         Element dataNascimentoElementInvalid = new Element("at0007", new DvText("Data de nascimento"), new DvDate(1984, 10, 10));
 
         s.getItems().add(dataNascimentoElementInvalid);
-        System.out.println(getConjuntoDeErros(person).size());
+
         assertTrue(getConjuntoDeErros(person).contains(ErrorType.OCCURRENCES_NOT_DESCRIBED));
     }
 
@@ -228,7 +228,31 @@ public class PepValidatorTest extends PepBaseTest {
 
         s.getItems().add(indicaNascimentoElement);
         System.out.println(getConjuntoDeErros(person).size());
-         assertTrue(getConjuntoDeErros(person).isEmpty());
+        assertTrue(getConjuntoDeErros(person).isEmpty());
+    }
+
+    @Test
+    public void testClusterPersonBirthData_Item_Occurrences_Too_Many() throws Exception {
+        Person person = this.getPerson();
+        Cluster s = (Cluster) ((ItemTree) person.getDetails()).getItems().get(1);
+
+        Cluster person_other_birth_data = getPersonBirthDataIso(getPersonOtherBirthDataBr());
+        s.getItems().add(person_other_birth_data);
+
+        assertTrue(getConjuntoDeErros(person).contains(ErrorType.OCCURRENCES_TOO_MANY));
+    }
+
+    @Test
+    public void testClusterPersonBirthData_Item_Invalid_Element4() throws Exception {
+        Person person = this.getPerson();
+        Cluster s = (Cluster) ((ItemTree) person.getDetails()).getItems().get(1);
+
+
+        DvCodedText paisNascimentoCodeText = new DvCodedText("Brasil", new CodePhrase("local", "at0010"));
+        Element paisNascimentoElement = new Element("at0002", new DvText("Pais de nascimento"), paisNascimentoCodeText);
+        s.getItems().add(paisNascimentoElement);
+
+        assertTrue(getConjuntoDeErros(person).contains(ErrorType.OCCURRENCES_TOO_MANY));
     }
 
     @Test
@@ -299,15 +323,14 @@ public class PepValidatorTest extends PepBaseTest {
         //mas estou passando um DV_DATE
         DvCodedText paisNascimentoCodeText = new DvCodedText("at0019", new CodePhrase("local", "at0019"));
         ((Element) item.getItems().get(1)).setValue(paisNascimentoCodeText);
-        for (ErrorType errorType : getConjuntoDeErros(person)) {
-            System.out.println(errorType);
-        }
+
         assertTrue(getConjuntoDeErros(person).contains(ErrorType.DOMAIN_TYPE_VALUE_ERROR));
     }
-    @Test
-    public void testClusterPersonIdentifier_Items_Element(){
 
+    @Test
+    public void testClusterPersonIdentifier_Items_Element() {
     }
+
     /**
      * Responsável por verificar se o validador está realmente pegando o erro.
      * Para isso é preciso de um Person  com algum inconsistência em relação às
