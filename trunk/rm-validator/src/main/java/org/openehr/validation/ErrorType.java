@@ -21,6 +21,8 @@ package org.openehr.validation;
  * @author Rong Chen
  */
 public enum ErrorType {
+        //OBJECT
+        RM_TYPE_INVALID,
 	// EXISTENCE
 	ATTRIBUTE_MISSING,
 	ATTRIBUTE_NOT_ALLOWED,
