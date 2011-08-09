@@ -20,7 +20,11 @@ import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.openehr.am.archetype.*;
+import org.openehr.am.archetype.assertion.Assertion;
+import org.openehr.am.archetype.assertion.ExpressionBinaryOperator;
+import org.openehr.am.archetype.assertion.ExpressionLeaf;
 import org.openehr.am.archetype.constraintmodel.*;
+import org.openehr.am.archetype.constraintmodel.primitive.CString;
 import org.openehr.am.archetype.ontology.ArchetypeOntology;
 import org.openehr.am.archetype.ontology.ArchetypeTerm;
 import org.openehr.rm.common.archetyped.Locatable;
@@ -62,7 +66,7 @@ public class DataValidatorImpl implements DataValidator {
         String newPath = null;
 
         // loop through the attributes
-  for(CAttribute cattr : ccobj.getAttributes()) {
+        for (CAttribute cattr : ccobj.getAttributes()) {
 
             Object attribute = fetchAttribute(object, cattr);
 
@@ -71,12 +75,12 @@ public class DataValidatorImpl implements DataValidator {
                     + ", attribute == null ? " + (attribute == null));
 
             newPath = path;
-   if(!path.equals(Locatable.PATH_SEPARATOR)) {
+            if (!path.equals(Locatable.PATH_SEPARATOR)) {
                 newPath += Locatable.PATH_SEPARATOR;
             }
             newPath += cattr.getRmAttributeName();
 
-            if(cattr.isRequired() && attribute == null) {
+            if (cattr.isRequired() && attribute == null) {
 
                 log.debug("ERROR --> attribute missing at " + path);
 
@@ -256,14 +260,29 @@ public class DataValidatorImpl implements DataValidator {
 //                                    ArchetypeSlot slot = (ArchetypeSlot)cObj;
 //                                    slot.getIncludes();
 //                                    slot.getExcludes();
-                    log.debug("ArchetypeSlot : " + lo.getArchetypeNodeId());
-                    try {
-                        new ArchetypeID(lo.getArchetypeNodeId());
-                        objects.add(lo);
-                    } catch (Exception ex) {
-                        //
-                    }
 
+                    String nomeRestricao = null;
+                    String nomeArquetipoQueValidaDado = lo.getArchetypeNodeId();
+                    for (Assertion assertion : ((ArchetypeSlot) cObj).getIncludes()) {
+                        log.debug("ArchetypeSlot : " + lo.getArchetypeNodeId());
+                        try {
+                            //filtra os valores raiz
+                            new ArchetypeID(lo.getArchetypeNodeId());
+                            //recupera a identificação da Restrição
+                            nomeRestricao = ((CString) ((ExpressionLeaf) ((ExpressionBinaryOperator) assertion.getExpression()).getRightOperand()).getItem()).getPattern();
+                            //filtra a identificação da restrição, removendo caracteres desnecessarios
+                            String nomeRestricaoFiltrado = nomeRestricao.substring(nomeRestricao.indexOf("("), nomeRestricao.indexOf(")")).replace("(", "");
+                            //verifica se a identicação da restrição eh correspondente
+                            //a identificação de restrição contida nodado
+
+                            if (nomeArquetipoQueValidaDado.contains(nomeRestricaoFiltrado)) {
+                                objects.add(lo);
+                            }
+                        } catch (Exception ex) {
+                            //caso o valor não for raiz continua o for
+                            continue;
+                        }
+                    }
                 } else if (cObj instanceof ArchetypeInternalRef) {
                 } else {
 
