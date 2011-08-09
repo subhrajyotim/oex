@@ -263,8 +263,9 @@ public class DataValidatorImpl implements DataValidator {
 
                     String nomeRestricao = null;
                     String nomeArquetipoQueValidaDado = lo.getArchetypeNodeId();
+                    log.debug("ArchetypeSlot : " + lo.getArchetypeNodeId());
+                    
                     for (Assertion assertion : ((ArchetypeSlot) cObj).getIncludes()) {
-                        log.debug("ArchetypeSlot : " + lo.getArchetypeNodeId());
                         try {
                             //filtra os valores raiz
                             new ArchetypeID(lo.getArchetypeNodeId());
