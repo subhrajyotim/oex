@@ -42,6 +42,18 @@ public class DataValidatorImpl implements DataValidator {
      * Validates the data using given archetype
      *
      * @param data
+     * @return errors empty if data pass validation without error
+     */
+    public List<ValidationError> validate(Locatable data) throws Exception {
+        String archetypeId = data.getArchetypeNodeId();
+        Archetype archetype = new PepArchetypeRepository().getArchetype(archetypeId);
+        return this.validate(data, archetype);
+    }
+
+    /**
+     * Validates the data using given archetype
+     *
+     * @param data
      * @param archetype
      * @return errors empty if data pass validation without error
      */
@@ -84,13 +96,13 @@ public class DataValidatorImpl implements DataValidator {
 
                 log.debug("ERROR --> attribute missing at " + path);
 
-                error = new ValidationError(path, cattr.path(),
+                error = new ValidationError(archetype, path, cattr.path(),
                         ErrorType.ATTRIBUTE_MISSING);
                 errors.add(error);
 
             } else if (!cattr.isAllowed() && attribute != null) {
 
-                error = new ValidationError(path, cattr.path(),
+                error = new ValidationError(archetype, path, cattr.path(),
                         ErrorType.ATTRIBUTE_NOT_ALLOWED);
                 errors.add(error);
 
@@ -152,7 +164,7 @@ public class DataValidatorImpl implements DataValidator {
         if (interval.getLower() != null
                 && interval.getLower() > values.size()) {
 
-            error = new ValidationError(path, cattr.path(),
+            error = new ValidationError(archetype, path, cattr.path(),
                     ErrorType.ITEMS_TOO_FEW);
             errors.add(error);
             return;
@@ -160,7 +172,7 @@ public class DataValidatorImpl implements DataValidator {
         } else if (interval.getUpper() != null
                 && interval.getUpper() < values.size()) {
 
-            error = new ValidationError(path, cattr.path(),
+            error = new ValidationError(archetype, path, cattr.path(),
                     ErrorType.ITEMS_TOO_MANY);
             errors.add(error);
             return;
@@ -168,14 +180,14 @@ public class DataValidatorImpl implements DataValidator {
 
         // Cardinality must validate if the container is ordered.
         if (cardinality.isList() && values instanceof Set) {
-            error = new ValidationError(path, cattr.path(), ErrorType.ITEMS_NOT_ORDERED);
+            error = new ValidationError(archetype, path, cattr.path(), ErrorType.ITEMS_NOT_ORDERED);
         } else if (cardinality.isSet() && values instanceof List) {
             Set<Object> set = new HashSet<Object>(values);
             if (set.size() != values.size()) {
-                error = new ValidationError(path, cattr.path(), ErrorType.ITEMS_NOT_UNIQUE);
+                error = new ValidationError(archetype, path, cattr.path(), ErrorType.ITEMS_NOT_UNIQUE);
             }
         } else if (cardinality.isBag() && values instanceof Set) {
-            error = new ValidationError(path, cattr.path(), ErrorType.ITEMS_NOT_NON_UNIQUE);
+            error = new ValidationError(archetype, path, cattr.path(), ErrorType.ITEMS_NOT_NON_UNIQUE);
         }
 
         log.debug("validating total cobj: " + children.size()
@@ -200,7 +212,7 @@ public class DataValidatorImpl implements DataValidator {
                 if (occurrences.getLower() != null
                         && occurrences.getLower() > objects.size()) {
 
-                    error = new ValidationError(path, cobj.path(),
+                    error = new ValidationError(archetype, path, cobj.path(),
                             ErrorType.OCCURRENCES_TOO_FEW);
                     errors.add(error);
                     return;
@@ -208,7 +220,7 @@ public class DataValidatorImpl implements DataValidator {
                 } else if (occurrences.getUpper() != null
                         && occurrences.getUpper() < objects.size()) {
 
-                    error = new ValidationError(path, cobj.path(),
+                    error = new ValidationError(archetype, path, cobj.path(),
                             ErrorType.OCCURRENCES_TOO_MANY);
                     errors.add(error);
                     return;
@@ -221,7 +233,7 @@ public class DataValidatorImpl implements DataValidator {
             }
         }
         if (contador != values.size()) {
-            errors.add(new ValidationError(path, cattr.path(), ErrorType.OCCURRENCES_NOT_DESCRIBED));
+            errors.add(new ValidationError(archetype, path, cattr.path(), ErrorType.OCCURRENCES_NOT_DESCRIBED));
         }
     }
 
@@ -313,11 +325,11 @@ public class DataValidatorImpl implements DataValidator {
 
             } else if (cobj instanceof CDomainType) {
 
-                validateDomain((CDomainType) cobj, value, path, errors);
+                validateDomain(archetype, (CDomainType) cobj, value, path, errors);
 
             } else if (cobj instanceof CPrimitiveObject) {
 
-                validatePrimitive((CPrimitiveObject) cobj, value, path, errors);
+                validatePrimitive( archetype, (CPrimitiveObject) cobj, value, path, errors);
 
             } else if (cobj instanceof ArchetypeSlot) {
 
@@ -334,7 +346,7 @@ public class DataValidatorImpl implements DataValidator {
 
     }
 
-    void validateDomain(CDomainType cdomain, Object value, String path,
+    void validateDomain(Archetype archetype, CDomainType cdomain, Object value, String path,
             List<ValidationError> errors) {
 
         log.debug("validate CDomaingType..");
@@ -342,18 +354,18 @@ public class DataValidatorImpl implements DataValidator {
 
             log.debug("error found at " + cdomain.path());
             java.lang.String a = "";
-            errors.add(new ValidationError(path, cdomain.path(),
+            errors.add(new ValidationError(archetype, path, cdomain.path(),
                     ErrorType.DOMAIN_TYPE_VALUE_ERROR)); // DUMMY ERROR TYPE
         }
     }
 
-    void validatePrimitive(CPrimitiveObject cpo, Object value, String path,
+    void validatePrimitive(Archetype archetype, CPrimitiveObject cpo, Object value, String path,
             List<ValidationError> errors) {
 
         log.debug("validate CPrimitiveObject..");
 
         if (!cpo.getItem().validValue(value)) {
-            errors.add(new ValidationError(path, cpo.path(),
+            errors.add(new ValidationError(archetype, path, cpo.path(),
                     ErrorType.PRIMITIVE_TYPE_VALUE_ERROR)); // DUMMY ERROR TYPE
         }
     }

@@ -28,6 +28,9 @@ public interface DataValidator {
 
 	public List<ValidationError> validate(Locatable data, Archetype archetype)
 		throws Exception;
+
+	public List<ValidationError> validate(Locatable data)
+		throws Exception;
 }
 
 /*
