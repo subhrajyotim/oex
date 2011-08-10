@@ -20,15 +20,15 @@ public class CardinalityTest extends ValidationTestBase {
 		super.setUp();
 		loadArchetype("openEHR-EHR-OBSERVATION.blood_pressure_test2.v1.adl");		
 	}
-	
+
 	public void testValidateWithTooFewItems() throws Exception {
 		loadDataAndValidate("blood_pressure_0004.dadl");
 		assertLastValidationError(
 				"/data/events[at0006]/data/items",
 				"/data[at0001]/events[at0006]/data[at0003]/items",
 				ErrorType.ITEMS_TOO_FEW);
-	}
-	
+}
+
 	public void testValidateWithTooManyItems() throws Exception {
 		loadDataAndValidate("blood_pressure_0005.dadl");
 		assertLastValidationError(

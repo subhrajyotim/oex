@@ -264,7 +264,7 @@ public class DataValidatorImpl implements DataValidator {
                     String nomeRestricao = null;
                     String nomeArquetipoQueValidaDado = lo.getArchetypeNodeId();
                     log.debug("ArchetypeSlot : " + lo.getArchetypeNodeId());
-                    
+
                     for (Assertion assertion : ((ArchetypeSlot) cObj).getIncludes()) {
                         try {
                             //filtra os valores raiz
@@ -307,7 +307,7 @@ public class DataValidatorImpl implements DataValidator {
         log.debug("validate CObject..");
 
         if (!cobj.isAnyAllowed()) {
-            if (cobj instanceof CComplexObject) {
+                if (cobj instanceof CComplexObject) {
 
                 validateComplex((CComplexObject) cobj, value, path, errors, archetype);
 
