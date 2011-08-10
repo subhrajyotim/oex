@@ -61,10 +61,17 @@ public class ValidationError {
     public ErrorType getErrorType() {
         return this.errorType;
     }
+
+    public String getArchetype() {
+        return archetype;
+    }
+    
     private String archetype;
     private String runtimePath;
     private String archetypePath;
     private ErrorType errorType;
+
+
 }
 
 /*
