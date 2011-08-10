@@ -14,37 +14,57 @@
  */
 package org.openehr.validation;
 
+import org.openehr.am.archetype.Archetype;
+
 public class ValidationError {
-	
-	/**
-	 * Creates a validation error
-	 * 
-	 * @param runtimePath
-	 * @param archetypePath
-	 * @param errorType
-	 */
-	public ValidationError(String runtimePath, String archetypePath,
-			ErrorType errorType) {
-		this.runtimePath = runtimePath;
-		this.archetypePath = archetypePath;
-		this.errorType = errorType;
-	}
-	
-	public String getRuntimePath() {
-		return this.runtimePath;
-	}
-	
-	public String getArchetypePath() {
-		return this.archetypePath;
-	}
-	
-	public ErrorType getErrorType() {
-		return this.errorType;
-	}
-	
-	private String runtimePath;
-	private String archetypePath;
-	private ErrorType errorType;
+
+    /**
+     * Creates a validation error
+     * 
+     * @param archetype
+     * @param runtimePath
+     * @param archetypePath
+     * @param errorType
+     */
+    public ValidationError(String archetype, String runtimePath, String archetypePath,
+            ErrorType errorType) {
+        this.archetype = archetype;
+        this.runtimePath = runtimePath;
+        this.archetypePath = archetypePath;
+        this.errorType = errorType;
+    }
+    
+    /**
+     * Creates a validation error
+     *
+     * @param archetype
+     * @param runtimePath
+     * @param archetypePath
+     * @param errorType
+     */
+    public ValidationError(Archetype archetype, String runtimePath, String archetypePath,
+            ErrorType errorType) {
+        this.archetype = archetype.getArchetypeId().getValue();
+        this.runtimePath = runtimePath;
+        this.archetypePath = archetypePath;
+        this.errorType = errorType;
+    }
+
+    public String getRuntimePath() {
+        return this.runtimePath;
+    }
+
+    public String getArchetypePath() {
+        return this.archetypePath;
+    }
+
+    public ErrorType getErrorType() {
+        return this.errorType;
+    }
+    private String archetype;
+    private String runtimePath;
+    private String archetypePath;
+    private ErrorType errorType;
 }
 
 /*
