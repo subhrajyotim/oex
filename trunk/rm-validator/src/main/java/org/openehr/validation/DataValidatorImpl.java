@@ -28,6 +28,13 @@ import org.openehr.am.archetype.constraintmodel.primitive.CString;
 import org.openehr.am.archetype.ontology.ArchetypeOntology;
 import org.openehr.am.archetype.ontology.ArchetypeTerm;
 import org.openehr.rm.common.archetyped.Locatable;
+import org.openehr.rm.datastructure.itemstructure.ItemTree;
+import org.openehr.rm.datatypes.basic.*;
+import org.openehr.rm.datatypes.encapsulated.*;
+import org.openehr.rm.datatypes.quantity.*;
+import org.openehr.rm.datatypes.*;
+import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
+import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.support.basic.Interval;
 import org.openehr.rm.support.identification.ArchetypeID;
 
@@ -37,6 +44,8 @@ import org.openehr.rm.support.identification.ArchetypeID;
  * @author rong.chen
  */
 public class DataValidatorImpl implements DataValidator {
+
+    private static final Map<String, Class> types = KnownTypes.getAllTypes();
 
     /**
      * Validates the data using given archetype
@@ -233,6 +242,7 @@ public class DataValidatorImpl implements DataValidator {
             }
         }
         if (contador != values.size()) {
+
             errors.add(new ValidationError(archetype, path, cattr.path(), ErrorType.OCCURRENCES_NOT_DESCRIBED));
         }
     }
@@ -274,7 +284,7 @@ public class DataValidatorImpl implements DataValidator {
 //                                    slot.getExcludes();
 
                     String nomeRestricao = null;
-                    String nomeArquetipoQueValidaDado = lo.getArchetypeNodeId();
+                    String nomeArquetipoQueValidaDado = lo.getArchetypeNodeId().toUpperCase();
                     log.debug("ArchetypeSlot : " + lo.getArchetypeNodeId());
 
                     for (Assertion assertion : ((ArchetypeSlot) cObj).getIncludes()) {
@@ -284,7 +294,7 @@ public class DataValidatorImpl implements DataValidator {
                             //recupera a identificação da Restrição
                             nomeRestricao = ((CString) ((ExpressionLeaf) ((ExpressionBinaryOperator) assertion.getExpression()).getRightOperand()).getItem()).getPattern();
                             //filtra a identificação da restrição, removendo caracteres desnecessarios
-                            String nomeRestricaoFiltrado = nomeRestricao.substring(nomeRestricao.indexOf("("), nomeRestricao.indexOf(")")).replace("(", "");
+                            String nomeRestricaoFiltrado = nomeRestricao.substring(nomeRestricao.indexOf("("), nomeRestricao.indexOf(")")).replace("(", "").toUpperCase();
                             //verifica se a identicação da restrição eh correspondente
                             //a identificação de restrição contida nodado
 
@@ -292,7 +302,7 @@ public class DataValidatorImpl implements DataValidator {
                                 objects.add(lo);
                             }
                         } catch (Exception ex) {
-                            //caso o valor não for raiz continua o for
+//                            caso o valor não for raiz continua o for
                             continue;
                         }
                     }
@@ -312,14 +322,29 @@ public class DataValidatorImpl implements DataValidator {
         }
         return objects;
     }
-
+  
     void validateObject(CObject cobj, Object value, String path,
             List<ValidationError> errors, Archetype archetype) throws Exception {
 
         log.debug("validate CObject..");
 
         if (!cobj.isAnyAllowed()) {
-                if (cobj instanceof CComplexObject) {
+
+            Class klass = value.getClass();
+            String restrictionType = cobj.getRmTypeName().replace("_", "").toUpperCase();
+            Class restClass = types.get(restrictionType);
+
+
+
+            if (!restClass.isAssignableFrom(klass)) {
+                 //verificar se o tipo eh primitivo e se o dado eh String
+                 if (!(cobj instanceof CPrimitiveObject && String.class.isAssignableFrom(klass) )) {
+                      errors.add(new ValidationError(archetype, path, cobj.path(), ErrorType.RM_TYPE_INVALID));
+                 }
+            }
+            if(!errors.isEmpty()){
+                 return;
+            }else if (cobj instanceof CComplexObject) {
 
                 validateComplex((CComplexObject) cobj, value, path, errors, archetype);
 
@@ -329,7 +354,7 @@ public class DataValidatorImpl implements DataValidator {
 
             } else if (cobj instanceof CPrimitiveObject) {
 
-                validatePrimitive( archetype, (CPrimitiveObject) cobj, value, path, errors);
+                validatePrimitive(archetype, (CPrimitiveObject) cobj, value, path, errors);
 
             } else if (cobj instanceof ArchetypeSlot) {
 
