@@ -28,13 +28,6 @@ import org.openehr.am.archetype.constraintmodel.primitive.CString;
 import org.openehr.am.archetype.ontology.ArchetypeOntology;
 import org.openehr.am.archetype.ontology.ArchetypeTerm;
 import org.openehr.rm.common.archetyped.Locatable;
-import org.openehr.rm.datastructure.itemstructure.ItemTree;
-import org.openehr.rm.datatypes.basic.*;
-import org.openehr.rm.datatypes.encapsulated.*;
-import org.openehr.rm.datatypes.quantity.*;
-import org.openehr.rm.datatypes.*;
-import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
-import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.support.basic.Interval;
 import org.openehr.rm.support.identification.ArchetypeID;
 

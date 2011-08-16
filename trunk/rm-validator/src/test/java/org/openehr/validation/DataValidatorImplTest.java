@@ -8,15 +8,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.rm.common.archetyped.Archetyped;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
 import org.openehr.rm.datastructure.itemstructure.representation.Cluster;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
-import org.openehr.rm.datastructure.itemstructure.representation.Item;
-import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.basic.DvBoolean;
 import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
@@ -320,10 +317,8 @@ public class DataValidatorImplTest extends PepBaseTest {
 
         //O arquetipo define que o value do Element[at0002] deveria ser um DV_CODED_TEXT,
         //mas estou passando um DV_DATE
-        System.out.println(((Element) item.getItems().get(1)).getArchetypeNodeId());
-
         ((Element) item.getItems().get(0)).setValue(new DvDateTime());
-        System.out.println("------------"+((Element) item.getItems().get(1)).getValue().getClass().getSimpleName());
+        
         for (ErrorType errorType : getConjuntoDeErros(person)) {
             System.out.println(errorType);
         }
