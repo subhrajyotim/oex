@@ -18,8 +18,12 @@ import br.ufg.inf.fs.pep.archetypes.PepArchetypeRepository;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.ArrayList;
 import java.util.logging.Level;
+import org.apache.commons.lang.Validate;
 
 import org.apache.log4j.Logger;
 import org.openehr.am.archetype.*;
@@ -27,10 +31,19 @@ import org.openehr.am.archetype.assertion.Assertion;
 import org.openehr.am.archetype.assertion.ExpressionBinaryOperator;
 import org.openehr.am.archetype.assertion.ExpressionLeaf;
 import org.openehr.am.archetype.constraintmodel.*;
+import org.openehr.am.archetype.constraintmodel.primitive.CDate;
+import org.openehr.am.archetype.constraintmodel.primitive.CDateTime;
+import org.openehr.am.archetype.constraintmodel.primitive.CDuration;
+import org.openehr.am.archetype.constraintmodel.primitive.CInteger;
+import org.openehr.am.archetype.constraintmodel.primitive.CPrimitive;
+import org.openehr.am.archetype.constraintmodel.primitive.CReal;
 import org.openehr.am.archetype.constraintmodel.primitive.CString;
+import org.openehr.am.archetype.constraintmodel.primitive.CTime;
 import org.openehr.am.archetype.ontology.ArchetypeOntology;
 import org.openehr.am.archetype.ontology.ArchetypeTerm;
 import org.openehr.rm.common.archetyped.Locatable;
+import org.openehr.rm.datatypes.quantity.datetime.DvDate;
+import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.support.basic.Interval;
 import org.openehr.rm.support.identification.ArchetypeID;
 
@@ -412,7 +425,19 @@ public class DataValidatorImpl implements DataValidator {
             }
         }
 
-        if (!cpo.getItem().validValue(value)) {
+        if (cpo.getItem() instanceof CDate){
+            errors.addAll(validateCDate(archetype, value, path, cpo));
+        } else if (cpo.getItem() instanceof CDateTime){
+            errors.addAll(validateCDateTime(archetype, value, path, cpo));
+        } else if (cpo.getItem() instanceof CInteger){
+            errors.addAll(validateCInteger(archetype, value, path, cpo));
+        } else if (cpo.getItem() instanceof CDuration){
+            errors.addAll(validateCDuration(archetype, value, path, cpo));
+        } else if (cpo.getItem() instanceof CReal){
+            errors.addAll(validateCReal(archetype, value, path, cpo));
+        } else if (cpo.getItem() instanceof CTime){
+            errors.addAll(validateCTime(archetype, value, path, cpo));
+        } else if (!cpo.getItem().validValue(value)) {
             errors.add(new ValidationError(archetype, path, cpo.path(),
                     ErrorType.PRIMITIVE_TYPE_VALUE_ERROR)); // DUMMY ERROR TYPE
         }
@@ -461,6 +486,79 @@ public class DataValidatorImpl implements DataValidator {
     String upperFirstLetter(String value) {
         return value.substring(0, 1).toUpperCase() + value.substring(1);
     }
+
+    public List<ValidationError> validateCDate(Archetype archetype, Object value,
+            String runtimePath, CPrimitiveObject primitiveObject){
+        CDate cDate = (CDate) primitiveObject.getItem();
+        List<ValidationError> errors = new ArrayList<ValidationError>();
+
+
+        if (cDate.getPattern() != null && value instanceof String) {
+            String str = (String) value;
+            String pat = "";
+            if (str.contains("-")) {
+	            pat = cDate.FULL_PATTERN;
+	            if (cDate.getPattern().endsWith("XX")) {
+	                pat = cDate.SHORT_PATTERN;
+	            }
+            } else {
+            	pat = cDate.FULL_PATTERN_WITHOUT_DASHES;
+	            if (cDate.getPattern().endsWith("XX")) {
+	                pat = cDate.SHORT_PATTERN_WITHOUT_DASHES;
+	            }
+            }
+            try {
+                new SimpleDateFormat(pat).parse(str);
+            } catch (ParseException pe) {
+                errors.add(new ValidationError(archetype, runtimePath, primitiveObject.path(), ErrorType.PRIMITIVE_TYPE_VALUE_ERROR));
+            }
+        } else {
+            final DvDate date = (DvDate) value;
+            if (!((cDate.getInterval() != null && cDate.getInterval().has(date) )
+                    || ( cDate.getList() != null && cDate.getList().contains(date) ))){
+                errors.add(new ValidationError(archetype, runtimePath, primitiveObject.path(), ErrorType.DATE_OUT_OF_RANGE));
+            }
+        }
+
+        return errors;
+    }
+    
+    public List<ValidationError> validateCDateTime(Archetype archetype, Object value,
+            String runtimePath, CPrimitiveObject primitiveObject){
+        CDateTime cDateTime = (CDateTime) primitiveObject.getItem();
+        List<ValidationError> errors = new ArrayList<ValidationError>();
+        final DvDateTime date = (DvDateTime) value;
+        if (!((cDateTime.getInterval() != null && cDateTime.getInterval().has(date))
+                || (cDateTime.getList() != null && cDateTime.getList().contains(date)))){
+            errors.add(new ValidationError(archetype, runtimePath, primitiveObject.path(), ErrorType.DATETIME_OUT_OF_RANGE));
+        }
+        return errors;
+    }
+
+    public List<ValidationError> validateCInteger(Archetype archetype, Object value,
+            String runtimePath, CPrimitiveObject primitiveObject){
+        List<ValidationError> errors = null;
+        return errors;
+    }
+
+    public List<ValidationError> validateCDuration(Archetype archetype, Object value,
+            String runtimePath, CPrimitiveObject primitiveObject){
+        List<ValidationError> errors = null;
+        return errors;
+    }
+
+    public List<ValidationError> validateCReal(Archetype archetype, Object value,
+            String runtimePath, CPrimitiveObject primitiveObject){
+        List<ValidationError> errors = null;
+        return errors;
+    }
+
+    public List<ValidationError> validateCTime(Archetype archetype, Object value,
+            String runtimePath, CPrimitiveObject primitiveObject){
+        List<ValidationError> errors = null;
+        return errors;
+    }
+
 
     /**
      * Fetches name of the archetype term of given AT code
