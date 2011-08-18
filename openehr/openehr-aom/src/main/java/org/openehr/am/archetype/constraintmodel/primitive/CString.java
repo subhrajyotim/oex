@@ -88,8 +88,8 @@ public final class CString extends CPrimitive {
      */
     public boolean validValue(Object value) {
         String str = (String) value.toString();
-        return ( (pattern == null && list == null) 
-        		 || (pattern != null && str.matches(pattern)) 
+        return ( (pattern == null && list == null)
+        		 || (pattern != null && str.matches(pattern))
         		 || (list != null && list.contains(str)) );
     }
 

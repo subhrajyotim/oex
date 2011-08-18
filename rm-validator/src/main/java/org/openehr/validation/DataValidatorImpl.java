@@ -15,8 +15,11 @@
 package org.openehr.validation;
 
 import br.ufg.inf.fs.pep.archetypes.PepArchetypeRepository;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.logging.Level;
 
 import org.apache.log4j.Logger;
 import org.openehr.am.archetype.*;
@@ -381,6 +384,33 @@ public class DataValidatorImpl implements DataValidator {
             List<ValidationError> errors) {
 
         log.debug("validate CPrimitiveObject..");
+
+        Class klass = types.get(cpo.getItem().getType().toUpperCase());
+        if ( value instanceof String ){
+
+            Constructor constructor = null;
+            for (Constructor constr : klass.getConstructors()) {
+                if (constr.getParameterTypes().length == 1 && constr.getParameterTypes()[0].equals(String.class)){
+                    constructor = constr;
+                    break;
+                }
+            }
+            if(constructor!=null){
+                try {
+                    Object[] params = new Object[1];
+                    params[0]=value;
+                    value = constructor.newInstance(params);
+                } catch (InstantiationException ex) {
+                    java.util.logging.Logger.getLogger(DataValidatorImpl.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    java.util.logging.Logger.getLogger(DataValidatorImpl.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalArgumentException ex) {
+                    java.util.logging.Logger.getLogger(DataValidatorImpl.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvocationTargetException ex) {
+                    java.util.logging.Logger.getLogger(DataValidatorImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
 
         if (!cpo.getItem().validValue(value)) {
             errors.add(new ValidationError(archetype, path, cpo.path(),

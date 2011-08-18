@@ -99,7 +99,7 @@ public final class CDate extends CPrimitive {
      * @param value
      * @return true if valid
      */
-    public boolean validValue(Object value) {
+        public boolean validValue(Object value) {
         // todo: validate by pattern ?
         if (pattern != null && value instanceof String) {
             String str = (String) value;
@@ -122,18 +122,11 @@ public final class CDate extends CPrimitive {
                 return false;
             }
         } else {
-
-            final DvDate date;
-            if ( value instanceof String ){
-                date = new DvDate(value.toString());
-            } else {
-                date = (DvDate) value;
-            }
-            
+            final DvDate date = (DvDate) value;
             return ( interval != null && interval.has(date) )
                     || ( list != null && list.contains(date) );
         }
-    }  
+    }
 
     /**
      * Return true if the constraint has limit the possible value to

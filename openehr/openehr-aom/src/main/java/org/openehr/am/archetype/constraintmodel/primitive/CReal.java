@@ -90,7 +90,7 @@ public final class CReal extends CPrimitive {
         Double d = (Double) value;
         return ( interval != null && interval.has(d)
                 || list != null && list.contains(d) );
-    }    
+    }  
 
     /**
      * Interval of Dates specifying constraint

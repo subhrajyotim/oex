@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.rm.common.archetyped.Archetyped;
@@ -42,6 +43,7 @@ public class DataValidatorImplTest extends PepBaseTest {
         this.validator = new DataValidatorImpl();
     }
 
+    @Ignore
     @Test
     public void testDvDateTime() throws Exception {
         DvDateTime dateTime = new DvDateTime();
@@ -62,7 +64,8 @@ public class DataValidatorImplTest extends PepBaseTest {
         }
         assertTrue("The list must not contain error", errors.isEmpty());
     }
-//    @Test
+
+    @Test
     public void testDvText() throws Exception {
         DvText text = new DvText("Universidade Federal de Goiás");
         Element element = new Element("at0001", "Arquétipo de teste DVTEXT", text);
