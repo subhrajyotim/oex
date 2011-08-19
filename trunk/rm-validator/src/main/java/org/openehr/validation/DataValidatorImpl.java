@@ -65,6 +65,9 @@ public class DataValidatorImpl implements DataValidator {
     public List<ValidationError> validate(Locatable data) throws Exception {
         String archetypeId = data.getArchetypeNodeId();
         Archetype archetype = new PepArchetypeRepository().getArchetype(archetypeId);
+        if (archetype == null) {
+            throw new Exception("Archetype " + archetypeId + " not found.");
+        }
         return this.validate(data, archetype);
     }
 
@@ -331,7 +334,7 @@ public class DataValidatorImpl implements DataValidator {
         }
         return objects;
     }
-  
+
     void validateObject(CObject cobj, Object value, String path,
             List<ValidationError> errors, Archetype archetype) throws Exception {
 
@@ -346,14 +349,14 @@ public class DataValidatorImpl implements DataValidator {
 
 
             if (!restClass.isAssignableFrom(klass)) {
-                 //verificar se o tipo eh primitivo e se o dado eh String
-                 if (!(cobj instanceof CPrimitiveObject && String.class.isAssignableFrom(klass) )) {
-                      errors.add(new ValidationError(archetype, path, cobj.path(), ErrorType.RM_TYPE_INVALID));
-                 }
+                //verificar se o tipo eh primitivo e se o dado eh String
+                if (!(cobj instanceof CPrimitiveObject && String.class.isAssignableFrom(klass))) {
+                    errors.add(new ValidationError(archetype, path, cobj.path(), ErrorType.RM_TYPE_INVALID));
+                }
             }
-            if(!errors.isEmpty()){
-                 return;
-            }else if (cobj instanceof CComplexObject) {
+            if (!errors.isEmpty()) {
+                return;
+            } else if (cobj instanceof CComplexObject) {
 
                 validateComplex((CComplexObject) cobj, value, path, errors, archetype);
 
@@ -399,19 +402,19 @@ public class DataValidatorImpl implements DataValidator {
         log.debug("validate CPrimitiveObject..");
 
         Class klass = types.get(cpo.getItem().getType().toUpperCase());
-        if ( value instanceof String ){
+        if (value instanceof String) {
 
             Constructor constructor = null;
             for (Constructor constr : klass.getConstructors()) {
-                if (constr.getParameterTypes().length == 1 && constr.getParameterTypes()[0].equals(String.class)){
+                if (constr.getParameterTypes().length == 1 && constr.getParameterTypes()[0].equals(String.class)) {
                     constructor = constr;
                     break;
                 }
             }
-            if(constructor!=null){
+            if (constructor != null) {
                 try {
                     Object[] params = new Object[1];
-                    params[0]=value;
+                    params[0] = value;
                     value = constructor.newInstance(params);
                 } catch (InstantiationException ex) {
                     java.util.logging.Logger.getLogger(DataValidatorImpl.class.getName()).log(Level.SEVERE, null, ex);
