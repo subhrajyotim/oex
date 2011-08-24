@@ -346,11 +346,10 @@ public class DataValidatorImpl implements DataValidator {
             String restrictionType = cobj.getRmTypeName().replace("_", "").toUpperCase();
             Class restClass = types.get(restrictionType);
 
-
-
             if (!restClass.isAssignableFrom(klass)) {
                 //verificar se o tipo eh primitivo e se o dado eh String
-                if (!(cobj instanceof CPrimitiveObject && String.class.isAssignableFrom(klass))) {
+                if (!(cobj instanceof CPrimitiveObject )) {
+
                     errors.add(new ValidationError(archetype, path, cobj.path(), ErrorType.RM_TYPE_INVALID));
                 }
             }
