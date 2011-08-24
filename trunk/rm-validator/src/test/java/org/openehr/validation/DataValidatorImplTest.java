@@ -44,7 +44,7 @@ public class DataValidatorImplTest extends PepBaseTest {
     }
 
     @Ignore
-    @Test
+  @Test
     public void testDvDateTime() throws Exception {
         DvDateTime dateTime = new DvDateTime();
 
@@ -55,14 +55,12 @@ public class DataValidatorImplTest extends PepBaseTest {
 
         List<ValidationError> errors = null;
 
-
-
         errors = this.validator.validate(element, archetype);
         System.out.println("");
-        for (ValidationError validationError : errors) {
-            System.out.println(validationError.getErrorType());
-        }
-        assertTrue("The list must not contain error", errors.isEmpty());
+      for (ValidationError validationError : errors) {
+          System.out.println(validationError.getErrorType());
+      }
+      assertTrue("The list must not contain error", errors.isEmpty());
     }
 
     @Test
@@ -77,6 +75,32 @@ public class DataValidatorImplTest extends PepBaseTest {
         errors = this.validator.validate(element, archetype);
         assertTrue("The list must not contain error", errors.isEmpty());
     }
+
+    @Test
+    public void testDvBoolean_Validacao_tipos_primitivos() throws Exception {
+        DvBoolean boleano = new DvBoolean(true);
+        Element element = new Element("at0001", "Arquétipo de teste DVTEXT", boleano);
+        String archetypeId = "openEHR-EHR-ELEMENT.TestDvBoolean.v1";
+        Archetype archetype = this.repository.getArchetype(archetypeId);
+        List<ValidationError> errors = null;
+        errors = this.validator.validate(element, archetype);
+        
+        assertTrue("The list must not contain error", errors.isEmpty());
+    }
+    //TODO Observar comportamento desse teste
+ 
+    @Test
+    public void testDvBoolean_Validacao_tipos_Complexo() throws Exception {
+        DvText text = new DvText("Universidade Federal de Goiás");
+        Element element = new Element("at0001", "Arquétipo de teste DVTEXT", text);
+        String archetypeId = "openEHR-EHR-ELEMENT.TestDvBoolean.v1";
+        Archetype archetype = this.repository.getArchetype(archetypeId);
+        List<ValidationError> errors = null;
+        errors = this.validator.validate(element, archetype);
+    
+        assertFalse(errors.isEmpty());
+    }
+
 
     @Test
     public void testPerson() throws Exception {
@@ -321,7 +345,7 @@ public class DataValidatorImplTest extends PepBaseTest {
         //O arquetipo define que o value do Element[at0002] deveria ser um DV_CODED_TEXT,
         //mas estou passando um DV_DATE
         ((Element) item.getItems().get(0)).setValue(new DvDateTime());
-        
+
         for (ErrorType errorType : getConjuntoDeErros(person)) {
             System.out.println(errorType);
         }
@@ -343,7 +367,7 @@ public class DataValidatorImplTest extends PepBaseTest {
 
     @Test
     public void testClusterPersonIdentifier_Items_Element() {
-            
+
     }
 
     /**
