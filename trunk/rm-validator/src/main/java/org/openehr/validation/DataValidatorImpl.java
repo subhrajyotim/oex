@@ -441,13 +441,42 @@ public class DataValidatorImpl implements DataValidator {
         String archetypeId = lo.getArchetypeNodeId();
         Archetype archetype = new PepArchetypeRepository().getArchetype(archetypeId);
 
-        List<ValidationError> errorsSlot = this.validate(lo, archetype);
+        List<ValidationError> errorsSlot = new ArrayList<ValidationError>();
 
-//            System.out.println( archetypeId );
-//            for (ValidationError validationError : errorsSlot) {
-//                System.out.println( validationError.getErrorType().toString() );
-//            }
-//            System.out.println("");
+        /* PROPOSTA DE VALIDACAO DE ARCHETYPESLOT
+        for (Assertion assertion : slot.getExcludes()) {
+            ExpressionBinaryOperator operator = (ExpressionBinaryOperator) assertion.getExpression();
+            ExpressionLeaf rightLeaf = (ExpressionLeaf) operator.getRightOperand();
+
+            Locatable locatable = (Locatable) value;
+            String archetypeNodeId = locatable.getArchetypeNodeId();
+            CString cString = (CString) rightLeaf.getItem();
+            if (cString.validValue(archetypeNodeId)){
+                //TODO : erro deve ser adicionado aqui.
+//                errors.add(new ValidationError);
+                break;
+            }
+        }
+        if (errors.isEmpty()){
+            boolean valid = false;
+            for (Assertion assertion : slot.getIncludes()) {
+                ExpressionBinaryOperator operator = (ExpressionBinaryOperator) assertion.getExpression();
+                ExpressionLeaf rightLeaf = (ExpressionLeaf) operator.getRightOperand();
+
+                Locatable locatable = (Locatable) value;
+                String archetypeNodeId = locatable.getArchetypeNodeId();
+                CString cString = (CString) rightLeaf.getItem();
+                if (cString.validValue(archetypeNodeId)){
+                    break;
+                }
+            }
+            if (!valid){
+                // Se o nome do arquetipo nao estiver na lista de includes, ...
+                // ... entao eh invalido, lança-se um erro.
+            }
+        }
+        */
+        errorsSlot = this.validate(lo, archetype);
 
         errors.addAll(errorsSlot);
 
