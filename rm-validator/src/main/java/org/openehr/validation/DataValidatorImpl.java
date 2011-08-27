@@ -18,8 +18,6 @@ import br.ufg.inf.fs.pep.archetypes.PepArchetypeRepository;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -346,15 +344,9 @@ public class DataValidatorImpl implements DataValidator {
             String restrictionType = cobj.getRmTypeName().replace("_", "").toUpperCase();
             Class restClass = types.get(restrictionType);
 
-            if (!restClass.isAssignableFrom(klass)) {
+            if (!restClass.isAssignableFrom(klass)&& (!(cobj instanceof CPrimitiveObject ))) {
                 //verificar se o tipo eh primitivo e se o dado eh String
-                if (!(cobj instanceof CPrimitiveObject )) {
-
-                    errors.add(new ValidationError(archetype, path, cobj.path(), ErrorType.RM_TYPE_INVALID));
-                }
-            }
-            if (!errors.isEmpty()) {
-                return;
+                errors.add(new ValidationError(archetype, path, cobj.path(), ErrorType.RM_TYPE_INVALID));
             } else if (cobj instanceof CComplexObject) {
 
                 validateComplex((CComplexObject) cobj, value, path, errors, archetype);
