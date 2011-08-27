@@ -15,9 +15,14 @@ import org.openehr.rm.common.archetyped.Archetyped;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
 import org.openehr.rm.datastructure.itemstructure.representation.Cluster;
 import org.openehr.rm.datastructure.itemstructure.representation.Element;
+import org.openehr.rm.datastructure.itemstructure.representation.Item;
 import org.openehr.rm.datatypes.basic.DvBoolean;
+import org.openehr.rm.datatypes.quantity.DvCount;
+import org.openehr.rm.datatypes.quantity.DvQuantity;
 import org.openehr.rm.datatypes.quantity.datetime.DvDate;
 import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
+import org.openehr.rm.datatypes.quantity.datetime.DvDuration;
+import org.openehr.rm.datatypes.quantity.datetime.DvTime;
 import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.text.DvCodedText;
 import org.openehr.rm.datatypes.text.DvText;
@@ -44,8 +49,8 @@ public class DataValidatorImplTest extends PepBaseTest {
     }
 
     @Ignore
-  @Test
-    public void testDvDateTime() throws Exception {
+     @Test
+     public void testDvDateTime() throws Exception {
         DvDateTime dateTime = new DvDateTime();
 
         Element element = new Element("at0000", "Período da última menstruação normal", dateTime);
@@ -61,6 +66,31 @@ public class DataValidatorImplTest extends PepBaseTest {
           System.out.println(validationError.getErrorType());
       }
       assertTrue("The list must not contain error", errors.isEmpty());
+    }
+
+     @Test
+     public void testTodosTiposPrimitivos() throws Exception {
+       List todosTiposPrimitivos = new ArrayList<Item>();
+       todosTiposPrimitivos.add(new Element("at0001","boolean",new DvBoolean(true)));//CBOOLEAN
+ 
+       todosTiposPrimitivos.add(new Element("at0003","datetime",new DvDateTime()));
+       todosTiposPrimitivos.add(new Element("at0004","duration",new DvDuration("P1y2WT2H10m1,60S")));
+       todosTiposPrimitivos.add(new Element("at0005","count",new DvCount(1)));
+       todosTiposPrimitivos.add(new Element("at0006","quantity",new DvQuantity(1)));
+       todosTiposPrimitivos.add(new Element("at0007","text",new DvText("testse")));
+       todosTiposPrimitivos.add(new Element("at0008","time",new DvTime("12:10:45")));
+       todosTiposPrimitivos.add(new Element("at0002","date",new DvDate()));
+       Cluster  cluster = new Cluster("teste", new DvText("teste"), todosTiposPrimitivos);
+
+        Archetype archetype = this.repository.getArchetype("openEHR-EHR-ELEMENT.archetypeTest.v1");
+
+        List<ValidationError> errors = null;
+
+        errors = this.validator.validate(cluster, archetype);
+     
+     
+         System.out.println(errors.isEmpty());
+      assertFalse("The list must not contain error", errors.isEmpty());
     }
 
     @Test
@@ -84,11 +114,11 @@ public class DataValidatorImplTest extends PepBaseTest {
         Archetype archetype = this.repository.getArchetype(archetypeId);
         List<ValidationError> errors = null;
         errors = this.validator.validate(element, archetype);
-        
+
         assertTrue("The list must not contain error", errors.isEmpty());
     }
     //TODO Observar comportamento desse teste
- 
+
     @Test
     public void testDvBoolean_Validacao_tipos_Complexo() throws Exception {
         DvText text = new DvText("Universidade Federal de Goiás");
@@ -97,7 +127,7 @@ public class DataValidatorImplTest extends PepBaseTest {
         Archetype archetype = this.repository.getArchetype(archetypeId);
         List<ValidationError> errors = null;
         errors = this.validator.validate(element, archetype);
-    
+
         assertFalse(errors.isEmpty());
     }
 
