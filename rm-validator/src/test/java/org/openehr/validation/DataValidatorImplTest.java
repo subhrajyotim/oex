@@ -152,7 +152,7 @@ public class DataValidatorImplTest extends PepBaseTest {
     @Ignore
     @Test
     public void testInclude() throws Exception {
-        List<Item> items = new <Item>ArrayList();
+        List<Item> items = new ArrayList<Item>();
         items.add(new Element("openEHR-EHR-ELEMENT.TestDvBoolean.v1", "Arquétipo de teste DVTEXT", new DvBoolean(true)));
         Cluster cluster = new Cluster("openEHR-EHR-CLUSTER.TestExclude.v1", "Arquétipo de teste", items);
         String archetypeId = "openEHR-EHR-CLUSTER.TestExclude.v1";
