@@ -6,6 +6,7 @@ import br.ufg.inf.fs.pep.archetypes.PepArchetypeRepository;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -47,7 +48,7 @@ public class DataValidatorImplTest extends PepBaseTest {
         this.repository = new PepArchetypeRepository();
         this.validator = new DataValidatorImpl();
     }
-
+  
     @Ignore
     @Test
     public void testDvDateTime() throws Exception {
@@ -62,36 +63,35 @@ public class DataValidatorImplTest extends PepBaseTest {
 
         errors = this.validator.validate(element, archetype);
         System.out.println("");
-      for (ValidationError validationError : errors) {
-          System.out.println(validationError.getErrorType());
-      }
-      assertTrue("The list must not contain error", errors.isEmpty());
+        for (ValidationError validationError : errors) {
+            System.out.println(validationError.getErrorType());
+        }
+        assertTrue("The list must not contain error", errors.isEmpty());
     }
 
-    @Ignore
     @Test
     public void testTodosTiposPrimitivos() throws Exception {
-       List todosTiposPrimitivos = new ArrayList<Item>();
-       todosTiposPrimitivos.add(new Element("at0001","boolean",new DvBoolean(true)));//CBOOLEAN
- 
-       todosTiposPrimitivos.add(new Element("at0003","datetime",new DvDateTime()));
-       todosTiposPrimitivos.add(new Element("at0004","duration",new DvDuration("P1y2WT2H10m1,60S")));
-       todosTiposPrimitivos.add(new Element("at0005","count",new DvCount(1)));
-       todosTiposPrimitivos.add(new Element("at0006","quantity",new DvQuantity(1)));
-       todosTiposPrimitivos.add(new Element("at0007","text",new DvText("testse")));
-       todosTiposPrimitivos.add(new Element("at0008","time",new DvTime("12:10:45")));
-       todosTiposPrimitivos.add(new Element("at0002","date",new DvDate()));
-       Cluster  cluster = new Cluster("teste", new DvText("teste"), todosTiposPrimitivos);
+        List todosTiposPrimitivos = new ArrayList<Item>();
+        todosTiposPrimitivos.add(new Element("at0001", "boolean", new DvBoolean(true)));//CBOOLEAN
+
+        todosTiposPrimitivos.add(new Element("at0003", "datetime", new DvDateTime()));
+        todosTiposPrimitivos.add(new Element("at0004", "duration", new DvDuration("P1y2WT2H10m1,60S")));
+        todosTiposPrimitivos.add(new Element("at0005", "count", new DvCount(1)));
+        todosTiposPrimitivos.add(new Element("at0006", "quantity", new DvQuantity(1)));
+        todosTiposPrimitivos.add(new Element("at0007", "text", new DvText("testse")));
+        todosTiposPrimitivos.add(new Element("at0008", "time", new DvTime("12:10:45")));
+        todosTiposPrimitivos.add(new Element("at0002", "date", new DvDate()));
+        Cluster cluster = new Cluster("teste", new DvText("teste"), todosTiposPrimitivos);
 
         Archetype archetype = this.repository.getArchetype("openEHR-EHR-ELEMENT.archetypeTest.v1");
 
         List<ValidationError> errors = null;
 
         errors = this.validator.validate(cluster, archetype);
-     
-     
-         System.out.println(errors.isEmpty());
-      assertFalse("The list must not contain error", errors.isEmpty());
+
+
+        System.out.println(errors.isEmpty());
+        assertFalse("The list must not contain error", errors.isEmpty());
     }
 
     @Test
@@ -142,12 +142,43 @@ public class DataValidatorImplTest extends PepBaseTest {
         errors = this.validator.validate(person, archetype);
 
         for (ValidationError validationError : errors) {
-            System.out.println(validationError.getErrorType()
-                    + " \nRuntime path : " + validationError.getRuntimePath()
-                    + "\nArchetype path : " + validationError.getArchetypePath());
-            System.out.println("");
+            System.out.println("--" + validationError.getErrorType());
         }
-        assertTrue("The list must be null", errors.isEmpty());
+
+        assertTrue(errors.isEmpty());
+    }
+
+    @Test
+    public void testInclude() throws Exception {
+        List<Item> items = new <Item>ArrayList();
+        items.add(new Element("openEHR-EHR-ELEMENT.TestDvBoolean.v1", "Arquétipo de teste DVTEXT", new DvBoolean(true)));
+        Cluster cluster = new Cluster("openEHR-EHR-CLUSTER.TestExclude.v1", "Arquétipo de teste", items);
+        String archetypeId = "openEHR-EHR-CLUSTER.TestExclude.v1";
+        Archetype archetype = this.repository.getArchetype(archetypeId);
+
+        List<ValidationError> errors = null;
+        errors = this.validator.validate(cluster, archetype);
+        for (ValidationError validationError : errors) {
+            System.out.println(validationError.getErrorType());
+        }
+        assertFalse(errors.isEmpty());
+    }
+
+
+    @Test
+    public void testExclude() throws Exception {
+        List items = new ArrayList();
+        items.add(new Element("openEHR-EHR-ELEMENT.test_dvtext.v1.adl", "Arquétipo de teste DVTEXT", new DvText("Universidade Federal de Goiás")));
+        Cluster cluster = new Cluster("at0001", "Arquétipo de teste", items);
+        String archetypeId = "openEHR-EHR-CLUSTER.TestExclude.v1";
+        Archetype archetype = this.repository.getArchetype(archetypeId);
+
+        List<ValidationError> errors = null;
+        errors = this.validator.validate(cluster, archetype);
+        for (ValidationError validationError : errors) {
+            System.out.println(validationError.getErrorType());
+        }
+        assertFalse(errors.isEmpty());
     }
 
     @Test
@@ -354,7 +385,7 @@ public class DataValidatorImplTest extends PepBaseTest {
     public void testClusterPersonDeathData_Items_Empty() throws Exception {
         Person person = this.getPerson();
         ((Cluster) ((ItemTree) person.getDetails()).getItems().get(2)).getItems().clear();
-         assertTrue(getConjuntoDeErros(person).contains(ErrorType.ITEMS_TOO_FEW));
+        assertTrue(getConjuntoDeErros(person).contains(ErrorType.ITEMS_TOO_FEW));
     }
 
     @Test//DV_DATE
@@ -376,10 +407,7 @@ public class DataValidatorImplTest extends PepBaseTest {
         //mas estou passando um DV_DATE
         ((Element) item.getItems().get(0)).setValue(new DvDateTime());
 
-        for (ErrorType errorType : getConjuntoDeErros(person)) {
-            System.out.println(errorType);
-        }
-        assert(getConjuntoDeErros(person).isEmpty());
+        assert (getConjuntoDeErros(person).isEmpty());
     }
 
     @Test
@@ -393,11 +421,6 @@ public class DataValidatorImplTest extends PepBaseTest {
         ((Element) item.getItems().get(1)).setValue(paisNascimentoCodeText);
 
         assertTrue(getConjuntoDeErros(person).contains(ErrorType.DOMAIN_TYPE_VALUE_ERROR));
-    }
-
-    @Test
-    public void testClusterPersonIdentifier_Items_Element() {
-
     }
 
     /**
