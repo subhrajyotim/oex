@@ -155,15 +155,13 @@ public class DataValidatorImplTest extends PepBaseTest {
         List<Item> items = new ArrayList<Item>();
         items.add(new Element("openEHR-EHR-ELEMENT.TestDvBoolean.v1", "Arquétipo de teste DVTEXT", new DvBoolean(true)));
         Cluster cluster = new Cluster("openEHR-EHR-CLUSTER.TestExclude.v1", "Arquétipo de teste", items);
-        String archetypeId = "openEHR-EHR-CLUSTER.TestExclude.v1";
-        Archetype archetype = this.repository.getArchetype(archetypeId);
 
         List<ValidationError> errors = null;
-        errors = this.validator.validate(cluster, archetype);
+        errors = this.validator.validate(cluster);
         for (ValidationError validationError : errors) {
             System.out.println(validationError.getErrorType());
         }
-        assertFalse(errors.isEmpty());
+        assertTrue(errors.isEmpty());
     }
 
     @Ignore
@@ -171,16 +169,14 @@ public class DataValidatorImplTest extends PepBaseTest {
     public void testExclude() throws Exception {
         List items = new ArrayList();
         items.add(new Element("openEHR-EHR-ELEMENT.test_dvtext.v1.adl", "Arquétipo de teste DVTEXT", new DvText("Universidade Federal de Goiás")));
-        Cluster cluster = new Cluster("at0001", "Arquétipo de teste", items);
-        String archetypeId = "openEHR-EHR-CLUSTER.TestExclude.v1";
-        Archetype archetype = this.repository.getArchetype(archetypeId);
+        Cluster cluster = new Cluster("openEHR-EHR-CLUSTER.TestExclude.v1", "Arquétipo de teste", items);
 
         List<ValidationError> errors = null;
-        errors = this.validator.validate(cluster, archetype);
+        errors = this.validator.validate(cluster);
         for (ValidationError validationError : errors) {
             System.out.println(validationError.getErrorType());
         }
-        assertFalse(errors.isEmpty());
+        assertTrue(errors.isEmpty());
     }
 
     @Test
