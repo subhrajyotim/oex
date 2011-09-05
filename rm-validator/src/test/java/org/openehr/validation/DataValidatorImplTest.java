@@ -49,8 +49,8 @@ public class DataValidatorImplTest extends PepBaseTest {
     }
 
     @Ignore
-     @Test
-     public void testDvDateTime() throws Exception {
+    @Test
+    public void testDvDateTime() throws Exception {
         DvDateTime dateTime = new DvDateTime();
 
         Element element = new Element("at0000", "Período da última menstruação normal", dateTime);
@@ -68,8 +68,9 @@ public class DataValidatorImplTest extends PepBaseTest {
       assertTrue("The list must not contain error", errors.isEmpty());
     }
 
-     @Test
-     public void testTodosTiposPrimitivos() throws Exception {
+    @Ignore
+    @Test
+    public void testTodosTiposPrimitivos() throws Exception {
        List todosTiposPrimitivos = new ArrayList<Item>();
        todosTiposPrimitivos.add(new Element("at0001","boolean",new DvBoolean(true)));//CBOOLEAN
  
@@ -130,7 +131,6 @@ public class DataValidatorImplTest extends PepBaseTest {
 
         assertFalse(errors.isEmpty());
     }
-
 
     @Test
     public void testPerson() throws Exception {

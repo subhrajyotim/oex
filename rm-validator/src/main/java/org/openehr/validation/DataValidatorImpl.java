@@ -288,33 +288,10 @@ public class DataValidatorImpl implements DataValidator {
                 lo = (Locatable) value;
 
                 if (cObj instanceof ArchetypeSlot) {
-                    //TODO Tratar se o tipo slot é valido
-//                                    ArchetypeSlot slot = (ArchetypeSlot)cObj;
-//                                    slot.getIncludes();
-//                                    slot.getExcludes();
-
-                    String nomeRestricao = null;
-                    String nomeArquetipoQueValidaDado = lo.getArchetypeNodeId().toUpperCase();
                     log.debug("ArchetypeSlot : " + lo.getArchetypeNodeId());
-
-                    for (Assertion assertion : ((ArchetypeSlot) cObj).getIncludes()) {
-                        try {
-                            //filtra os valores raiz
-                            new ArchetypeID(lo.getArchetypeNodeId());
-                            //recupera a identificação da Restrição
-                            nomeRestricao = ((CString) ((ExpressionLeaf) ((ExpressionBinaryOperator) assertion.getExpression()).getRightOperand()).getItem()).getPattern();
-                            //filtra a identificação da restrição, removendo caracteres desnecessarios
-                            String nomeRestricaoFiltrado = nomeRestricao.substring(nomeRestricao.indexOf("("), nomeRestricao.indexOf(")")).replace("(", "").toUpperCase();
-                            //verifica se a identicação da restrição eh correspondente
-                            //a identificação de restrição contida nodado
-
-                            if (nomeArquetipoQueValidaDado.contains(nomeRestricaoFiltrado)) {
-                                objects.add(lo);
-                            }
-                        } catch (Exception ex) {
-//                            caso o valor não for raiz continua o for
-                            continue;
-                        }
+                    ArchetypeSlot slot = (ArchetypeSlot)cObj;
+                    if(validateRootSlot(slot, lo)){
+                        objects.add(lo);
                     }
                 } else if (cObj instanceof ArchetypeInternalRef) {
                 } else {
@@ -479,6 +456,40 @@ public class DataValidatorImpl implements DataValidator {
             List<ValidationError> errors) {
         log.debug("validate ArchetypeInternalRef..");
         List<ValidationError> errorsInternalRef = null;
+    }
+
+    private boolean validateRootSlot(ArchetypeSlot slot, Locatable locatable){
+
+        String archetypeName = locatable.getArchetypeNodeId();
+        ArchetypeID archetypeID = null;
+        try{
+            archetypeID = new ArchetypeID(archetypeName);
+        } catch (Exception ex){
+            return false;
+        }
+        String conceptName = archetypeID.getValue().substring(archetypeID.qualifiedRmEntity().length()+1);
+
+        if(slot.getExcludes()!=null){
+            for (Assertion assertion : slot.getExcludes()) {
+                ExpressionBinaryOperator operator = (ExpressionBinaryOperator) assertion.getExpression();
+                ExpressionLeaf rightLeaf = (ExpressionLeaf) operator.getRightOperand();
+                CString cString = (CString) rightLeaf.getItem();
+                if (cString.validValue(conceptName)){
+                    return false;
+                }
+            }
+        }
+        if(slot.getIncludes()!=null){
+            for (Assertion assertion : slot.getIncludes()) {
+                ExpressionBinaryOperator operator = (ExpressionBinaryOperator) assertion.getExpression();
+                ExpressionLeaf rightLeaf = (ExpressionLeaf) operator.getRightOperand();
+                CString cString = (CString) rightLeaf.getItem();
+                if (cString.validValue(conceptName)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     Object fetchAttribute(Object object, CAttribute cattr) throws Exception {
