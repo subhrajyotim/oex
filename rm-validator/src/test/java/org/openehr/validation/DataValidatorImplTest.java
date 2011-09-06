@@ -119,7 +119,6 @@ public class DataValidatorImplTest extends PepBaseTest {
 
         assertTrue("The list must not contain error", errors.isEmpty());
     }
-    //TODO Observar comportamento desse teste
 
     @Test
     public void testDvBoolean_Validacao_tipos_Complexo() throws Exception {
@@ -149,7 +148,6 @@ public class DataValidatorImplTest extends PepBaseTest {
         assertTrue(errors.isEmpty());
     }
 
-
     @Test
     public void testInclude() throws Exception {
         List<Item> items = new ArrayList<Item>();
@@ -163,7 +161,6 @@ public class DataValidatorImplTest extends PepBaseTest {
         }
         assertTrue(errors.isEmpty());
     }
-
    
     @Test
     public void testExclude() throws Exception {
