@@ -412,42 +412,9 @@ public class DataValidatorImpl implements DataValidator {
 
         List<ValidationError> errorsSlot = new ArrayList<ValidationError>();
 
-        /* se os excludes for null não entra no laço*/
-        if (slot.getExcludes() != null) {
-            /* PROPOSTA DE VALIDACAO DE ARCHETYPESLOT*/
-            for (Assertion assertion : slot.getExcludes()) {
-                ExpressionBinaryOperator operator = (ExpressionBinaryOperator) assertion.getExpression();
-                ExpressionLeaf rightLeaf = (ExpressionLeaf) operator.getRightOperand();
-
-                Locatable locatable = (Locatable) value;
-                String archetypeNodeId = locatable.getArchetypeNodeId();
-                CString cString = (CString) rightLeaf.getItem();
-            if (cString.validValue(archetypeNodeId)){
-                    //TODO : erro deve ser adicionado aqui.
-//                errors.add(new ValidationError);
-                    break;
-                }
-            }
+        if (!validateRootSlot(slot, lo)){
+            errorsSlot.add( new ValidationError(archetype, path, slot.path(), ErrorType.OCCURRENCES_NOT_DESCRIBED));
         }
-        if (errors.isEmpty()) {
-            boolean valid = false;
-            if (slot.getIncludes() != null) {
-                for (Assertion assertion : slot.getIncludes()) {
-                    ExpressionBinaryOperator operator = (ExpressionBinaryOperator) assertion.getExpression();
-                    ExpressionLeaf rightLeaf = (ExpressionLeaf) operator.getRightOperand();
-
-                    Locatable locatable = (Locatable) value;
-                    String archetypeNodeId = locatable.getArchetypeNodeId();
-                    CString cString = (CString) rightLeaf.getItem();
-                if (cString.validValue(archetypeNodeId)){
-                        break;
-                    }
-                }
-                // Se o nome do arquetipo nao estiver na lista de includes, ...
-                // ... entao eh invalido, lança-se um erro.
-            }
-        }
-    
         errorsSlot = this.validate(lo, archetype);
 
         errors.addAll(errorsSlot);
