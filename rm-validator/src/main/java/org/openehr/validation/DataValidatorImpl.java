@@ -321,7 +321,7 @@ public class DataValidatorImpl implements DataValidator {
             String restrictionType = cobj.getRmTypeName().replace("_", "").toUpperCase();
             Class restClass = types.get(restrictionType);
 
-            if (!restClass.isAssignableFrom(klass)&& (!(cobj instanceof CPrimitiveObject ))) {
+            if (!restClass.isAssignableFrom(klass) && (!(cobj instanceof CPrimitiveObject))) {
                 //verificar se o tipo eh primitivo e se o dado eh String
                 errors.add(new ValidationError(archetype, path, cobj.path(), ErrorType.RM_TYPE_INVALID));
             } else if (cobj instanceof CComplexObject) {
@@ -395,7 +395,7 @@ public class DataValidatorImpl implements DataValidator {
                 }
             }
         }
-        
+
         if (!cpo.getItem().validValue(value)) {
             errors.add(new ValidationError(archetype, path, cpo.path(),
                     ErrorType.PRIMITIVE_TYPE_VALUE_ERROR)); // DUMMY ERROR TYPE
@@ -412,39 +412,42 @@ public class DataValidatorImpl implements DataValidator {
 
         List<ValidationError> errorsSlot = new ArrayList<ValidationError>();
 
-        /* PROPOSTA DE VALIDACAO DE ARCHETYPESLOT
-        for (Assertion assertion : slot.getExcludes()) {
-            ExpressionBinaryOperator operator = (ExpressionBinaryOperator) assertion.getExpression();
-            ExpressionLeaf rightLeaf = (ExpressionLeaf) operator.getRightOperand();
-
-            Locatable locatable = (Locatable) value;
-            String archetypeNodeId = locatable.getArchetypeNodeId();
-            CString cString = (CString) rightLeaf.getItem();
-            if (cString.validValue(archetypeNodeId)){
-                //TODO : erro deve ser adicionado aqui.
-//                errors.add(new ValidationError);
-                break;
-            }
-        }
-        if (errors.isEmpty()){
-            boolean valid = false;
-            for (Assertion assertion : slot.getIncludes()) {
+        /* se os excludes for null não entra no laço*/
+        if (slot.getExcludes() != null) {
+            /* PROPOSTA DE VALIDACAO DE ARCHETYPESLOT*/
+            for (Assertion assertion : slot.getExcludes()) {
                 ExpressionBinaryOperator operator = (ExpressionBinaryOperator) assertion.getExpression();
                 ExpressionLeaf rightLeaf = (ExpressionLeaf) operator.getRightOperand();
 
                 Locatable locatable = (Locatable) value;
                 String archetypeNodeId = locatable.getArchetypeNodeId();
                 CString cString = (CString) rightLeaf.getItem();
-                if (cString.validValue(archetypeNodeId)){
+            if (cString.validValue(archetypeNodeId)){
+                    //TODO : erro deve ser adicionado aqui.
+//                errors.add(new ValidationError);
                     break;
                 }
             }
-            if (!valid){
+        }
+        if (errors.isEmpty()) {
+            boolean valid = false;
+            if (slot.getIncludes() != null) {
+                for (Assertion assertion : slot.getIncludes()) {
+                    ExpressionBinaryOperator operator = (ExpressionBinaryOperator) assertion.getExpression();
+                    ExpressionLeaf rightLeaf = (ExpressionLeaf) operator.getRightOperand();
+
+                    Locatable locatable = (Locatable) value;
+                    String archetypeNodeId = locatable.getArchetypeNodeId();
+                    CString cString = (CString) rightLeaf.getItem();
+                if (cString.validValue(archetypeNodeId)){
+                        break;
+                    }
+                }
                 // Se o nome do arquetipo nao estiver na lista de includes, ...
                 // ... entao eh invalido, lança-se um erro.
             }
         }
-        */
+    
         errorsSlot = this.validate(lo, archetype);
 
         errors.addAll(errorsSlot);
@@ -474,7 +477,7 @@ public class DataValidatorImpl implements DataValidator {
                 ExpressionBinaryOperator operator = (ExpressionBinaryOperator) assertion.getExpression();
                 ExpressionLeaf rightLeaf = (ExpressionLeaf) operator.getRightOperand();
                 CString cString = (CString) rightLeaf.getItem();
-                if (cString.validValue(conceptName)){
+                if (cString.validValue(conceptName) || cString.validValue(archetypeName)){
                     return false;
                 }
             }
@@ -484,7 +487,7 @@ public class DataValidatorImpl implements DataValidator {
                 ExpressionBinaryOperator operator = (ExpressionBinaryOperator) assertion.getExpression();
                 ExpressionLeaf rightLeaf = (ExpressionLeaf) operator.getRightOperand();
                 CString cString = (CString) rightLeaf.getItem();
-                if (cString.validValue(conceptName)){
+                if (cString.validValue(conceptName) || cString.validValue(archetypeName)){
                     return true;
                 }
             }
