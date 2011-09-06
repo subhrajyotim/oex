@@ -173,10 +173,8 @@ public class DataValidatorImplTest extends PepBaseTest {
 
         List<ValidationError> errors = null;
         errors = this.validator.validate(cluster);
-        for (ValidationError validationError : errors) {
-            System.out.println(validationError.getErrorType());
-        }
         assertFalse(errors.isEmpty());
+        assertEquals("The error must be of the type OCCURRENCE_NOT_DESCRIBED", ErrorType.OCCURRENCES_NOT_DESCRIBED, errors.get(0).getErrorType());
     }
 
     @Test
