@@ -342,7 +342,7 @@ public class DataValidatorImpl implements DataValidator {
 
             } else if (cobj instanceof ArchetypeInternalRef) {
 
-                this.validateArchetypeInternalRef((ArchetypeInternalRef) cobj, value, path, errors);
+                this.validateArchetypeInternalRef(archetype, (ArchetypeInternalRef) cobj, value, path, errors);
 
             } else {
                 log.error("Unknown CObject type..");
@@ -422,9 +422,20 @@ public class DataValidatorImpl implements DataValidator {
 
     }
 
-    void validateArchetypeInternalRef(ArchetypeInternalRef internalRef, Object value, String path,
-            List<ValidationError> errors) {
+    void validateArchetypeInternalRef(Archetype archetype, ArchetypeInternalRef internalRef, Object value, String path,
+            List<ValidationError> errors) throws Exception {
         log.debug("validate ArchetypeInternalRef..");
+        ArchetypeConstraint constraint = archetype.node(internalRef.getTargetPath());
+        if (constraint instanceof CSingleAttribute){
+            CSingleAttribute singleAttribute = (CSingleAttribute) constraint;
+            validateSingleAttribute(singleAttribute, value, path, errors, archetype);
+        } else if (constraint instanceof CSingleAttribute){
+            CMultipleAttribute multipleAttribute = (CMultipleAttribute) constraint;
+            validateMultipleAttribute(multipleAttribute, value, path, errors, archetype);
+        } else if (constraint instanceof CSingleAttribute){
+            CObject cObject = (CObject) constraint;
+            validateObject(cObject, value, path, errors, archetype);
+        }
         List<ValidationError> errorsInternalRef = null;
     }
 
