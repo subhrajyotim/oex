@@ -293,7 +293,6 @@ public class DataValidatorImpl implements DataValidator {
                     if(validateRootSlot(slot, lo)){
                         objects.add(lo);
                     }
-                } else if (cObj instanceof ArchetypeInternalRef) {
                 } else {
 
                     if (cObj.getNodeId().equals(lo.getArchetypeNodeId())) {
