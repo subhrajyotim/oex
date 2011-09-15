@@ -88,7 +88,8 @@ public enum ErrorType {
 	INCORRECT_NAME,
 	// TERM CONSTRAINTS
 	INCORRECT_CODE,
-
+        //alternatives single atributte
+        ALTERNATIVES_NOT_SATISFIED,
 	// TODO: temporary types
 	PRIMITIVE_TYPE_VALUE_ERROR,
 	DOMAIN_TYPE_VALUE_ERROR

@@ -47,8 +47,7 @@ public class DataValidatorImplTest extends PepBaseTest {
         this.repository = new PepArchetypeRepository();
         this.validator = new DataValidatorImpl();
     }
-  
-    @Ignore
+
     @Test
     public void testDvDateTime() throws Exception {
         DvDateTime dateTime = new DvDateTime();
@@ -68,7 +67,7 @@ public class DataValidatorImplTest extends PepBaseTest {
         assertTrue("The list must not contain error", errors.isEmpty());
     }
 
-    @Ignore
+    
     @Test
     public void testTodosTiposPrimitivos() throws Exception {
         List todosTiposPrimitivos = new ArrayList();
@@ -119,7 +118,22 @@ public class DataValidatorImplTest extends PepBaseTest {
 
         assertTrue("The list must not contain error", errors.isEmpty());
     }
+@Test
+    public void testSingleAtributeAlternatives() throws Exception{
 
+
+        DvBoolean bol = new DvBoolean(true);
+        Element element = new Element("at0001", "Arquétipo de teste DVTEXT", bol);
+        String archetypeId = "openEHR-EHR-ELEMENT.test_dvtext.v1";
+        Archetype archetype = this.repository.getArchetype(archetypeId);
+        List<ValidationError> errors = null;
+
+        errors = this.validator.validate(element, archetype);
+        for (ValidationError validationError : errors) {
+            System.out.println(validationError.getErrorType());
+        }
+        assertFalse(errors.isEmpty());
+    }
     @Test
     public void testDvBoolean_Validacao_tipos_Complexo() throws Exception {
         DvText text = new DvText("Universidade Federal de Goiás");
@@ -161,7 +175,7 @@ public class DataValidatorImplTest extends PepBaseTest {
         }
         assertTrue(errors.isEmpty());
     }
-   
+
     @Test
     public void testExclude() throws Exception {
         List items = new ArrayList();
@@ -399,8 +413,7 @@ public class DataValidatorImplTest extends PepBaseTest {
         //O arquetipo define que o value do Element[at0002] deveria ser um DV_CODED_TEXT,
         //mas estou passando um DV_DATE
         ((Element) item.getItems().get(0)).setValue(new DvDateTime());
-
-        assert (getConjuntoDeErros(person).isEmpty());
+        assertFalse(getConjuntoDeErros(person).isEmpty());
     }
 
     @Test

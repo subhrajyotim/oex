@@ -138,20 +138,26 @@ public class DataValidatorImpl implements DataValidator {
         }
     }
 
-    // TODO how to handle alternatives of single attribute
     void validateSingleAttribute(CSingleAttribute cattr, Object attribute,
             String path, List<ValidationError> errors, Archetype archetype) throws Exception {
 
         log.debug("validateSingleAttribute..");
 
+
         if (cattr.alternatives().size() > 1) {
+            boolean valid = false;
             List<ValidationError> newErrors = null;
             for (CObject cobj : cattr.alternatives()) {
                 newErrors = new ArrayList<ValidationError>();
                 validateObject(cobj, attribute, path, newErrors, archetype);
                 if (newErrors.size() == 0) {
+                    valid = true;
                     return;
                 }
+            }
+            if(!valid){
+                ValidationError error = new ValidationError(archetype, path, path, ErrorType.ALTERNATIVES_NOT_SATISFIED);
+                errors.add(error);
             }
         } else if (cattr.alternatives().size() == 1) {
             CObject cobj = cattr.alternatives().get(0);
@@ -313,17 +319,22 @@ public class DataValidatorImpl implements DataValidator {
             List<ValidationError> errors, Archetype archetype) throws Exception {
 
         log.debug("validate CObject..");
-
-        if (!cobj.isAnyAllowed()) {
-
-            Class klass = value.getClass();
+        Class klass = value.getClass();
             String restrictionType = cobj.getRmTypeName().replace("_", "").toUpperCase();
-            Class restClass = types.get(restrictionType);
+            restrictionType = restrictionType.split("<")[0];
 
-            if (!restClass.isAssignableFrom(klass) && (!(cobj instanceof CPrimitiveObject))) {
+            Class restClass = types.get(restrictionType);
+            if ( restClass==null || cobj==null || klass==null){
+                System.out.println("teste");
+            }
+                if (!restClass.isAssignableFrom(klass) && (!(cobj instanceof CPrimitiveObject))) {
                 //verificar se o tipo eh primitivo e se o dado eh String
                 errors.add(new ValidationError(archetype, path, cobj.path(), ErrorType.RM_TYPE_INVALID));
-            } else if (cobj instanceof CComplexObject) {
+            }else    if (!cobj.isAnyAllowed()) {
+
+            
+
+           if (cobj instanceof CComplexObject) {
 
                 validateComplex((CComplexObject) cobj, value, path, errors, archetype);
 
