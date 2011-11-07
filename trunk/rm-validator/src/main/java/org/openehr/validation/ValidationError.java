@@ -27,11 +27,12 @@ public class ValidationError {
      * @param errorType
      */
     public ValidationError(String archetype, String runtimePath, String archetypePath,
-            ErrorType errorType) {
+            ErrorType errorType, String description) {
         this.archetype = archetype;
         this.runtimePath = runtimePath;
         this.archetypePath = archetypePath;
         this.errorType = errorType;
+        this.description = description;
     }
     
     /**
@@ -43,11 +44,12 @@ public class ValidationError {
      * @param errorType
      */
     public ValidationError(Archetype archetype, String runtimePath, String archetypePath,
-            ErrorType errorType) {
+            ErrorType errorType, String description) {
         this.archetype = archetype.getArchetypeId().getValue();
         this.runtimePath = runtimePath;
         this.archetypePath = archetypePath;
         this.errorType = errorType;
+        this.description = description;
     }
 
     public String getRuntimePath() {
@@ -70,6 +72,7 @@ public class ValidationError {
     private String runtimePath;
     private String archetypePath;
     private ErrorType errorType;
+    private String description;
 
 
 }

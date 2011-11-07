@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
-import org.apache.commons.lang.Validate;
 
 import org.apache.log4j.Logger;
 import org.openehr.am.archetype.*;
@@ -29,19 +28,11 @@ import org.openehr.am.archetype.assertion.Assertion;
 import org.openehr.am.archetype.assertion.ExpressionBinaryOperator;
 import org.openehr.am.archetype.assertion.ExpressionLeaf;
 import org.openehr.am.archetype.constraintmodel.*;
-import org.openehr.am.archetype.constraintmodel.primitive.CDate;
-import org.openehr.am.archetype.constraintmodel.primitive.CDateTime;
-import org.openehr.am.archetype.constraintmodel.primitive.CDuration;
-import org.openehr.am.archetype.constraintmodel.primitive.CInteger;
-import org.openehr.am.archetype.constraintmodel.primitive.CPrimitive;
-import org.openehr.am.archetype.constraintmodel.primitive.CReal;
 import org.openehr.am.archetype.constraintmodel.primitive.CString;
-import org.openehr.am.archetype.constraintmodel.primitive.CTime;
 import org.openehr.am.archetype.ontology.ArchetypeOntology;
 import org.openehr.am.archetype.ontology.ArchetypeTerm;
+import org.openehr.am.archetype.ontology.OntologyDefinitions;
 import org.openehr.rm.common.archetyped.Locatable;
-import org.openehr.rm.datatypes.quantity.datetime.DvDate;
-import org.openehr.rm.datatypes.quantity.datetime.DvDateTime;
 import org.openehr.rm.support.basic.Interval;
 import org.openehr.rm.support.identification.ArchetypeID;
 
@@ -110,19 +101,19 @@ public class DataValidatorImpl implements DataValidator {
                 newPath += Locatable.PATH_SEPARATOR;
             }
             newPath += cattr.getRmAttributeName();
-
+            String description = getErrorDescription(archetype, ccobj, null);
             if (cattr.isRequired() && attribute == null) {
 
                 log.debug("ERROR --> attribute missing at " + path);
 
                 error = new ValidationError(archetype, path, cattr.path(),
-                        ErrorType.ATTRIBUTE_MISSING);
+                        ErrorType.ATTRIBUTE_MISSING, description);
                 errors.add(error);
 
             } else if (!cattr.isAllowed() && attribute != null) {
 
                 error = new ValidationError(archetype, path, cattr.path(),
-                        ErrorType.ATTRIBUTE_NOT_ALLOWED);
+                        ErrorType.ATTRIBUTE_NOT_ALLOWED, description);
                 errors.add(error);
 
             } else if (attribute != null) {
@@ -156,7 +147,8 @@ public class DataValidatorImpl implements DataValidator {
                 }
             }
             if(!valid){
-                ValidationError error = new ValidationError(archetype, path, path, ErrorType.ALTERNATIVES_NOT_SATISFIED);
+                ValidationError error = new ValidationError(archetype, path, path, 
+                        ErrorType.ALTERNATIVES_NOT_SATISFIED, getErrorDescription(archetype, cattr, null));
                 errors.add(error);
             }
         } else if (cattr.alternatives().size() == 1) {
@@ -190,7 +182,7 @@ public class DataValidatorImpl implements DataValidator {
                 && interval.getLower() > values.size()) {
 
             error = new ValidationError(archetype, path, cattr.path(),
-                    ErrorType.ITEMS_TOO_FEW);
+                    ErrorType.ITEMS_TOO_FEW, null);
             errors.add(error);
             return;
 
@@ -198,21 +190,21 @@ public class DataValidatorImpl implements DataValidator {
                 && interval.getUpper() < values.size()) {
 
             error = new ValidationError(archetype, path, cattr.path(),
-                    ErrorType.ITEMS_TOO_MANY);
+                    ErrorType.ITEMS_TOO_MANY, null);
             errors.add(error);
             return;
         }
 
         // Cardinality must validate if the container is ordered.
         if (cardinality.isList() && values instanceof Set) {
-            error = new ValidationError(archetype, path, cattr.path(), ErrorType.ITEMS_NOT_ORDERED);
+            error = new ValidationError(archetype, path, cattr.path(), ErrorType.ITEMS_NOT_ORDERED, null);
         } else if (cardinality.isSet() && values instanceof List) {
             Set<Object> set = new HashSet<Object>(values);
             if (set.size() != values.size()) {
-                error = new ValidationError(archetype, path, cattr.path(), ErrorType.ITEMS_NOT_UNIQUE);
+                error = new ValidationError(archetype, path, cattr.path(), ErrorType.ITEMS_NOT_UNIQUE, null);
             }
         } else if (cardinality.isBag() && values instanceof Set) {
-            error = new ValidationError(archetype, path, cattr.path(), ErrorType.ITEMS_NOT_NON_UNIQUE);
+            error = new ValidationError(archetype, path, cattr.path(), ErrorType.ITEMS_NOT_NON_UNIQUE, null);
         }
 
         log.debug("validating total cobj: " + children.size()
@@ -238,7 +230,7 @@ public class DataValidatorImpl implements DataValidator {
                         && occurrences.getLower() > objects.size()) {
 
                     error = new ValidationError(archetype, path, cobj.path(),
-                            ErrorType.OCCURRENCES_TOO_FEW);
+                            ErrorType.OCCURRENCES_TOO_FEW, null);
                     errors.add(error);
                     return;
 
@@ -246,7 +238,7 @@ public class DataValidatorImpl implements DataValidator {
                         && occurrences.getUpper() < objects.size()) {
 
                     error = new ValidationError(archetype, path, cobj.path(),
-                            ErrorType.OCCURRENCES_TOO_MANY);
+                            ErrorType.OCCURRENCES_TOO_MANY, null);
                     errors.add(error);
                     return;
                 }
@@ -259,7 +251,7 @@ public class DataValidatorImpl implements DataValidator {
         }
         if (contador != values.size()) {
 
-            errors.add(new ValidationError(archetype, path, cattr.path(), ErrorType.OCCURRENCES_NOT_DESCRIBED));
+            errors.add(new ValidationError(archetype, path, cattr.path(), ErrorType.OCCURRENCES_NOT_DESCRIBED, null));
         }
     }
 
@@ -324,12 +316,10 @@ public class DataValidatorImpl implements DataValidator {
             restrictionType = restrictionType.split("<")[0];
 
             Class restClass = types.get(restrictionType);
-            if ( restClass==null || cobj==null || klass==null){
-                System.out.println("teste");
-            }
-                if (!restClass.isAssignableFrom(klass) && (!(cobj instanceof CPrimitiveObject))) {
+            if (!restClass.isAssignableFrom(klass) && (!(cobj instanceof CPrimitiveObject))) {
                 //verificar se o tipo eh primitivo e se o dado eh String
-                errors.add(new ValidationError(archetype, path, cobj.path(), ErrorType.RM_TYPE_INVALID));
+                errors.add(new ValidationError(archetype, path, cobj.path(), 
+                        ErrorType.RM_TYPE_INVALID, getErrorDescription(archetype, cobj, null)));
             }else    if (!cobj.isAnyAllowed()) {
 
             
@@ -370,7 +360,7 @@ public class DataValidatorImpl implements DataValidator {
             log.debug("error found at " + cdomain.path());
             java.lang.String a = "";
             errors.add(new ValidationError(archetype, path, cdomain.path(),
-                    ErrorType.DOMAIN_TYPE_VALUE_ERROR)); // DUMMY ERROR TYPE
+                    ErrorType.DOMAIN_TYPE_VALUE_ERROR, getErrorDescription(archetype, cdomain, null))); // DUMMY ERROR TYPE
         }
     }
 
@@ -408,7 +398,7 @@ public class DataValidatorImpl implements DataValidator {
 
         if (!cpo.getItem().validValue(value)) {
             errors.add(new ValidationError(archetype, path, cpo.path(),
-                    ErrorType.PRIMITIVE_TYPE_VALUE_ERROR)); // DUMMY ERROR TYPE
+                    ErrorType.PRIMITIVE_TYPE_VALUE_ERROR, getErrorDescription(archetype, cpo, null))); // DUMMY ERROR TYPE
         }
     }
 
@@ -423,7 +413,8 @@ public class DataValidatorImpl implements DataValidator {
         List<ValidationError> errorsSlot = new ArrayList<ValidationError>();
 
         if (!validateRootSlot(slot, lo)){
-            errorsSlot.add( new ValidationError(archetype, path, slot.path(), ErrorType.OCCURRENCES_NOT_DESCRIBED));
+            errorsSlot.add( new ValidationError(archetype, path, slot.path(), 
+                    ErrorType.OCCURRENCES_NOT_DESCRIBED, getErrorDescription(archetype, slot, null)));
         }
         errorsSlot = this.validate(lo, archetype);
 
@@ -518,6 +509,53 @@ public class DataValidatorImpl implements DataValidator {
 
     }
     private static Logger log = Logger.getLogger(DataValidator.class);
+
+    private String getErrorDescription(Archetype archetype, ArchetypeConstraint constraint, String language){
+        if(archetype==null){
+            throw new IllegalArgumentException("Archetype is null");
+        } else if(constraint==null){
+            throw new IllegalArgumentException("Constraint is null");
+        }
+
+        String nodeId = null;
+        if(constraint instanceof CObject){
+            nodeId = ((CObject)constraint).getNodeId();
+        } else if (constraint instanceof CSingleAttribute){
+            nodeId = ((CSingleAttribute)constraint).getChildren().get(0).getNodeId();
+        }
+
+        String description = null;
+        if(nodeId!=null && !nodeId.isEmpty()){
+
+            ArchetypeOntology ontology = archetype.getOntology();
+            String lang = null;
+            if(language==null){
+                lang = "pt-br";
+            } else {
+                lang = language;
+            }
+            List<OntologyDefinitions> ontologyDefinitions = ontology.getTermDefinitionsList();
+
+            List<ArchetypeTerm> archetypeTerms = null;
+            for (OntologyDefinitions ontologyDefinition : ontologyDefinitions) {
+                if(ontologyDefinition.getLanguage().equals(lang)){
+                    archetypeTerms = ontologyDefinition.getDefinitions();
+                    break;
+                }
+            }
+            if(archetypeTerms!=null){
+                for (ArchetypeTerm archetypeTerm : archetypeTerms) {
+                    String term = archetypeTerm.getCode();
+                    if(nodeId.equals(term)){
+                        description = archetypeTerm.getDescription();
+                        break;
+                    }
+                }
+            }
+
+        }
+        return description;
+    }
 }
 
 /*
