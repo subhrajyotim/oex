@@ -141,7 +141,7 @@ public class DataValidatorImpl implements DataValidator {
             for (CObject cobj : cattr.alternatives()) {
                 newErrors = new ArrayList<ValidationError>();
                 validateObject(cobj, attribute, path, newErrors, archetype);
-                if (newErrors.size() == 0) {
+                if (newErrors.isEmpty()) {
                     valid = true;
                     return;
                 }
