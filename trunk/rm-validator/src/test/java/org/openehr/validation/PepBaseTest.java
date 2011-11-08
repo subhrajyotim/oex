@@ -25,7 +25,7 @@ import org.openehr.rm.support.identification.ObjectVersionID;
 
 /**
  *
- * @author Danillo Guimarães
+ * @author Danillo Guimarï¿½es
  */
 public class PepBaseTest {
 
@@ -106,7 +106,7 @@ public class PepBaseTest {
         linhaEnderecosList.add(numberElement);
         Element addressLineElement = new Element("at0031", "Linha Endereco", new DvText("Rua anhanguera nro 20, etc."));
         linhaEnderecosList.add(addressLineElement);
-        Cluster addressLineCluster = new Cluster("at0002", "Linha de Endereço", linhaEnderecosList);
+        Cluster addressLineCluster = new Cluster("at0002", "Linha de Endereï¿½o", linhaEnderecosList);
         List itemsEnderecoList = new ArrayList();
         itemsEnderecoList.add(addressLineCluster);
         Element deliveryPointIdElement = new Element("at0003", "Ponto de entrega", new DvText("Proximo a praca da cidade"));
@@ -117,7 +117,7 @@ public class PepBaseTest {
         itemsEnderecoList.add(cityElement);
         Element stateElement = new Element("at0006", "Estado", new DvCodedText("Goias", new CodePhrase("local", "at0503")));
         itemsEnderecoList.add(stateElement);
-        Element countryElement = new Element("at0007", "País", new DvCodedText("Brazil", new CodePhrase("local", "at0504")));
+        Element countryElement = new Element("at0007", "Paï¿½s", new DvCodedText("Brazil", new CodePhrase("local", "at0504")));
         itemsEnderecoList.add(countryElement);
         ItemTree enderecoItemTree = new ItemTree("at0001", new DvText("Itens de endereco"), itemsEnderecoList);
         Address address = new Address(null, "openEHR-DEMOGRAPHIC-ADDRESS.address.v1", tipoEnderecoCodedText, null, null, null, null, enderecoItemTree);
@@ -191,7 +191,7 @@ public class PepBaseTest {
         Element deathDateElement = new Element("at0001", new DvText("Data da morte"), deathDate);
         itemspersonDeathDataIso.add(deathDateElement);
         DvCodedText sourceNotificationCodedText = new DvCodedText("Registry", new CodePhrase("local", "at0020"));
-        Element elementSourceNotification = new Element("at0002", "Fonte da notificação", sourceNotificationCodedText);
+        Element elementSourceNotification = new Element("at0002", "Fonte da notificaÃ§Ã£oo", sourceNotificationCodedText);
         itemspersonDeathDataIso.add(elementSourceNotification);
         itemspersonDeathDataIso.add(personOtherDeathData);
         personDeathDataIso = new Cluster("openEHR-DEMOGRAPHIC-CLUSTER.person_death_data_iso.v1", new DvText("Dados da morte"), itemspersonDeathDataIso);
@@ -215,7 +215,7 @@ public class PepBaseTest {
         Element cityOfDeathElement = new Element("at0003", new DvText("Cidade de morte"), cityOfDeathCodedText);
         itemsPersonOtherDeathData.add(cityOfDeathElement);
         DvText certificateNumberText = new DvText("11a2");
-        Element certificateNumberElement = new Element("at0004", new DvText("Numero de certificado"), certificateNumberText);
+        Element certificateNumberElement = new Element("at0004", new DvText("NÃºmero de certificado"), certificateNumberText);
         itemsPersonOtherDeathData.add(certificateNumberElement);
         personOtherDeathData = new Cluster("openEHR-DEMOGRAPHIC-CLUSTER.person_other_death_data.v1", new DvText("Outros dados de morte"), itemsPersonOtherDeathData);
         return personOtherDeathData;
@@ -262,8 +262,8 @@ public class PepBaseTest {
         DvCodedText cityCodedText = new DvCodedText("Goiania", new CodePhrase("local", "at0020"));
         Element elementCity = new Element("at0002", new DvText("City"), cityCodedText);
         itemsPersonBirthDataBr.add(elementCity);
-        DvText registryOfficeText = new DvText("CARTÓRIO ANTÔNIO DO PRADO");
-        Element elementRegistryOffice = new Element("at0003", new DvText("Cartório de Registros"), registryOfficeText);
+        DvText registryOfficeText = new DvText("CARTÃ“RIO ZECA DO BAR");
+        Element elementRegistryOffice = new Element("at0003", new DvText("CartÃ³rio de Registros"), registryOfficeText);
         itemsPersonBirthDataBr.add(elementRegistryOffice);
         DvText bookNumberText = new DvText("1984");
         Element bookNumberElement = new Element("at0004", new DvText("Numero do livro"), bookNumberText);
@@ -289,13 +289,12 @@ public class PepBaseTest {
         Element sex = new Element("at0001", new DvText("sexo"), dvCodeTextSex);
         personAdditionalList.add(sex);
         DvText textNomeMae = new DvText("Madre Teresa");
-        Element elementNomeMae = new Element("at0002", new DvText("Nome da mãe"), textNomeMae);
+        Element elementNomeMae = new Element("at0002", new DvText("Nome da mÃ£e"), textNomeMae);
         personAdditionalList.add(elementNomeMae);
         DvText textComentIdentificacao = new DvText("Baixa estatura e careca");
-        Element elementComentIdentificacao = new Element("at0003", new DvText("Comentários de Identificação"), textComentIdentificacao);
+        Element elementComentIdentificacao = new Element("at0003", new DvText("ComentÃ¡rios de IdentificaÃ§Ã£o"), textComentIdentificacao);
         personAdditionalList.add(elementComentIdentificacao);
         personAdditionalDataIso = new Cluster("openEHR-DEMOGRAPHIC-CLUSTER.person_additional_data_iso.v1", new DvText("Dados Adicionais"), personAdditionalList);
         return personAdditionalDataIso;
     }
-
 }

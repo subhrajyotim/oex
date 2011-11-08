@@ -146,8 +146,8 @@ public class DataValidatorImpl implements DataValidator {
                     return;
                 }
             }
-            if(!valid){
-                ValidationError error = new ValidationError(archetype, path, path, 
+            if (!valid) {
+                ValidationError error = new ValidationError(archetype, path, path,
                         ErrorType.ALTERNATIVES_NOT_SATISFIED, getErrorDescription(archetype, cattr, null));
                 errors.add(error);
             }
@@ -287,8 +287,8 @@ public class DataValidatorImpl implements DataValidator {
 
                 if (cObj instanceof ArchetypeSlot) {
                     log.debug("ArchetypeSlot : " + lo.getArchetypeNodeId());
-                    ArchetypeSlot slot = (ArchetypeSlot)cObj;
-                    if(validateRootSlot(slot, lo)){
+                    ArchetypeSlot slot = (ArchetypeSlot) cObj;
+                    if (validateRootSlot(slot, lo)) {
                         objects.add(lo);
                     }
                 } else {
@@ -312,19 +312,19 @@ public class DataValidatorImpl implements DataValidator {
 
         log.debug("validate CObject..");
         Class klass = value.getClass();
-            String restrictionType = cobj.getRmTypeName().replace("_", "").toUpperCase();
-            restrictionType = restrictionType.split("<")[0];
+        String restrictionType = cobj.getRmTypeName().replace("_", "").toUpperCase();
+        restrictionType = restrictionType.split("<")[0];
 
-            Class restClass = types.get(restrictionType);
-            if (!restClass.isAssignableFrom(klass) && (!(cobj instanceof CPrimitiveObject))) {
-                //verificar se o tipo eh primitivo e se o dado eh String
-                errors.add(new ValidationError(archetype, path, cobj.path(), 
-                        ErrorType.RM_TYPE_INVALID, getErrorDescription(archetype, cobj, null)));
-            }else    if (!cobj.isAnyAllowed()) {
+        Class restClass = types.get(restrictionType);
+        if (!restClass.isAssignableFrom(klass) && (!(cobj instanceof CPrimitiveObject))) {
+            //verificar se o tipo eh primitivo e se o dado eh String
+            errors.add(new ValidationError(archetype, path, cobj.path(),
+                    ErrorType.RM_TYPE_INVALID, getErrorDescription(archetype, cobj, null)));
+        } else if (!cobj.isAnyAllowed()) {
 
-            
 
-           if (cobj instanceof CComplexObject) {
+
+            if (cobj instanceof CComplexObject) {
 
                 validateComplex((CComplexObject) cobj, value, path, errors, archetype);
 
@@ -412,8 +412,8 @@ public class DataValidatorImpl implements DataValidator {
 
         List<ValidationError> errorsSlot = new ArrayList<ValidationError>();
 
-        if (!validateRootSlot(slot, lo)){
-            errorsSlot.add( new ValidationError(archetype, path, slot.path(), 
+        if (!validateRootSlot(slot, lo)) {
+            errorsSlot.add(new ValidationError(archetype, path, slot.path(),
                     ErrorType.OCCURRENCES_NOT_DESCRIBED, getErrorDescription(archetype, slot, null)));
         }
         errorsSlot = this.validate(lo, archetype);
@@ -427,46 +427,46 @@ public class DataValidatorImpl implements DataValidator {
             List<ValidationError> errors) throws Exception {
         log.debug("validate ArchetypeInternalRef..");
         ArchetypeConstraint constraint = archetype.node(internalRef.getTargetPath());
-        if (constraint instanceof CSingleAttribute){
+        if (constraint instanceof CSingleAttribute) {
             CSingleAttribute singleAttribute = (CSingleAttribute) constraint;
             validateSingleAttribute(singleAttribute, value, path, errors, archetype);
-        } else if (constraint instanceof CSingleAttribute){
+        } else if (constraint instanceof CSingleAttribute) {
             CMultipleAttribute multipleAttribute = (CMultipleAttribute) constraint;
             validateMultipleAttribute(multipleAttribute, value, path, errors, archetype);
-        } else if (constraint instanceof CSingleAttribute){
+        } else if (constraint instanceof CSingleAttribute) {
             CObject cObject = (CObject) constraint;
             validateObject(cObject, value, path, errors, archetype);
         }
         List<ValidationError> errorsInternalRef = null;
     }
 
-    private boolean validateRootSlot(ArchetypeSlot slot, Locatable locatable){
+    private boolean validateRootSlot(ArchetypeSlot slot, Locatable locatable) {
 
         String archetypeName = locatable.getArchetypeNodeId();
         ArchetypeID archetypeID = null;
-        try{
+        try {
             archetypeID = new ArchetypeID(archetypeName);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             return false;
         }
-        String conceptName = archetypeID.getValue().substring(archetypeID.qualifiedRmEntity().length()+1);
+        String conceptName = archetypeID.getValue().substring(archetypeID.qualifiedRmEntity().length() + 1);
 
-        if(slot.getExcludes()!=null){
+        if (slot.getExcludes() != null) {
             for (Assertion assertion : slot.getExcludes()) {
                 ExpressionBinaryOperator operator = (ExpressionBinaryOperator) assertion.getExpression();
                 ExpressionLeaf rightLeaf = (ExpressionLeaf) operator.getRightOperand();
                 CString cString = (CString) rightLeaf.getItem();
-                if (cString.validValue(conceptName) || cString.validValue(archetypeName)){
+                if (cString.validValue(conceptName) || cString.validValue(archetypeName)) {
                     return false;
                 }
             }
         }
-        if(slot.getIncludes()!=null){
+        if (slot.getIncludes() != null) {
             for (Assertion assertion : slot.getIncludes()) {
                 ExpressionBinaryOperator operator = (ExpressionBinaryOperator) assertion.getExpression();
                 ExpressionLeaf rightLeaf = (ExpressionLeaf) operator.getRightOperand();
                 CString cString = (CString) rightLeaf.getItem();
-                if (cString.validValue(conceptName) || cString.validValue(archetypeName)){
+                if (cString.validValue(conceptName) || cString.validValue(archetypeName)) {
                     return true;
                 }
             }
@@ -510,43 +510,39 @@ public class DataValidatorImpl implements DataValidator {
     }
     private static Logger log = Logger.getLogger(DataValidator.class);
 
-    private String getErrorDescription(Archetype archetype, ArchetypeConstraint constraint, String language){
-        if(archetype==null){
+    private String getErrorDescription(Archetype archetype, ArchetypeConstraint constraint, String language) {
+        if (archetype == null) {
             throw new IllegalArgumentException("Archetype is null");
-        } else if(constraint==null){
+        } else if (constraint == null) {
             throw new IllegalArgumentException("Constraint is null");
         }
 
         String nodeId = null;
-        if(constraint instanceof CObject){
-            nodeId = ((CObject)constraint).getNodeId();
-        } else if (constraint instanceof CSingleAttribute){
-            nodeId = ((CSingleAttribute)constraint).getChildren().get(0).getNodeId();
+        if (constraint instanceof CObject) {
+            nodeId = ((CObject) constraint).getNodeId();
+        } else if (constraint instanceof CSingleAttribute) {
+            nodeId = ((CSingleAttribute) constraint).getChildren().get(0).getNodeId();
         }
 
         String description = null;
-        if(nodeId!=null && !nodeId.isEmpty()){
-
+        if (nodeId != null && !nodeId.isEmpty()) {
             ArchetypeOntology ontology = archetype.getOntology();
-            String lang = null;
-            if(language==null){
-                lang = "pt-br";
-            } else {
-                lang = language;
-            }
+            
+            String lang = language == null ? "pt-br" : language;
+            
             List<OntologyDefinitions> ontologyDefinitions = ontology.getTermDefinitionsList();
 
             List<ArchetypeTerm> archetypeTerms = null;
             for (OntologyDefinitions ontologyDefinition : ontologyDefinitions) {
-                if(ontologyDefinition.getLanguage().equals(lang)){
+                if (ontologyDefinition.getLanguage().equals(lang)) {
                     archetypeTerms = ontologyDefinition.getDefinitions();
                     break;
                 }
             }
-            if(archetypeTerms!=null){
+            if (archetypeTerms != null) {
                 for (ArchetypeTerm archetypeTerm : archetypeTerms) {
                     String term = archetypeTerm.getCode();
-                    if(nodeId.equals(term)){
+                    if (nodeId.equals(term)) {
                         description = archetypeTerm.getDescription();
                         break;
                     }
