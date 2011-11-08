@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.rm.common.archetyped.Archetyped;
@@ -34,13 +33,12 @@ import org.openehr.rm.support.identification.ArchetypeID;
 import org.openehr.rm.support.identification.ObjectVersionID;
 
 /**
- *
- * @author Danillo Guimar„es
+ * Testes de valida√ß√£o de dados baseados em arqu√©tipos.
  */
 public class DataValidatorImplTest extends PepBaseTest {
 
     private ArchetypeRepository repository = null;
-    DataValidator validator = null;
+    private DataValidator validator = null;
 
     @Before
     public void setUp() {
@@ -52,7 +50,7 @@ public class DataValidatorImplTest extends PepBaseTest {
     public void testDvDateTime() throws Exception {
         DvDateTime dateTime = new DvDateTime();
 
-        Element element = new Element("at0000", "PerÌodo da ˙ltima menstruaÁ„o normal", dateTime);
+        Element element = new Element("at0000", "Per√åodo da Àôltima menstrua√Å‚Äûo normal", dateTime);
         String archetypeId = "openEHR-EHR-ELEMENT.last_normal_menstrual_period.v1";
 
         Archetype archetype = this.repository.getArchetype(archetypeId);
@@ -67,7 +65,6 @@ public class DataValidatorImplTest extends PepBaseTest {
         assertTrue("The list must not contain error", errors.isEmpty());
     }
 
-    
     @Test
     public void testTodosTiposPrimitivos() throws Exception {
         List todosTiposPrimitivos = new ArrayList();
@@ -96,8 +93,8 @@ public class DataValidatorImplTest extends PepBaseTest {
 
     @Test
     public void testDvText() throws Exception {
-        DvText text = new DvText("Universidade Federal de Goi·s");
-        Element element = new Element("at0001", "ArquÈtipo de teste DVTEXT", text);
+        DvText text = new DvText("Universidade Federal de Goi¬∑s");
+        Element element = new Element("at0001", "Arqu√àtipo de teste DVTEXT", text);
         String archetypeId = "openEHR-EHR-ELEMENT.test_dvtext.v1";
 
         Archetype archetype = this.repository.getArchetype(archetypeId);
@@ -110,7 +107,7 @@ public class DataValidatorImplTest extends PepBaseTest {
     @Test
     public void testDvBoolean_Validacao_tipos_primitivos() throws Exception {
         DvBoolean boleano = new DvBoolean(true);
-        Element element = new Element("at0001", "ArquÈtipo de teste DVTEXT", boleano);
+        Element element = new Element("at0001", "Arqu√àtipo de teste DVTEXT", boleano);
         String archetypeId = "openEHR-EHR-ELEMENT.TestDvBoolean.v1";
         Archetype archetype = this.repository.getArchetype(archetypeId);
         List<ValidationError> errors = null;
@@ -118,12 +115,11 @@ public class DataValidatorImplTest extends PepBaseTest {
 
         assertTrue("The list must not contain error", errors.isEmpty());
     }
-@Test
-    public void testSingleAtributeAlternatives() throws Exception{
 
-
+    @Test
+    public void testSingleAtributeAlternatives() throws Exception {
         DvBoolean bol = new DvBoolean(true);
-        Element element = new Element("at0001", "ArquÈtipo de teste DVTEXT", bol);
+        Element element = new Element("at0001", "Arqu√©tipo de teste DVTEXT", bol);
         String archetypeId = "openEHR-EHR-ELEMENT.test_dvtext.v1";
         Archetype archetype = this.repository.getArchetype(archetypeId);
         List<ValidationError> errors = null;
@@ -134,10 +130,11 @@ public class DataValidatorImplTest extends PepBaseTest {
         }
         assertFalse(errors.isEmpty());
     }
+
     @Test
     public void testDvBoolean_Validacao_tipos_Complexo() throws Exception {
-        DvText text = new DvText("Universidade Federal de Goi·s");
-        Element element = new Element("at0001", "ArquÈtipo de teste DVTEXT", text);
+        DvText text = new DvText("Universidade Federal de Goi¬∑s");
+        Element element = new Element("at0001", "Arqu√àtipo de teste DVTEXT", text);
         String archetypeId = "openEHR-EHR-ELEMENT.TestDvBoolean.v1";
         Archetype archetype = this.repository.getArchetype(archetypeId);
         List<ValidationError> errors = null;
@@ -165,8 +162,8 @@ public class DataValidatorImplTest extends PepBaseTest {
     @Test
     public void testInclude() throws Exception {
         List<Item> items = new ArrayList<Item>();
-        items.add(new Element("openEHR-EHR-ELEMENT.TestDvBoolean.v1", "ArquÈtipo de teste DVTEXT", new DvBoolean(true)));
-        Cluster cluster = new Cluster("openEHR-EHR-CLUSTER.TestExclude.v1", "ArquÈtipo de teste", items);
+        items.add(new Element("openEHR-EHR-ELEMENT.TestDvBoolean.v1", "Arqu√àtipo de teste DVTEXT", new DvBoolean(true)));
+        Cluster cluster = new Cluster("openEHR-EHR-CLUSTER.TestExclude.v1", "Arqu√àtipo de teste", items);
 
         List<ValidationError> errors = null;
         errors = this.validator.validate(cluster);
@@ -179,8 +176,8 @@ public class DataValidatorImplTest extends PepBaseTest {
     @Test
     public void testExclude() throws Exception {
         List items = new ArrayList();
-        items.add(new Element("openEHR-EHR-ELEMENT.test_dvtext.v1", "ArquÈtipo de teste DVTEXT", new DvText("Universidade Federal de Goi·s")));
-        Cluster cluster = new Cluster("openEHR-EHR-CLUSTER.TestExclude.v1", "ArquÈtipo de teste", items);
+        items.add(new Element("openEHR-EHR-ELEMENT.test_dvtext.v1", "Arqu√àtipo de teste DVTEXT", new DvText("Universidade Federal de Goi¬∑s")));
+        Cluster cluster = new Cluster("openEHR-EHR-CLUSTER.TestExclude.v1", "Arqu√àtipo de teste", items);
 
         List<ValidationError> errors = null;
         errors = this.validator.validate(cluster);
@@ -220,7 +217,7 @@ public class DataValidatorImplTest extends PepBaseTest {
         Person person = this.getPerson();
         Address address = getContact();
         //adiciona um contaco invalido, ele possui o mesmo identificador(at0003)
-        //do outro contact que est· na lista.
+        //do outro contact que est¬∑ na lista.
         List listAddresses = new ArrayList();
         listAddresses.add(address);
         Contact contactComMesmoArcheptyNodeId = new Contact(null, "at0003", new DvText("Contact"), null, null, null, person, null, listAddresses);
@@ -430,12 +427,12 @@ public class DataValidatorImplTest extends PepBaseTest {
     }
 
     /**
-     * Respons·vel por verificar se o validador est· realmente pegando o erro.
-     * Para isso È preciso de um Person  com algum inconsistÍncia em relaÁ„o ‡s
-     * restriÁıes que o arquÈtipo impoem e o ErrorType equivalente ‡ inconsistÍncia.
-     * @param errortypeEsperado Tipo de erro que dever· ser compativel com inconsistÍncia
+     * Respons¬∑vel por verificar se o validador est¬∑ realmente pegando o erro.
+     * Para isso √à preciso de um Person  com algum inconsist√çncia em rela√Å‚Äûo ‚Ä°s
+     * restri√Åƒ±es que o arqu√àtipo impoem e o ErrorType equivalente ‚Ä° inconsist√çncia.
+     * @param errortypeEsperado Tipo de erro que dever¬∑ ser compativel com inconsist√çncia
      * injetada no person.
-     * @param person Objeto com alguma inconsistÍncia para ser testado.
+     * @param person Objeto com alguma inconsist√çncia para ser testado.
      * @throws Exception
      */
     private boolean erroEsperadoFoiEncontrado(ErrorType errortypeEsperado, Person person) throws Exception {
