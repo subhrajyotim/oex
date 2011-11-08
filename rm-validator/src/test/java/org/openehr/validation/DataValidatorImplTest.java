@@ -58,17 +58,12 @@ public class DataValidatorImplTest extends PepBaseTest {
         List<ValidationError> errors = null;
 
         errors = this.validator.validate(element, archetype);
-        System.out.println("");
-        for (ValidationError validationError : errors) {
-            System.out.println(validationError.getErrorType());
-        }
         assertTrue("The list must not contain error", errors.isEmpty());
     }
 
     @Test
     public void testTodosTiposPrimitivos() throws Exception {
         List todosTiposPrimitivos = new ArrayList();
-        System.out.println("");
         todosTiposPrimitivos.add(new Element("at0001", "boolean", new DvBoolean(true)));//CBOOLEAN
 
         todosTiposPrimitivos.add(new Element("at0003", "datetime", new DvDateTime()));
@@ -85,9 +80,6 @@ public class DataValidatorImplTest extends PepBaseTest {
         List<ValidationError> errors = null;
 
         errors = this.validator.validate(cluster, archetype);
-
-
-        System.out.println(errors.isEmpty());
         assertFalse("The list must not contain error", errors.isEmpty());
     }
 
@@ -125,9 +117,6 @@ public class DataValidatorImplTest extends PepBaseTest {
         List<ValidationError> errors = null;
 
         errors = this.validator.validate(element, archetype);
-        for (ValidationError validationError : errors) {
-            System.out.println(validationError.getErrorType());
-        }
         assertFalse(errors.isEmpty());
     }
 
@@ -151,11 +140,6 @@ public class DataValidatorImplTest extends PepBaseTest {
 
         List<ValidationError> errors = null;
         errors = this.validator.validate(person, archetype);
-
-        for (ValidationError validationError : errors) {
-            System.out.println("--" + validationError.getErrorType());
-        }
-
         assertTrue(errors.isEmpty());
     }
 
@@ -167,9 +151,6 @@ public class DataValidatorImplTest extends PepBaseTest {
 
         List<ValidationError> errors = null;
         errors = this.validator.validate(cluster);
-        for (ValidationError validationError : errors) {
-            System.out.println(validationError.getErrorType());
-        }
         assertTrue(errors.isEmpty());
     }
 
