@@ -285,8 +285,8 @@ public class PepBaseTest {
          */
         Cluster personAdditionalDataIso = null;
         List personAdditionalList = new ArrayList();
-        DvCodedText dvCodeTextSex = new DvCodedText("Masculino", new CodePhrase("local", "at0010"));
-        Element sex = new Element("at0001", new DvText("sexo"), dvCodeTextSex);
+        DvCodedText sexo = new DvCodedText("Masculino", new CodePhrase("local", "at0010"));
+        Element sex = new Element("at0001", new DvText("sexo"), sexo);
         personAdditionalList.add(sex);
         DvText textNomeMae = new DvText("Madre Teresa");
         Element elementNomeMae = new Element("at0002", new DvText("Nome da mãe"), textNomeMae);

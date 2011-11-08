@@ -51,6 +51,7 @@ public class DataValidatorImpl implements DataValidator {
      * @param data
      * @return errors empty if data pass validation without error
      */
+    @Override
     public List<ValidationError> validate(Locatable data) throws Exception {
         String archetypeId = data.getArchetypeNodeId();
         Archetype archetype = new PepArchetypeRepository().getArchetype(archetypeId);
@@ -67,6 +68,7 @@ public class DataValidatorImpl implements DataValidator {
      * @param archetype
      * @return errors empty if data pass validation without error
      */
+    @Override
     public List<ValidationError> validate(Locatable data, Archetype archetype)
             throws Exception {
 
