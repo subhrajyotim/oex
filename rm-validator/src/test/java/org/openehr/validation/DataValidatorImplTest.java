@@ -2,7 +2,7 @@ package org.openehr.validation;
 
 import static org.junit.Assert.*;
 import br.ufg.inf.fs.pep.archetypes.ArchetypeRepository;
-import br.ufg.inf.fs.pep.archetypes.PepArchetypeRepository;
+import br.ufg.inf.fs.pep.archetypes.ArchetypeRepositoryFactory;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +42,7 @@ public class DataValidatorImplTest extends PepBaseTest {
 
     @Before
     public void setUp() {
-        this.repository = new PepArchetypeRepository();
+        this.repository = ArchetypeRepositoryFactory.getInstance();
         this.validator = new DataValidatorImpl();
     }
 
