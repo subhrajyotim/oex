@@ -14,7 +14,7 @@
  */
 package org.openehr.validation;
 
-import br.ufg.inf.fs.pep.archetypes.PepArchetypeRepository;
+import br.ufg.inf.fs.pep.archetypes.ArchetypeRepositoryFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -54,7 +54,7 @@ public class DataValidatorImpl implements DataValidator {
     @Override
     public List<ValidationError> validate(Locatable data) throws Exception {
         String archetypeId = data.getArchetypeNodeId();
-        Archetype archetype = new PepArchetypeRepository().getArchetype(archetypeId);
+        Archetype archetype = ArchetypeRepositoryFactory.getInstance().getArchetype(archetypeId);
         if (archetype == null) {
             throw new Exception("Archetype " + archetypeId + " not found.");
         }
@@ -410,7 +410,7 @@ public class DataValidatorImpl implements DataValidator {
         log.debug("validate ArchetypeSlot..");
         Locatable lo = (Locatable) value;
         String archetypeId = lo.getArchetypeNodeId();
-        Archetype archetype = new PepArchetypeRepository().getArchetype(archetypeId);
+        Archetype archetype = ArchetypeRepositoryFactory.getInstance().getArchetype(archetypeId);
 
         List<ValidationError> errorsSlot = new ArrayList<ValidationError>();
 
