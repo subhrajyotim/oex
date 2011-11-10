@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
 import org.apache.log4j.Logger;
@@ -35,6 +36,7 @@ import org.openehr.am.archetype.ontology.OntologyDefinitions;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.rm.support.basic.Interval;
 import org.openehr.rm.support.identification.ArchetypeID;
+import org.openehr.validation.exceptions.GenericValidationException;
 
 /**
  * Implementation of an archetype-based data validator
@@ -52,11 +54,11 @@ public class DataValidatorImpl implements DataValidator {
      * @return errors empty if data pass validation without error
      */
     @Override
-    public List<ValidationError> validate(Locatable data) throws Exception {
+    public List<ValidationError> validate(Locatable data) throws GenericValidationException {
         String archetypeId = data.getArchetypeNodeId();
         Archetype archetype = ArchetypeRepositoryFactory.getInstance().getArchetype(archetypeId);
         if (archetype == null) {
-            throw new Exception("Archetype " + archetypeId + " not found.");
+            throw new GenericValidationException("Archetype " + archetypeId + " not found.");
         }
         return this.validate(data, archetype);
     }
@@ -69,8 +71,7 @@ public class DataValidatorImpl implements DataValidator {
      * @return errors empty if data pass validation without error
      */
     @Override
-    public List<ValidationError> validate(Locatable data, Archetype archetype)
-            throws Exception {
+    public List<ValidationError> validate(Locatable data, Archetype archetype) throws GenericValidationException{
 
         log.debug("validate archetype: " + archetype.getArchetypeId());
 
@@ -81,7 +82,7 @@ public class DataValidatorImpl implements DataValidator {
     }
 
     void validateComplex(CComplexObject ccobj, Object object, String path,
-            List<ValidationError> errors, Archetype archetype) throws Exception {
+            List<ValidationError> errors, Archetype archetype) throws GenericValidationException{
 
         log.debug("validate CComplexObject of type: " + ccobj.getRmTypeName()
                 + " at path: " + path);
@@ -92,7 +93,19 @@ public class DataValidatorImpl implements DataValidator {
         // loop through the attributes
         for (CAttribute cattr : ccobj.getAttributes()) {
 
-            Object attribute = fetchAttribute(object, cattr);
+
+            Object attribute = null;
+            try {
+                attribute = fetchAttribute(object, cattr);
+            } catch (NoSuchMethodException ex) {
+                throw new GenericValidationException(archetype, path, "Atributo não existe");
+            } catch (IllegalAccessException ex) {
+                throw new GenericValidationException(archetype, path, "Atributo não acessível");
+            } catch (IllegalArgumentException ex) {
+                throw new GenericValidationException(archetype, path, "Argumento ilegal");
+            } catch (InvocationTargetException ex) {
+                throw new GenericValidationException(archetype, path, "InvocationTargetException");
+            }
 
             log.debug("attribute " + cattr.getRmAttributeName()
                     + " isRequired: " + cattr.isRequired()
@@ -132,7 +145,7 @@ public class DataValidatorImpl implements DataValidator {
     }
 
     void validateSingleAttribute(CSingleAttribute cattr, Object attribute,
-            String path, List<ValidationError> errors, Archetype archetype) throws Exception {
+            String path, List<ValidationError> errors, Archetype archetype) throws GenericValidationException{
 
         log.debug("validateSingleAttribute..");
 
@@ -161,8 +174,7 @@ public class DataValidatorImpl implements DataValidator {
     }
 
     void validateMultipleAttribute(CMultipleAttribute cattr, Object attribute,
-            String path, List<ValidationError> errors, Archetype archetype)
-            throws Exception {
+            String path, List<ValidationError> errors, Archetype archetype) throws GenericValidationException{
 
         log.debug("validateMultipleAttribute..");
 
@@ -310,7 +322,7 @@ public class DataValidatorImpl implements DataValidator {
     }
 
     void validateObject(CObject cobj, Object value, String path,
-            List<ValidationError> errors, Archetype archetype) throws Exception {
+            List<ValidationError> errors, Archetype archetype) throws GenericValidationException {
 
         log.debug("validate CObject..");
         Class klass = value.getClass();
@@ -405,7 +417,7 @@ public class DataValidatorImpl implements DataValidator {
     }
 
     void validateArchetypeSlot(ArchetypeSlot slot, Object value, String path,
-            List<ValidationError> errors) throws Exception {
+            List<ValidationError> errors) throws GenericValidationException{
 
         log.debug("validate ArchetypeSlot..");
         Locatable lo = (Locatable) value;
@@ -426,7 +438,7 @@ public class DataValidatorImpl implements DataValidator {
     }
 
     void validateArchetypeInternalRef(Archetype archetype, ArchetypeInternalRef internalRef, Object value, String path,
-            List<ValidationError> errors) throws Exception {
+            List<ValidationError> errors) throws GenericValidationException{
         log.debug("validate ArchetypeInternalRef..");
         ArchetypeConstraint constraint = archetype.node(internalRef.getTargetPath());
         if (constraint instanceof CSingleAttribute) {
@@ -476,7 +488,7 @@ public class DataValidatorImpl implements DataValidator {
         return false;
     }
 
-    Object fetchAttribute(Object object, CAttribute cattr) throws Exception {
+    Object fetchAttribute(Object object, CAttribute cattr) throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
         String[] names = cattr.getRmAttributeName().split("_");
         StringBuilder attrName = new StringBuilder();
         for (String name : names) {
