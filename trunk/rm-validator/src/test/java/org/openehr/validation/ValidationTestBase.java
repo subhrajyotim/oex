@@ -17,6 +17,7 @@ package org.openehr.validation;
 import java.io.InputStream;
 import java.util.List;
 
+import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.rm.RMObject;
 import org.openehr.rm.binding.DADLBinding;
@@ -29,6 +30,10 @@ import se.acode.openehr.parser.ADLParser;
 import junit.framework.TestCase;
 
 public class ValidationTestBase extends TestCase {
+	
+    @Test
+    public void testBase() {
+    }
 	
     @Override
 	protected void tearDown() {
