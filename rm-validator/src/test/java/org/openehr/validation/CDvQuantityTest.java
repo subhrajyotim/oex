@@ -16,6 +16,7 @@ package org.openehr.validation;
 
 public class CDvQuantityTest extends ValidationTestBase {
 
+    @Override
 	public void setUp() throws Exception {
 		super.setUp();
 		loadArchetype("openEHR-EHR-OBSERVATION.blood_pressure_test1.v1.adl");		
