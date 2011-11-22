@@ -138,7 +138,7 @@ public class PepBaseTest {
         DvText nameIdentifierDvCodedText = new DvText("legal identity");
         
         List items = new ArrayList();
-        Element givenName = newItemText("at0002", "Name given", "Edson");
+        Element givenName = newItemText("at0002", "Given name", "Edson");
         items.add(givenName);
         
         Element familyName = newItemText("at0003", "family name", "Nascimento");
