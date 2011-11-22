@@ -24,6 +24,7 @@ import org.openehr.rm.demographic.PartyIdentity;
 import org.openehr.rm.demographic.Person;
 import org.openehr.rm.support.identification.ArchetypeID;
 import org.openehr.rm.support.identification.ObjectVersionID;
+import org.openehr.rm.support.identification.UIDBasedID;
 
 /**
  *
@@ -124,37 +125,55 @@ public class PepBaseTest {
         Address address = new Address(null, "openEHR-DEMOGRAPHIC-ADDRESS.address.v1", tipoEnderecoCodedText, null, null, null, null, enderecoItemTree);
         return address;
     }
+    
+    private Element newItemText(String nodeId, String name, String value) {
+        return new Element(nodeId, name, new DvText(value));
+    }
 
     protected PartyIdentity getPersonName(Person person) {
         /**
-         * Party Idendity
+         * Party Identity
          * openEHR-DEMOGRAPHIC-PARTY_IDENTITY.person_name.v1
          */
         DvText nameIdentifierDvCodedText = new DvText("legal identity");
-        List nameComponentsList = new ArrayList();
-        Element nameGivenElement = new Element("at0002", "Name given", new DvText("Edson"));
-        nameComponentsList.add(nameGivenElement);
-        Element familyNameElement = new Element("at0003", "family name", new DvText("Nascimento"));
-        nameComponentsList.add(familyNameElement);
-        Element nameTitleElement = new Element("at0004", "Name title", new DvText("Sr."));
-        nameComponentsList.add(nameTitleElement);
+        
+        List items = new ArrayList();
+        Element givenName = newItemText("at0002", "Name given", "Edson");
+        items.add(givenName);
+        
+        Element familyName = newItemText("at0003", "family name", "Nascimento");
+        items.add(familyName);
+        
+        Element title = newItemText("at0004", "Name title", "Sr.");
+        items.add(title);
+        
         Element periodIntervalElement = new Element("at0019", "Period Interval", new DvInterval<DvDate>(new DvDate(2011, 01), new DvDate(2111, 12)));
-        nameComponentsList.add(periodIntervalElement);
+        items.add(periodIntervalElement);
         Element IdentifierElement = new Element("at0020", "Usage Identifier", new DvIdentifier("Receita Federal", "PF", "111.111.111-11", "CPF"));
-        nameComponentsList.add(IdentifierElement);
+        items.add(IdentifierElement);
         List alternativeNameRepresentationList = new ArrayList();
         Element usoRepresentativoElement = new Element("at0021", "Usage Representative", new DvText("Uso representativo"));
         alternativeNameRepresentationList.add(usoRepresentativoElement);
         Element usoAlternativoElement = new Element("at0022", "Usage Alternativo", new DvText("Uso alternativo"));
         alternativeNameRepresentationList.add(usoAlternativoElement);
         Cluster nameRepresentationCluster = new Cluster("at0007", "Alternative Name Representation", alternativeNameRepresentationList);
-        nameComponentsList.add(nameRepresentationCluster);
+        items.add(nameRepresentationCluster);
         Element preferedNameElement = new Element("at0008", "Prefered Name", new DvBoolean(true));
-        nameComponentsList.add(preferedNameElement);
-        Element fullNameElement = new Element("at0010", "Full Name", new DvText("Edson Arantes do Nascimento"));
-        nameComponentsList.add(fullNameElement);
-        ItemTree nameComponentsItemTree = new ItemTree("at0001", "Name components", nameComponentsList);
-        PartyIdentity partyIdentity = new PartyIdentity(null, "openEHR-DEMOGRAPHIC-PARTY_IDENTITY.person_name.v1", nameIdentifierDvCodedText, new Archetyped(new ArchetypeID("openEHR-DEMOGRAPHIC-PARTY_IDENTITY.person_name.v1"), "1.0.0.0"), null, null, person, nameComponentsItemTree);
+        items.add(preferedNameElement);
+        
+        String nomeCompleto = "Edson Arantes do Nascimento";
+        Element fullName = newItemText("at0010", "Full Name", nomeCompleto);
+        items.add(fullName);
+        
+        ItemTree details = new ItemTree("at0001", "Name components", items);
+        
+        UIDBasedID basedId = null;
+        String aNodeId = "openEHR-DEMOGRAPHIC-PARTY_IDENTITY.person_name.v1";
+        ArchetypeID archetypeId = new ArchetypeID(aNodeId);
+        Archetyped archetyped = new Archetyped(archetypeId, "1.0.0.0");
+        PartyIdentity partyIdentity = new PartyIdentity(basedId, aNodeId, 
+                nameIdentifierDvCodedText, archetyped, null, null, 
+                person, details);
         return partyIdentity;
     }
 
