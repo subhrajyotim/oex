@@ -1,6 +1,6 @@
-
 package org.openehr.validation;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,258 +100,215 @@ import org.openehr.rm.support.terminology.TerminologyAccess;
 import org.openehr.rm.support.terminology.TerminologyService;
 
 /**
- *
+ * 
  * @author Danillo Guimarães
  */
-public enum KnownTypes {
-    //Container Types
-    LIST( List.class ),
-    SET( Set.class ),
+enum KnownTypes {
+	// Container Types
+	LIST(List.class), SET(Set.class),
 
-    //RM Types
-    PARTYSELF( PartySelf.class ),
-    ARCHETYPED( Archetyped.class ),
-    ATTESTATION( Attestation.class ),
-    AUDITDETAILS( AuditDetails.class ),
-    PARTICIPATION( Participation.class ),
-    PARTYIDENTIFIED( PartyIdentified.class ),
-    PARTYRELATED( PartyRelated.class ),
-    ORIGINALVERSION( OriginalVersion.class ),
-    CONTRIBUTION( Contribution.class ),
-    TERMINOLOGYID( TerminologyID.class ),
-    ARCHETYPEID( ArchetypeID.class ),
-    HIEROBJECTID( HierObjectID.class ),
-    ACCESSGROUPREF( AccessGroupRef.class ),
-    GENERICID( GenericID.class ),
-    LOCATABLEREF( LocatableRef.class ),
-    OBJECTVERSIONID( ObjectVersionID.class ),
-    OBJECTREF( ObjectRef.class ),
-    PARTYREF( PartyRef.class ),
-    TEMPLATEID( TemplateID.class ),
-    VERSIONTREEID( VersionTreeID.class ),
-    DVBOOLEAN( DvBoolean.class ),
-    DVSTATE( DvState.class ),
-    DVIDENTIFIER( DvIdentifier.class ),
-    DVTEXT( DvText.class ),
-    DVCODEDTEXT( DvCodedText.class ),
-    DVPARAGRAPH( DvParagraph.class ),
-    CODEPHRASE( CodePhrase.class ),
-    DVCOUNT(DvCount.class),
-    DVORDINAL(DvOrdinal.class),
-    DVQUANTITY(DvQuantity.class),
-    DVINTERVAL(DvInterval.class),
-    DVPROPORTION(DvProportion.class),
-    DVDATE(DvDate.class),
-    DVDATETIME(DvDateTime.class),
-    DVTIME(DvTime.class),
-    DVDURATION(DvDuration.class),
-    DVPARSABLE(DvParsable.class),
-    DVMULTIMEDIA(DvMultimedia.class),
-    ELEMENT(Element.class),
-    CLUSTER(Cluster.class),
-    ITEMSINGLE(ItemSingle.class),
-    ITEMLIST(ItemList.class),
-    ITEMTABLE(ItemTable.class),
-    ITEMTREE(ItemTree.class),
-    HISTORY(History.class),
-    INTERVALEVENT(IntervalEvent.class),
-    POINTEVENT(PointEvent.class),
-    ACTION(Action.class),
-    ACTIVITY(Activity.class),
-    EVALUATION(Evaluation.class),
-    INSTRUCTION(Instruction.class),
-    INSTRUCTIONDETAILS(InstructionDetails.class),
-    OBSERVATION(Observation.class),
-    ADMINENTRY(AdminEntry.class),
-    SECTION(Section.class),
-    COMPOSITION(Composition.class),
-    EVENTCONTEXT(EventContext.class),
-    ADDRESS(Address.class),
-    PARTYIDENTITY(PartyIdentity.class),
-    AGENT(Agent.class),
-    GROUP(Group.class),
-    ORGANISATION(Organisation.class),
-    PERSON(Person.class),
-    CONTACT(Contact.class),
-    PARTYRELATIONSHIP(PartyRelationship.class),
-    ROLE(Role.class),
-    CAPABILITY(Capability.class),
+	// RM Types
+	PARTYSELF(PartySelf.class), ARCHETYPED(Archetyped.class), ATTESTATION(
+			Attestation.class), AUDITDETAILS(AuditDetails.class), PARTICIPATION(
+			Participation.class), PARTYIDENTIFIED(PartyIdentified.class), PARTYRELATED(
+			PartyRelated.class), ORIGINALVERSION(OriginalVersion.class), CONTRIBUTION(
+			Contribution.class), TERMINOLOGYID(TerminologyID.class), ARCHETYPEID(
+			ArchetypeID.class), HIEROBJECTID(HierObjectID.class), ACCESSGROUPREF(
+			AccessGroupRef.class), GENERICID(GenericID.class), LOCATABLEREF(
+			LocatableRef.class), OBJECTVERSIONID(ObjectVersionID.class), OBJECTREF(
+			ObjectRef.class), PARTYREF(PartyRef.class), TEMPLATEID(
+			TemplateID.class), VERSIONTREEID(VersionTreeID.class), DVBOOLEAN(
+			DvBoolean.class), DVSTATE(DvState.class), DVIDENTIFIER(
+			DvIdentifier.class), DVTEXT(DvText.class), DVCODEDTEXT(
+			DvCodedText.class), DVPARAGRAPH(DvParagraph.class), CODEPHRASE(
+			CodePhrase.class), DVCOUNT(DvCount.class), DVORDINAL(
+			DvOrdinal.class), DVQUANTITY(DvQuantity.class), DVINTERVAL(
+			DvInterval.class), DVPROPORTION(DvProportion.class), DVDATE(
+			DvDate.class), DVDATETIME(DvDateTime.class), DVTIME(DvTime.class), DVDURATION(
+			DvDuration.class), DVPARSABLE(DvParsable.class), DVMULTIMEDIA(
+			DvMultimedia.class), ELEMENT(Element.class), CLUSTER(Cluster.class), ITEMSINGLE(
+			ItemSingle.class), ITEMLIST(ItemList.class), ITEMTABLE(
+			ItemTable.class), ITEMTREE(ItemTree.class), HISTORY(History.class), INTERVALEVENT(
+			IntervalEvent.class), POINTEVENT(PointEvent.class), ACTION(
+			Action.class), ACTIVITY(Activity.class), EVALUATION(
+			Evaluation.class), INSTRUCTION(Instruction.class), INSTRUCTIONDETAILS(
+			InstructionDetails.class), OBSERVATION(Observation.class), ADMINENTRY(
+			AdminEntry.class), SECTION(Section.class), COMPOSITION(
+			Composition.class), EVENTCONTEXT(EventContext.class), ADDRESS(
+			Address.class), PARTYIDENTITY(PartyIdentity.class), AGENT(
+			Agent.class), GROUP(Group.class), ORGANISATION(Organisation.class), PERSON(
+			Person.class), CONTACT(Contact.class), PARTYRELATIONSHIP(
+			PartyRelationship.class), ROLE(Role.class), CAPABILITY(
+			Capability.class),
 
-    //Extra Rm types
-    EHRSTATUS(EHRStatus.class),
+	// Extra Rm types
+	EHRSTATUS(EHRStatus.class),
 
-    //Basic types
-    BYTE(byte.class),
-    BOOLEAN(boolean.class),
-    CHAR(char.class),
-    DOUBLE(double.class),
-    FLOAT(float.class),
-    INT(int.class),
-    LONG(long.class),
-    SHORT(short.class),
-    STRING(String.class),
-    INTEGER(Integer.class),
+	// Basic types
+	BYTE(byte.class), BOOLEAN(boolean.class), CHAR(char.class), DOUBLE(
+			double.class), FLOAT(float.class), INT(int.class), LONG(long.class), SHORT(
+			short.class), STRING(String.class), INTEGER(Integer.class),
 
-    //Abstract types
-    AUTHOREDRESOURCE(AuthoredResource.class),
-    DATASTRUCTURE(DataStructure.class),
-    DATAVALUE(DataValue.class),
-    DVABSOLUTEQUANTITY(DvAbsoluteQuantity.class),
-    DVAMOUNT(DvAmount.class),
-    DVENCAPSULATED(DvEncapsulated.class),
-    DVORDERED(DvOrdered.class),
-    DVQUANTIFIED(DvQuantified.class),
-    DVTEMPORAL(DvTemporal.class),
-    DVTIMESPECIFICATION(DvTimeSpecification.class),
-    EVENT(Event.class),
-    ITEM(Item.class),
-    ITEMSTRUCTURE(ItemStructure.class),
-    LOCATABLE(Locatable.class),
-    OBJECTID(ObjectID.class),
-    PARTYPROXY(PartyProxy.class),
-    PATHABLE(Pathable.class),
-    RMOBJECT(RMObject.class),
-    UIDBASEDID(UIDBasedID.class),
-    VERSION(Version.class),
+	// Abstract types
+	AUTHOREDRESOURCE(AuthoredResource.class), DATASTRUCTURE(DataStructure.class), DATAVALUE(
+			DataValue.class), DVABSOLUTEQUANTITY(DvAbsoluteQuantity.class), DVAMOUNT(
+			DvAmount.class), DVENCAPSULATED(DvEncapsulated.class), DVORDERED(
+			DvOrdered.class), DVQUANTIFIED(DvQuantified.class), DVTEMPORAL(
+			DvTemporal.class), DVTIMESPECIFICATION(DvTimeSpecification.class), EVENT(
+			Event.class), ITEM(Item.class), ITEMSTRUCTURE(ItemStructure.class), LOCATABLE(
+			Locatable.class), OBJECTID(ObjectID.class), PARTYPROXY(
+			PartyProxy.class), PATHABLE(Pathable.class), RMOBJECT(
+			RMObject.class), UIDBASEDID(UIDBasedID.class), VERSION(
+			Version.class),
 
-    //UID Identifiers
-    UUID( org.openehr.rm.support.identification.UUID.class ),
-    INTERNETID(InternetID.class),
-    ISO_OID( org.openehr.rm.support.identification.ISO_OID.class ),
+	// UID Identifiers
+	UUID(org.openehr.rm.support.identification.UUID.class), INTERNETID(
+			InternetID.class), ISO_OID(
+			org.openehr.rm.support.identification.ISO_OID.class),
 
-    // Interfaces
-    TERMINOLOGYSERVICE(TerminologyService.class),
-    TERMINOLOGYACCESS(TerminologyAccess.class),
-    CODESETACCESS(CodeSetAccess.class),
-    MEASUREMENTSERVICE(MeasurementService.class);
+	// Interfaces
+	TERMINOLOGYSERVICE(TerminologyService.class), TERMINOLOGYACCESS(
+			TerminologyAccess.class), CODESETACCESS(CodeSetAccess.class), MEASUREMENTSERVICE(
+			MeasurementService.class);
 
-    private final String value;
-    private final Class clazz;
-    private KnownTypes( Class clazz ) {
-        this.value = clazz.getSimpleName().toUpperCase();
-        this.clazz = clazz;
-    }
+	private final String value;
+	private final Class clazz;
 
-    private static KnownTypes[] basicTypes = { BYTE, BOOLEAN, CHAR,
-    DOUBLE, FLOAT, INT, LONG, SHORT, STRING, INTEGER };
+	private KnownTypes(Class clazz) {
+		this.value = clazz.getSimpleName().toUpperCase();
+		this.clazz = clazz;
+	}
 
-    private static KnownTypes[] abstractTypes = { AUTHOREDRESOURCE, DATASTRUCTURE,
-            DATAVALUE, DVABSOLUTEQUANTITY, DVAMOUNT, DVENCAPSULATED, DVORDERED,
-            DVQUANTIFIED, DVTEMPORAL, DVTIMESPECIFICATION, EVENT, ITEM,
-            ITEMSTRUCTURE, LOCATABLE, OBJECTID, PARTYPROXY, PATHABLE,
-            RMOBJECT, UIDBASEDID, VERSION };
+	private static KnownTypes[] basicTypes = { BYTE, BOOLEAN, CHAR, DOUBLE,
+			FLOAT, INT, LONG, SHORT, STRING, INTEGER };
 
-    private static KnownTypes[] UIDIdentifiers = {UUID, INTERNETID, ISO_OID};
+	private static KnownTypes[] abstractTypes = { AUTHOREDRESOURCE,
+			DATASTRUCTURE, DATAVALUE, DVABSOLUTEQUANTITY, DVAMOUNT,
+			DVENCAPSULATED, DVORDERED, DVQUANTIFIED, DVTEMPORAL,
+			DVTIMESPECIFICATION, EVENT, ITEM, ITEMSTRUCTURE, LOCATABLE,
+			OBJECTID, PARTYPROXY, PATHABLE, RMOBJECT, UIDBASEDID, VERSION };
 
-    private static KnownTypes[] Interfaces = {TERMINOLOGYSERVICE, TERMINOLOGYACCESS, CODESETACCESS, MEASUREMENTSERVICE};
+	private static KnownTypes[] UIDIdentifiers = { UUID, INTERNETID, ISO_OID };
 
-    private static KnownTypes[] UIDBasedIds = { OBJECTVERSIONID, HIEROBJECTID };
+	private static KnownTypes[] Interfaces = { TERMINOLOGYSERVICE,
+			TERMINOLOGYACCESS, CODESETACCESS, MEASUREMENTSERVICE };
 
-    private static KnownTypes[] rmTypes = { PARTYSELF, ARCHETYPED, ATTESTATION,
-            AUDITDETAILS, PARTICIPATION, PARTYIDENTIFIED, PARTYRELATED,
-            PARTYSELF, ORIGINALVERSION, CONTRIBUTION, TERMINOLOGYID,
-            ARCHETYPEID, HIEROBJECTID, ACCESSGROUPREF, GENERICID, INTERNETID,
-            ISO_OID, LOCATABLEREF, OBJECTVERSIONID, OBJECTREF, PARTYREF,
-            TEMPLATEID, TERMINOLOGYID, UUID, VERSIONTREEID, DVBOOLEAN, DVSTATE,
-            DVIDENTIFIER, DVTEXT, DVCODEDTEXT, DVPARAGRAPH, CODEPHRASE, DVCOUNT,
-            DVORDINAL, DVQUANTITY, DVINTERVAL, DVPROPORTION, DVDATE, DVDATETIME,
-            DVTIME, DVDURATION, DVPARSABLE, DVMULTIMEDIA, ELEMENT, CLUSTER,
-            ITEMSINGLE, ITEMLIST, ITEMTABLE, ITEMTREE, HISTORY, INTERVALEVENT,
-            POINTEVENT, ACTION, ACTIVITY, EVALUATION, INSTRUCTION,
-            INSTRUCTIONDETAILS, OBSERVATION, ADMINENTRY, SECTION, COMPOSITION,
-            EVENTCONTEXT, ADDRESS, PARTYIDENTITY, AGENT, GROUP, ORGANISATION,
-            PERSON, CONTACT, PARTYRELATIONSHIP, ROLE, CAPABILITY, EHRSTATUS };
+	private static KnownTypes[] UIDBasedIds = { OBJECTVERSIONID, HIEROBJECTID };
 
-    private static KnownTypes[] containerTypes = { LIST, SET };
+	private static KnownTypes[] rmTypes = { PARTYSELF, ARCHETYPED, ATTESTATION,
+			AUDITDETAILS, PARTICIPATION, PARTYIDENTIFIED, PARTYRELATED,
+			PARTYSELF, ORIGINALVERSION, CONTRIBUTION, TERMINOLOGYID,
+			ARCHETYPEID, HIEROBJECTID, ACCESSGROUPREF, GENERICID, INTERNETID,
+			ISO_OID, LOCATABLEREF, OBJECTVERSIONID, OBJECTREF, PARTYREF,
+			TEMPLATEID, TERMINOLOGYID, UUID, VERSIONTREEID, DVBOOLEAN, DVSTATE,
+			DVIDENTIFIER, DVTEXT, DVCODEDTEXT, DVPARAGRAPH, CODEPHRASE,
+			DVCOUNT, DVORDINAL, DVQUANTITY, DVINTERVAL, DVPROPORTION, DVDATE,
+			DVDATETIME, DVTIME, DVDURATION, DVPARSABLE, DVMULTIMEDIA, ELEMENT,
+			CLUSTER, ITEMSINGLE, ITEMLIST, ITEMTABLE, ITEMTREE, HISTORY,
+			INTERVALEVENT, POINTEVENT, ACTION, ACTIVITY, EVALUATION,
+			INSTRUCTION, INSTRUCTIONDETAILS, OBSERVATION, ADMINENTRY, SECTION,
+			COMPOSITION, EVENTCONTEXT, ADDRESS, PARTYIDENTITY, AGENT, GROUP,
+			ORGANISATION, PERSON, CONTACT, PARTYRELATIONSHIP, ROLE, CAPABILITY,
+			EHRSTATUS };
 
-    public static Map< String, Class > getUidBasedIds(){
-        Map< String, Class > types = new HashMap<String, Class>();
-        for (int i = 0; i < UIDBasedIds.length; i++) {
-            types.put( UIDBasedIds[i].getValue(), UIDBasedIds[i].getClazz());
-        }
-        return types;
-    }
+	private static KnownTypes[] containerTypes = { LIST, SET };
 
-    public static Map< String, Class > getBasicTypes(){
-        Map< String, Class > types = new HashMap<String, Class>();
-        for (int i = 0; i < basicTypes.length; i++) {
-            types.put( basicTypes[i].getValue(), basicTypes[i].getClazz());
-        }
-        return types;
-    }
+	@SuppressWarnings("rawtypes")
+	public static Map<String, Class> getUidBasedIds() {
+		Map<String, Class> types = new HashMap<String, Class>();
+		for (int i = 0; i < UIDBasedIds.length; i++) {
+			types.put(UIDBasedIds[i].getValue(), UIDBasedIds[i].getClazz());
+		}
+		return types;
+	}
 
-    public static Map< String, Class > getAbstractTypes(){
-        Map< String, Class > types = new HashMap<String, Class>();
-        for (int i = 0; i < abstractTypes.length; i++) {
-            types.put( abstractTypes[i].getValue(), abstractTypes[i].getClazz());
-        }
-        return types;
-    }
+	public static Map<String, Class> getBasicTypes() {
+		Map<String, Class> types = new HashMap<String, Class>();
+		for (int i = 0; i < basicTypes.length; i++) {
+			types.put(basicTypes[i].getValue(), basicTypes[i].getClazz());
+		}
+		return types;
+	}
 
-    public static Map< String, Class > getUidIdentifiers(){
-        Map< String, Class > types = new HashMap<String, Class>();
-        for (int i = 0; i < UIDIdentifiers.length; i++) {
-            types.put( UIDIdentifiers[i].getValue(), UIDIdentifiers[i].getClazz());
-        }
-        return types;
-    }
+	public static Map<String, Class> getAbstractTypes() {
+		Map<String, Class> types = new HashMap<String, Class>();
+		for (int i = 0; i < abstractTypes.length; i++) {
+			types.put(abstractTypes[i].getValue(), abstractTypes[i].getClazz());
+		}
+		return types;
+	}
 
-    public static Map< String, Class > getInterfacesTypes(){
-        Map< String, Class > types = new HashMap<String, Class>();
-        for (int i = 0; i < Interfaces.length; i++) {
-            types.put( Interfaces[i].getValue(), Interfaces[i].getClazz());
-        }
-        return types;
-    }
+	public static Map<String, Class> getUidIdentifiers() {
+		Map<String, Class> types = new HashMap<String, Class>();
+		for (int i = 0; i < UIDIdentifiers.length; i++) {
+			types.put(UIDIdentifiers[i].getValue(),
+					UIDIdentifiers[i].getClazz());
+		}
+		return types;
+	}
 
-    public static Map< String, Class > getContainerTypes(){
-        Map< String, Class > types = new HashMap<String, Class>();
-        for (int i = 0; i < containerTypes.length; i++) {
-            types.put( containerTypes[i].getValue(), containerTypes[i].getClazz());
-        }
-        return types;
-    }
+	public static Map<String, Class> getInterfacesTypes() {
+		Map<String, Class> types = new HashMap<String, Class>();
+		for (int i = 0; i < Interfaces.length; i++) {
+			types.put(Interfaces[i].getValue(), Interfaces[i].getClazz());
+		}
+		return types;
+	}
 
-    public static Map< String, Class > getRmTypes(){
-        Map< String, Class > types = new HashMap<String, Class>();
-        for (int i = 0; i < rmTypes.length; i++) {
-            types.put( rmTypes[i].getValue(), rmTypes[i].getClazz());
-        }
-        return types;
-    }
+	public static Map<String, Class> getContainerTypes() {
+		Map<String, Class> types = new HashMap<String, Class>();
+		for (int i = 0; i < containerTypes.length; i++) {
+			types.put(containerTypes[i].getValue(),
+					containerTypes[i].getClazz());
+		}
+		return types;
+	}
 
-    public static Map< String, Class > getAllTypes(){
-        Map< String, Class > types = new HashMap<String, Class>();
-        for (int i = 0; i < UIDBasedIds.length; i++) {
-            types.put( UIDBasedIds[i].getValue(), UIDBasedIds[i].getClazz());
-        }
-        for (int i = 0; i < basicTypes.length; i++) {
-            types.put( basicTypes[i].getValue(), basicTypes[i].getClazz());
-        }
-        for (int i = 0; i < abstractTypes.length; i++) {
-            types.put( abstractTypes[i].getValue(), abstractTypes[i].getClazz());
-        }
-        for (int i = 0; i < UIDIdentifiers.length; i++) {
-            types.put( UIDIdentifiers[i].getValue(), UIDIdentifiers[i].getClazz());
-        }
-        for (int i = 0; i < Interfaces.length; i++) {
-            types.put( Interfaces[i].getValue(), Interfaces[i].getClazz());
-        }
-        for (int i = 0; i < containerTypes.length; i++) {
-            types.put( containerTypes[i].getValue(), containerTypes[i].getClazz());
-        }
-        for (int i = 0; i < rmTypes.length; i++) {
-            types.put( rmTypes[i].getValue(), rmTypes[i].getClazz());
-        }
-        return types;
-    }
+	@SuppressWarnings("unchecked")
+	public static Map<String, Class<RMObject>> getRmTypes() {
+		Map<String, Class<RMObject>> types = new HashMap<String, Class<RMObject>>();
+		for (int i = 0; i < rmTypes.length; i++) {
+			types.put(rmTypes[i].getValue(), rmTypes[i].getClazz());
+		}
+		return types;
+	}
 
-    public String getValue() {
-        return value;
-    }
+	@SuppressWarnings("rawtypes")
+	public static Map<String, Class> getAllTypes() {
+		Map<String, Class> types = new HashMap<String, Class>();
+		for (int i = 0; i < UIDBasedIds.length; i++) {
+			types.put(UIDBasedIds[i].getValue(), UIDBasedIds[i].getClazz());
+		}
+		for (int i = 0; i < basicTypes.length; i++) {
+			types.put(basicTypes[i].getValue(), basicTypes[i].getClazz());
+		}
+		for (int i = 0; i < abstractTypes.length; i++) {
+			types.put(abstractTypes[i].getValue(), abstractTypes[i].getClazz());
+		}
+		for (int i = 0; i < UIDIdentifiers.length; i++) {
+			types.put(UIDIdentifiers[i].getValue(),
+					UIDIdentifiers[i].getClazz());
+		}
+		for (int i = 0; i < Interfaces.length; i++) {
+			types.put(Interfaces[i].getValue(), Interfaces[i].getClazz());
+		}
+		for (int i = 0; i < containerTypes.length; i++) {
+			types.put(containerTypes[i].getValue(),
+					containerTypes[i].getClazz());
+		}
+		for (int i = 0; i < rmTypes.length; i++) {
+			types.put(rmTypes[i].getValue(), rmTypes[i].getClazz());
+		}
+		return types;
+	}
 
-    public Class getClazz() {
-        return clazz;
-    }
+	private String getValue() {
+		return value;
+	}
+
+	@SuppressWarnings("rawtypes")
+	private Class getClazz() {
+		return clazz;
+	}
 
 }
