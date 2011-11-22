@@ -147,17 +147,31 @@ public class PepBaseTest {
         Element title = newItemText("at0004", "Name title", "Sr.");
         items.add(title);
         
+        // /details/items[at0005] (sufixo não se aplica)
+        
         Element periodIntervalElement = new Element("at0019", "Period Interval", new DvInterval<DvDate>(new DvDate(2011, 01), new DvDate(2111, 12)));
         items.add(periodIntervalElement);
         Element IdentifierElement = new Element("at0020", "Usage Identifier", new DvIdentifier("Receita Federal", "PF", "111.111.111-11", "CPF"));
         items.add(IdentifierElement);
-        List alternativeNameRepresentationList = new ArrayList();
-        Element usoRepresentativoElement = new Element("at0021", "Usage Representative", new DvText("Uso representativo"));
-        alternativeNameRepresentationList.add(usoRepresentativoElement);
-        Element usoAlternativoElement = new Element("at0022", "Usage Alternativo", new DvText("Uso alternativo"));
-        alternativeNameRepresentationList.add(usoAlternativoElement);
-        Cluster nameRepresentationCluster = new Cluster("at0007", "Alternative Name Representation", alternativeNameRepresentationList);
-        items.add(nameRepresentationCluster);
+        
+        // CLUSTER [at0007]
+        String name = "Usage Representative";
+        String value = "Uso representativo";
+        Element uso = newItemText("at0021", name, value);
+        
+        name = "Alternative representation";
+        value = "Representação alternativa";
+        Element representacao = newItemText("at0022", name, value);
+        
+        List itemsAlternativeName = new ArrayList();
+        itemsAlternativeName.add(uso);
+        
+        itemsAlternativeName.add(representacao);
+        
+        Cluster alternativeName = new Cluster("at0007", "Alternative Name Representation", itemsAlternativeName);
+        
+        items.add(alternativeName);
+        
         Element preferedNameElement = new Element("at0008", "Prefered Name", new DvBoolean(true));
         items.add(preferedNameElement);
         
