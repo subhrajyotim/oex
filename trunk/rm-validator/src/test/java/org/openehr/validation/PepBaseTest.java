@@ -260,7 +260,7 @@ public class PepBaseTest {
         DvCodedText stateCodedText = new DvCodedText("Goias", new CodePhrase("local", "at0010"));
         Element elementState = new Element("at0001", new DvText("State"), stateCodedText);
         itemsPersonBirthDataBr.add(elementState);
-        DvCodedText cityCodedText = new DvCodedText("Goiania", new CodePhrase("local", "at0020"));
+        DvCodedText cityCodedText = new DvCodedText("Goiania", new CodePhrase("local", "at27"));
         Element elementCity = new Element("at0002", new DvText("City"), cityCodedText);
         itemsPersonBirthDataBr.add(elementCity);
         DvText registryOfficeText = new DvText("CARTÓRIO ZECA DO BAR");
