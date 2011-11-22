@@ -446,13 +446,10 @@ public class DataValidatorImpl implements DataValidator {
             CSingleAttribute singleAttribute = (CSingleAttribute) constraint;
             validateSingleAttribute(singleAttribute, value, path, errors, archetype);
         } else if (constraint instanceof CSingleAttribute) {
-            CMultipleAttribute multipleAttribute = (CMultipleAttribute) constraint;
-            validateMultipleAttribute(multipleAttribute, value, path, errors, archetype);
+        	throw new RuntimeException("CmultipleAttribute to CSingleAttribute impossible");
         } else if (constraint instanceof CSingleAttribute) {
-            CObject cObject = (CObject) constraint;
-            validateObject(cObject, value, path, errors, archetype);
+        	throw new RuntimeException("CSingleAttribute to CObject impossible");
         }
-        List<ValidationError> errorsInternalRef = null;
     }
 
     private boolean validateRootSlot(ArchetypeSlot slot, Locatable locatable) {
