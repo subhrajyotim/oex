@@ -30,6 +30,7 @@ import junit.framework.TestCase;
 
 public class ValidationTestBase extends TestCase {
 	
+    @Override
 	protected void tearDown() {
 		archetype = null;
 		data = null;

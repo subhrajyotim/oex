@@ -60,6 +60,7 @@ public class DataValidatorImpl implements DataValidator {
         if (archetype == null) {
             throw new GenericValidationException("Archetype " + archetypeId + " not found.");
         }
+        
         return this.validate(data, archetype);
     }
 
