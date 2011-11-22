@@ -141,47 +141,55 @@ public class PepBaseTest {
         DvText nameIdentifierDvCodedText = new DvText("legal identity");
 
         List items = new ArrayList();
-        Element givenName = newItemText("at0002", "Given name", "Edson");
-        items.add(givenName);
+        Element at0002 = newItemText("at0002", "Given name", "Edson");
+        items.add(at0002);
 
-        Element familyName = newItemText("at0003", "family name", "Nascimento");
-        items.add(familyName);
+        Element at0003 = newItemText("at0003", "family name", "Nascimento");
+        items.add(at0003);
 
-        Element title = newItemText("at0004", "Name title", "Sr.");
-        items.add(title);
+        Element at0004 = newItemText("at0004", "Name title", "Sr.");
+        items.add(at0004);
 
         // /details/items[at0005] (sufixo não se aplica)
 
-        Element periodIntervalElement = new Element("at0019", "Period Interval", new DvInterval<DvDate>(new DvDate(2011, 01), new DvDate(2111, 12)));
-        items.add(periodIntervalElement);
-        Element IdentifierElement = new Element("at0020", "Usage Identifier", new DvIdentifier("Receita Federal", "PF", "111.111.111-11", "CPF"));
-        items.add(IdentifierElement);
+        DvDate inicio = new DvDate(2011, 01);
+        DvDate fim = new DvDate(2011, 12);
+        DvInterval<DvDate> intervalo = new DvInterval<DvDate>(inicio, fim);
+        Element at0019 = new Element("at0019", "Period Interval", intervalo);      
+        items.add(at0019);
+        
+        String rf = "Receita Federal";
+        String cpfNumero = "111.111.111-11";
+        String tipo = "CPF";
+        DvIdentifier cpf = new DvIdentifier(rf, rf, cpfNumero, tipo);
+        Element at0020 = new Element("at0020", "Usage Identifier", cpf);
+        items.add(at0020);
 
         // CLUSTER [at0007]
         String name = "Usage Representative";
         String value = "Uso representativo";
-        Element uso = newItemText("at0021", name, value);
+        Element at0021 = newItemText("at0021", name, value);
 
         name = "Alternative representation";
         value = "Representação alternativa";
-        Element representacao = newItemText("at0022", name, value);
+        Element at0022 = newItemText("at0022", name, value);
 
         List itemsAltName = new ArrayList();
-        itemsAltName.add(uso);
-        itemsAltName.add(representacao);
+        itemsAltName.add(at0021);
+        itemsAltName.add(at0022);
 
         name = "Alternative Name Representation";
-        Cluster alternativeName = new Cluster("at0007", name, itemsAltName);
+        Cluster at0007 = new Cluster("at0007", name, itemsAltName);
         // CLUSTER [at0007]
 
-        items.add(alternativeName);
+        items.add(at0007);
 
-        Element preferredName = newItemBoolean("at0008", "Prefered Name", true);
-        items.add(preferredName);
+        Element at0008 = newItemBoolean("at0008", "Prefered Name", true);
+        items.add(at0008);
 
         String nomeCompleto = "Edson Arantes do Nascimento";
-        Element fullName = newItemText("at0010", "Full Name", nomeCompleto);
-        items.add(fullName);
+        Element at0010 = newItemText("at0010", "Full Name", nomeCompleto);
+        items.add(at0010);
 
         ItemTree details = new ItemTree("at0001", "Name components", items);
 
