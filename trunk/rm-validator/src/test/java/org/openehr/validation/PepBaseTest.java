@@ -254,10 +254,10 @@ public class PepBaseTest {
         DvCodedText countryOfDeathCodedText = new DvCodedText("Brasil", new CodePhrase("local", "at0010"));
         Element countryOfDeathElement = new Element("at0001", new DvText("Pais de morte"), countryOfDeathCodedText);
         itemsPersonOtherDeathData.add(countryOfDeathElement);
-        DvCodedText stateOfDeathCodedText = new DvCodedText("Goias", new CodePhrase("local", "at0021"));
+        DvCodedText stateOfDeathCodedText = new DvCodedText("Goias", new CodePhrase("local", "at0020"));
         Element stateOfDeathElement = new Element("at0002", new DvText("Estado de morte"), stateOfDeathCodedText);
         itemsPersonOtherDeathData.add(stateOfDeathElement);
-        DvCodedText cityOfDeathCodedText = new DvCodedText("Goiania", new CodePhrase("local", "at0030"));
+        DvCodedText cityOfDeathCodedText = new DvCodedText("Goiania", new CodePhrase("local", "at37"));
         Element cityOfDeathElement = new Element("at0003", new DvText("Cidade de morte"), cityOfDeathCodedText);
         itemsPersonOtherDeathData.add(cityOfDeathElement);
         DvText certificateNumberText = new DvText("11a2");
