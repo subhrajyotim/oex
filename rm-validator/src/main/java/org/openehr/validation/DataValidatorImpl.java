@@ -28,6 +28,7 @@ import org.openehr.am.archetype.ontology.ArchetypeOntology;
 import org.openehr.am.archetype.ontology.ArchetypeTerm;
 import org.openehr.am.archetype.ontology.OntologyDefinitions;
 import org.openehr.rm.common.archetyped.Locatable;
+import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.support.basic.Interval;
 import org.openehr.rm.support.identification.ArchetypeID;
 import org.openehr.validation.exceptions.GenericValidationException;
@@ -280,12 +281,24 @@ public class DataValidatorImpl implements DataValidator {
 	 */
     List<Object> findMatchingNodes(Collection<Object> values, CObject cObj) {
         List<Object> objects = new ArrayList<Object>();
-        Locatable lo = null;
+        String type = cObj.getRmTypeName().toUpperCase().replace("_", "");
+        Class klasse = types.get(type);
+        
+        if(Locatable.class.isAssignableFrom(klasse)){
+            objects = findMatchingLocatables(values, cObj);
+        } else {
+            objects = findMatchingDataValue(values, cObj, klasse);
+        }
+        
+        return objects;
+    }
 
+    private List<Object> findMatchingLocatables(Collection<Object> values, CObject cObj) {
+        List<Object> objects = new ArrayList<Object>();
+        Locatable lo = null;
         for (Object value : values) {
             if (value instanceof Locatable) {
                 lo = (Locatable) value;
-
                 if (cObj instanceof ArchetypeSlot) {
                     log.debug("ArchetypeSlot : " + lo.getArchetypeNodeId());
                     ArchetypeSlot slot = (ArchetypeSlot) cObj;
@@ -293,14 +306,28 @@ public class DataValidatorImpl implements DataValidator {
                         objects.add(lo);
                     }
                 } else {
-
                     if (cObj.getNodeId().equals(lo.getArchetypeNodeId())) {
                         log.debug("value found for code: " + cObj.getNodeId());
                         objects.add(lo);
                     }
-
                 }
+            } else {
+                log.warn("trying to find matching value on un-pathable obj..");
+            }
+        }
+        return objects;
+    }
 
+    private List<Object> findMatchingDataValue(Collection<Object> values, CObject cObj, Class klass) {
+        List<Object> objects = new ArrayList<Object>();
+        DataValue dv = null;
+        for (Object value : values) {
+            if (value instanceof DataValue) {
+                dv = (DataValue) value;
+                if(klass.isAssignableFrom(value.getClass())){
+                    log.debug("value found for code: " + cObj.getNodeId());
+                    objects.add(dv);
+                }
             } else {
                 log.warn("trying to find matching value on un-pathable obj..");
             }
