@@ -30,82 +30,80 @@ import se.acode.openehr.parser.ADLParser;
 import junit.framework.TestCase;
 
 public class ValidationTestBase extends TestCase {
-	
+
     @Test
     public void testBase() {
     }
-	
+
     @Override
-	protected void tearDown() {
-		archetype = null;
-		data = null;
-		errors = null;
-	}
-	
-	InputStream loadFromClasspath(String filename) throws Exception {
-    	return this.getClass().getClassLoader().getResourceAsStream(filename);
+    protected void tearDown() {
+        archetype = null;
+        data = null;
+        errors = null;
     }
-	
-	protected void loadArchetype(String name) throws Exception {
-		ADLParser parser = new ADLParser(loadFromClasspath("archetypes/" + name));
-		archetype = parser.parse();				
-	}
-	
-	protected void loadData(String name) throws Exception {
-		DADLParser parser = new DADLParser(loadFromClasspath(name));
-		ContentObject contentObj = parser.parse();
-		data = (RMObject) binding.bind(contentObj);
-	}
-	
-	protected void loadDataAndValidate(String name) throws Exception {
-		loadData("data/" + name);
-		validate();
-	}
-	
-	protected void validate() throws Exception {
-		errors = validator.validate((Locatable) data, archetype);		
-	}
-	
-	// assert validation passed
-	protected void assertValidationPassed() {
-		assertTrue("unexpected validation error(s)", errors.isEmpty());
-	}
-	
-	// assert the last error in the list using given details
-	protected void assertLastValidationError(String runtimePath, 
-			String archetypePath, ErrorType errorType) {
-		
-		assertTrue("unexpected total error: " + errors.size(), 
-				errors.size() == 1);		
-		error = errors.get(0);		
-		
-		assertValidationError(error, runtimePath, archetypePath, 
-				errorType);
-	}
-	
-	// assert the details of given validation error
-	protected void assertValidationError(ValidationError error, 
-			String runtimePath, String archetypePath, 
-			ErrorType errorType) {
-		
-		assertEquals("unexpected runtime path", runtimePath, 
-				error.getRuntimePath());
-		
-		assertEquals("unexpected archetype path", archetypePath,
-				error.getArchetypePath());
-		
-		assertEquals("unexpected validation error type", errorType, 
-				error.getErrorType());
-	}
-	
-	// test instances
-	protected DataValidator validator = new DataValidatorImpl();
-	protected List<ValidationError> errors = null;
-	protected ValidationError error = null;
- 	protected Archetype archetype = null;
-	protected RMObject data = null;	
-	
-	private static DADLBinding binding = new DADLBinding();	
+
+    InputStream loadFromClasspath(String filename) throws Exception {
+        return this.getClass().getClassLoader().getResourceAsStream(filename);
+    }
+
+    protected void loadArchetype(String name) throws Exception {
+        ADLParser parser = new ADLParser(loadFromClasspath("archetypes/" + name));
+        archetype = parser.parse();
+    }
+
+    protected void loadData(String name) throws Exception {
+        DADLParser parser = new DADLParser(loadFromClasspath(name));
+        ContentObject contentObj = parser.parse();
+        data = (RMObject) binding.bind(contentObj);
+    }
+
+    protected void loadDataAndValidate(String name) throws Exception {
+        loadData("data/" + name);
+        validate();
+    }
+
+    protected void validate() throws Exception {
+        errors = validator.validate((Locatable) data, archetype);
+    }
+
+    // assert validation passed
+    protected void assertValidationPassed() {
+        assertTrue("unexpected validation error(s)", errors.isEmpty());
+    }
+
+    // assert the last error in the list using given details
+    protected void assertLastValidationError(String runtimePath,
+            String archetypePath, ErrorType errorType) {
+
+        assertTrue("unexpected total error: " + errors.size(),
+                errors.size() == 1);
+        error = errors.get(0);
+
+        assertValidationError(error, runtimePath, archetypePath,
+                errorType);
+    }
+
+    // assert the details of given validation error
+    protected void assertValidationError(ValidationError error,
+            String runtimePath, String archetypePath,
+            ErrorType errorType) {
+
+        assertEquals("unexpected runtime path", runtimePath,
+                error.getRuntimePath());
+
+        assertEquals("unexpected archetype path", archetypePath,
+                error.getArchetypePath());
+
+        assertEquals("unexpected validation error type", errorType,
+                error.getErrorType());
+    }
+    // test instances
+    protected DataValidator validator = new DataValidatorImpl();
+    protected List<ValidationError> errors = null;
+    protected ValidationError error = null;
+    protected Archetype archetype = null;
+    protected RMObject data = null;
+    private static DADLBinding binding = new DADLBinding();
 }
 
 /*
