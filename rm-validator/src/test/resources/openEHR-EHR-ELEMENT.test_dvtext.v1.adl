@@ -1,0 +1,43 @@
+archetype (adl_version=1.4)
+	openEHR-EHR-ELEMENT.archetypeTest.v1
+concept
+	[at0001]	-- Arquétipo de teste
+language
+	original_language = <[ISO_639-1::pt]>
+description
+	original_author = <
+		["name"] = <"Danillo Guimarãesa">
+		["organisation"] = <"Universidade Federal de Goiás">
+		["date"] = <"15/09/2010">
+		["email"] = <"danillo.guimaraes@engenhariadesoftware.inf.br">
+	>
+	details = <
+		["pt"] = <
+			language = <[ISO_639-1::pt]>
+			purpose = <"Teste de arquétipo.">
+			use = <"">
+			misuse = <"">
+		>
+	>
+	lifecycle_state = <"Initial">
+
+definition
+	ELEMENT [at0001] matches {	-- Campo teste
+		value matches {
+                        DV_TEXT matches {*}
+                        DV_CODED_TEXT matches {*}
+		}
+	}
+
+ontology
+	term_definitions = <
+		["pt"] = <
+			items = <
+				["at0001"] = <
+					description = <"Nome do campo">
+					text = <"Campo para construção de um objeto RM">
+				>
+                        >
+                >
+        >
+
