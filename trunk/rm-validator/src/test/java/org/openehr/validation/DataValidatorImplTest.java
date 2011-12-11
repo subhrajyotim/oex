@@ -149,7 +149,7 @@ public class DataValidatorImplTest extends PepBaseTest {
         Cluster cluster = new Cluster("openEHR-EHR-CLUSTER.TestExclude.v1", "Arquétipo de teste", items);
 
         List<ValidationError> errors = null;
-        errors = this.validator.validate(cluster);
+        errors = validator.validate(cluster);
         assertTrue(errors.isEmpty());
     }
 
@@ -160,7 +160,7 @@ public class DataValidatorImplTest extends PepBaseTest {
         Cluster cluster = new Cluster("openEHR-EHR-CLUSTER.TestExclude.v1", "Arquétipo de teste", items);
 
         List<ValidationError> errors = null;
-        errors = this.validator.validate(cluster);
+        errors = validator.validate(cluster);
         assertFalse(errors.isEmpty());
         assertEquals("The error must be of the type OCCURRENCE_NOT_DESCRIBED", ErrorType.OCCURRENCES_NOT_DESCRIBED, errors.get(0).getErrorType());
     }
