@@ -15,23 +15,22 @@
 package org.openehr.validation;
 
 import java.util.List;
-
 import org.openehr.am.archetype.Archetype;
 import org.openehr.rm.common.archetyped.Locatable;
 import org.openehr.validation.exceptions.GenericValidationException;
 
 /**
  * openeEHR referece model validator interface
- * 
+ *
  * @author Rong Chen
  */
 public interface DataValidator {
 
-	public List<ValidationError> validate(Locatable data, Archetype archetype)
-		throws GenericValidationException;
+    public List<ValidationError> validate(Locatable data, Archetype archetype)
+            throws GenericValidationException;
 
-	public List<ValidationError> validate(Locatable data)
-		throws GenericValidationException;
+    public List<ValidationError> validate(Locatable data)
+            throws GenericValidationException;
 }
 
 /*
