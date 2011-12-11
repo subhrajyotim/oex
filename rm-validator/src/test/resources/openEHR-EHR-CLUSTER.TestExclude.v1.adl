@@ -1,4 +1,4 @@
-﻿archetype (adl_version=1.4)
+archetype (adl_version=1.4)
 	openEHR-EHR-CLUSTER.TestExclude.v1
 concept
 	[at0001]	-- Arquétipo de teste
