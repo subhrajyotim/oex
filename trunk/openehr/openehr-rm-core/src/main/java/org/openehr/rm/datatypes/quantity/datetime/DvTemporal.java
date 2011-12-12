@@ -198,8 +198,13 @@ public abstract class DvTemporal<T extends DvTemporal> extends
 	}
 
     //PROJETO PEP
+    private String valueDateTime;
     public void jpaSetValue(String value) {
-        this.value = value;
+        this.valueDateTime = value;
+    }
+
+    public String jpaGetValue() {
+        return valueDateTime;
     }
 
     public void jpaSetDateTime(DateTime dateTime) {
