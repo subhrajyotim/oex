@@ -193,19 +193,6 @@ public class DataValidatorImplTest extends PepBaseTest {
     }
 
     @Test
-    public void testPersonContactsOccurrencesTooMany() throws Exception {
-        Person person = this.getPerson();
-        Address address = getContact();
-        //adiciona um contaco invalido, ele possui o mesmo identificador(at0003)
-        //do outro contact que est· na lista.
-        List listAddresses = new ArrayList();
-        listAddresses.add(address);
-        Contact contactComMesmoArcheptyNodeId = new Contact(null, "at0003", new DvText("Contact"), null, null, null, person, null, listAddresses);
-        person.getContacts().add(contactComMesmoArcheptyNodeId);
-        assertTrue(erroEsperadoFoiEncontrado(ErrorType.OCCURRENCES_TOO_MANY, person));
-    }
-
-    @Test
     public void testPersonContactsOccurrencesTooFew() throws Exception {
         Person person = this.getPerson();
         person.getContacts().clear();
