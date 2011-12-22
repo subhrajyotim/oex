@@ -35,14 +35,14 @@
 	
 	<dependencies>
             <dependency>
-                    <groupId>openehr</groupId>
-                    <artifactId>openehr-rm-core</artifactId>
-                    <version>1.0.2-SNAPSHOT</version>
-            </dependency>
-            <dependency>
                     <groupId>pep</groupId>
                     <artifactId>archetypes</artifactId>
                     <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                    <groupId>openehr</groupId>
+                    <artifactId>openehr-rm-core</artifactId>
+                    <version>1.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                     <groupId>openehr</groupId>
