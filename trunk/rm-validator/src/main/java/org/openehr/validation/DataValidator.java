@@ -26,10 +26,10 @@ import org.openehr.validation.exceptions.GenericValidationException;
  */
 public interface DataValidator {
 
-    public List<ValidationError> validate(Locatable data, Archetype archetype)
+    List<ValidationError> validate(Locatable data, Archetype archetype)
             throws GenericValidationException;
 
-    public List<ValidationError> validate(Locatable data)
+    List<ValidationError> validate(Locatable data)
             throws GenericValidationException;
 }
 
