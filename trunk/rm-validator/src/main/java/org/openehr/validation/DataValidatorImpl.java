@@ -211,20 +211,26 @@ public class DataValidatorImpl implements DataValidator {
             return;
         }
 
-        // Cardinality must validate if the container is ordered.
+        // The archetype must respect the constraints on reference model
+        /**
         if (cardinality.isList() && values instanceof Set) {
             ValidationError error = new ValidationError(archetype, path, cattr.path(),
                     ErrorType.ITEMS_NOT_ORDERED, null);
+            errors.add(error);
         } else if (cardinality.isSet() && values instanceof List) {
             Set<Object> set = new HashSet<Object>(values);
             if (set.size() != values.size()) {
                 ValidationError error = new ValidationError(archetype, path, cattr.path(),
                         ErrorType.ITEMS_NOT_UNIQUE, null);
+                errors.add(error);
             }
         } else if (cardinality.isBag() && values instanceof Set) {
             ValidationError error = new ValidationError(archetype, path, cattr.path(),
                     ErrorType.ITEMS_NOT_NON_UNIQUE, null);
+            errors.add(error);
         }
+         *
+         */
 
         log.debug("validating total cobj: " + children.size() + ", values: "
                 + values.size());
