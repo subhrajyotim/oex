@@ -2,6 +2,7 @@ package org.openehr.validation;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import org.openehr.rm.RMObject;
@@ -210,6 +211,10 @@ enum KnownTypes {
 
 	private static final KnownTypes[] CONTAINER_TYPES = { LIST, SET };
 
+        public static Locale getLocale(){
+            return Locale.US;
+        }
+
 	@SuppressWarnings("rawtypes")
 	public static Map<String, Class> getUidBasedIds() {
 		Map<String, Class> types = new HashMap<String, Class>();
@@ -301,7 +306,7 @@ enum KnownTypes {
 
 
         private KnownTypes(Class clazz) {
-		this.value = clazz.getSimpleName().toUpperCase();
+		this.value = clazz.getSimpleName().toUpperCase(getLocale());
 		this.clazz = clazz;
 	}
 
@@ -313,5 +318,4 @@ enum KnownTypes {
 	private Class getClazz() {
 		return clazz;
 	}
-
 }
