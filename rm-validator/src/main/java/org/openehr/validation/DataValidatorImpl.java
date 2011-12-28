@@ -135,6 +135,30 @@ public class DataValidatorImpl implements DataValidator {
         }
     }
 
+    private String extractTerm(Archetype archetype, String language, String nodeId) {
+        ArchetypeOntology ontology = archetype.getOntology();
+        String lang = language == null ? "pt-br" : language;
+        String description = null;
+        List<OntologyDefinitions> ontologyDefinitions = ontology.getTermDefinitionsList();
+        List<ArchetypeTerm> archetypeTerms = null;
+        for (OntologyDefinitions ontologyDefinition : ontologyDefinitions) {
+            if (ontologyDefinition.getLanguage().equals(lang)) {
+                archetypeTerms = ontologyDefinition.getDefinitions();
+                break;
+            }
+        }
+        if (archetypeTerms != null) {
+            for (ArchetypeTerm archetypeTerm : archetypeTerms) {
+                String term = archetypeTerm.getCode();
+                if (nodeId.equals(term)) {
+                    description = archetypeTerm.getDescription();
+                    break;
+                }
+            }
+        }
+        return description;
+    }
+
     private String updatePath(String path) {
         if (!path.equals(Locatable.PATH_SEPARATOR)) {
             return path + Locatable.PATH_SEPARATOR;
@@ -550,30 +574,9 @@ public class DataValidatorImpl implements DataValidator {
 
         String description = null;
         if (nodeId != null && !nodeId.isEmpty()) {
-            ArchetypeOntology ontology = archetype.getOntology();
-
-            String lang = language == null ? "pt-br" : language;
-
-            List<OntologyDefinitions> ontologyDefinitions = ontology.getTermDefinitionsList();
-
-            List<ArchetypeTerm> archetypeTerms = null;
-            for (OntologyDefinitions ontologyDefinition : ontologyDefinitions) {
-                if (ontologyDefinition.getLanguage().equals(lang)) {
-                    archetypeTerms = ontologyDefinition.getDefinitions();
-                    break;
-                }
-            }
-            if (archetypeTerms != null) {
-                for (ArchetypeTerm archetypeTerm : archetypeTerms) {
-                    String term = archetypeTerm.getCode();
-                    if (nodeId.equals(term)) {
-                        description = archetypeTerm.getDescription();
-                        break;
-                    }
-                }
-            }
-
+            description = extractTerm(archetype, language, nodeId);
         }
+        
         return description;
     }
 }
