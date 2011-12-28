@@ -173,23 +173,23 @@ enum KnownTypes {
 
         
 
-	private final static KnownTypes[] BASIC_TYPES = { BYTE, BOOLEAN, CHAR, DOUBLE,
+	private static final KnownTypes[] BASIC_TYPES = { BYTE, BOOLEAN, CHAR, DOUBLE,
 			FLOAT, INT, LONG, SHORT, STRING, INTEGER };
 
-	private final static KnownTypes[] ABSTRACT_TYPES = { AUTHOREDRESOURCE,
+	private static final KnownTypes[] ABSTRACT_TYPES = { AUTHOREDRESOURCE,
 			DATASTRUCTURE, DATAVALUE, DVABSOLUTEQUANTITY, DVAMOUNT,
 			DVENCAPSULATED, DVORDERED, DVQUANTIFIED, DVTEMPORAL,
 			DVTIMESPECIFICATION, EVENT, ITEM, ITEMSTRUCTURE, LOCATABLE,
 			OBJECTID, PARTYPROXY, PATHABLE, RMOBJECT, UIDBASEDID, VERSION };
 
-	private final static KnownTypes[] UID_IDENTIFIERS = { UUID, INTERNETID, ISO_OID };
+	private static final KnownTypes[] UID_IDENTIFIERS = { UUID, INTERNETID, ISO_OID };
 
-	private final static KnownTypes[] INTERFACES = { TERMINOLOGYSERVICE,
+	private static final KnownTypes[] INTERFACES = { TERMINOLOGYSERVICE,
 			TERMINOLOGYACCESS, CODESETACCESS, MEASUREMENTSERVICE };
 
-	private final static KnownTypes[] UID_BASED_ID = { OBJECTVERSIONID, HIEROBJECTID };
+	private static final KnownTypes[] UID_BASED_ID = { OBJECTVERSIONID, HIEROBJECTID };
 
-	private final static KnownTypes[] RM_TYPES = { PARTYSELF, ARCHETYPED, ATTESTATION,
+	private static final KnownTypes[] RM_TYPES = { PARTYSELF, ARCHETYPED, ATTESTATION,
 			AUDITDETAILS, PARTICIPATION, PARTYIDENTIFIED, PARTYRELATED,
 			PARTYSELF, ORIGINALVERSION, CONTRIBUTION, TERMINOLOGYID,
 			ARCHETYPEID, HIEROBJECTID, ACCESSGROUPREF, GENERICID, INTERNETID,
@@ -209,7 +209,7 @@ enum KnownTypes {
 
 	private final Class clazz;
 
-	private final static KnownTypes[] CONTAINER_TYPES = { LIST, SET };
+	private static final KnownTypes[] CONTAINER_TYPES = { LIST, SET };
 
 	@SuppressWarnings("rawtypes")
 	public static Map<String, Class> getUidBasedIds() {
