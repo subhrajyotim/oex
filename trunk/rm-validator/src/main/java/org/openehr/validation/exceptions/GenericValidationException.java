@@ -13,12 +13,16 @@ public class GenericValidationException extends Exception {
         super(mens);
     }
 
-    public GenericValidationException(String archetypeId, String path, String cause) {
-        this(cause + " em " + path + " de " + archetypeId);
+    public GenericValidationException(String mens, Throwable cause) {
+        super(mens, cause);
     }
 
     public GenericValidationException(Archetype archetype, String path, String cause) {
         this(cause + " em " + path + " de " + archetype.getArchetypeId().getValue());
+    }
+
+    public GenericValidationException(Archetype archetype, String path, Exception ex) {
+        this(ex.getMessage() + " em " + path + " de " + archetype.getArchetypeId().getValue(), ex.getCause());
     }
 
 
