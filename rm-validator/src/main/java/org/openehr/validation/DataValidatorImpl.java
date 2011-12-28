@@ -39,7 +39,7 @@ import org.openehr.validation.exceptions.GenericValidationException;
  * @author rong.chen
  */
 public class DataValidatorImpl implements DataValidator {
-
+    Locale LOCALE = Locale.US;
     private static final Map<String, Class> TYPES = KnownTypes.getAllTypes();
 
     /**
@@ -306,7 +306,8 @@ public class DataValidatorImpl implements DataValidator {
 	 * @return empty list if not found
 	 */
     List<Object> findMatchingNodes(Collection<Object> values, CObject cObj) {
-        String type = cObj.getRmTypeName().toUpperCase().replace("_", "");
+        String type = cObj.getRmTypeName().toUpperCase(LOCALE).replace("_", "");
+        type = cObj.getRmTypeName().toUpperCase(LOCALE).replace("_", "");
         Class klasse = TYPES.get(type);
 
         if(Locatable.class.isAssignableFrom(klasse)){
@@ -364,7 +365,7 @@ public class DataValidatorImpl implements DataValidator {
 
         log.debug("validate CObject..");
         Class klass = value.getClass();
-        String restrictionType = cobj.getRmTypeName().replace("_", "").toUpperCase();
+        String restrictionType = cobj.getRmTypeName().replace("_", "").toUpperCase(LOCALE);
         restrictionType = restrictionType.split("<")[0];
 
         Class restClass = TYPES.get(restrictionType);
@@ -413,7 +414,7 @@ public class DataValidatorImpl implements DataValidator {
         log.debug("validate CPrimitiveObject..");
         Object primitiveValue = value;
 
-        Class klass = TYPES.get(cpo.getItem().getType().toUpperCase());
+        Class klass = TYPES.get(cpo.getItem().getType().toUpperCase(LOCALE));
         if (primitiveValue instanceof String) {
             Constructor constructor = null;
             for (Constructor constr : klass.getConstructors()) {
@@ -531,7 +532,7 @@ public class DataValidatorImpl implements DataValidator {
     }
 
     String upperFirstLetter(String value) {
-        return value.substring(0, 1).toUpperCase() + value.substring(1);
+        return value.substring(0, 1).toUpperCase(LOCALE) + value.substring(1);
     }
 
     /**
