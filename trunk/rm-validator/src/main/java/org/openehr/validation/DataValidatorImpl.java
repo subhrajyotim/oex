@@ -286,17 +286,14 @@ public class DataValidatorImpl implements DataValidator {
 	 * @return empty list if not found
 	 */
     List<Object> findMatchingNodes(Collection<Object> values, CObject cObj) {
-        List<Object> objects = new ArrayList<Object>();
         String type = cObj.getRmTypeName().toUpperCase().replace("_", "");
         Class klasse = types.get(type);
-        
+
         if(Locatable.class.isAssignableFrom(klasse)){
-            objects = findMatchingLocatables(values, cObj);
-        } else {
-            objects = findMatchingDataValue(values, cObj, klasse);
+            return findMatchingLocatables(values, cObj);
         }
         
-        return objects;
+        return findMatchingDataValue(values, cObj, klasse);
     }
 
     private List<Object> findMatchingLocatables(Collection<Object> values, CObject cObj) {
