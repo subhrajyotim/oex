@@ -188,7 +188,7 @@ enum KnownTypes {
 			DVTIMESPECIFICATION, EVENT, ITEM, ITEMSTRUCTURE, LOCATABLE,
 			OBJECTID, PARTYPROXY, PATHABLE, RMOBJECT, UIDBASEDID, VERSION };
 
-	private static KnownTypes[] UIDIdentifiers = { UUID, INTERNETID, ISO_OID };
+	private final static KnownTypes[] UID_IDENTIFIERS = { UUID, INTERNETID, ISO_OID };
 
 	private final static KnownTypes[] INTERFACES = { TERMINOLOGYSERVICE,
 			TERMINOLOGYACCESS, CODESETACCESS, MEASUREMENTSERVICE };
@@ -240,9 +240,9 @@ enum KnownTypes {
 
 	public static Map<String, Class> getUidIdentifiers() {
 		Map<String, Class> types = new HashMap<String, Class>();
-		for (int i = 0; i < UIDIdentifiers.length; i++) {
-			types.put(UIDIdentifiers[i].getValue(),
-					UIDIdentifiers[i].getClazz());
+		for (int i = 0; i < UID_IDENTIFIERS.length; i++) {
+			types.put(UID_IDENTIFIERS[i].getValue(),
+					UID_IDENTIFIERS[i].getClazz());
 		}
 		return types;
 	}
@@ -285,9 +285,9 @@ enum KnownTypes {
 		for (int i = 0; i < ABSTRACT_TYPES.length; i++) {
 			types.put(ABSTRACT_TYPES[i].getValue(), ABSTRACT_TYPES[i].getClazz());
 		}
-		for (int i = 0; i < UIDIdentifiers.length; i++) {
-			types.put(UIDIdentifiers[i].getValue(),
-					UIDIdentifiers[i].getClazz());
+		for (int i = 0; i < UID_IDENTIFIERS.length; i++) {
+			types.put(UID_IDENTIFIERS[i].getValue(),
+					UID_IDENTIFIERS[i].getClazz());
 		}
 		for (int i = 0; i < INTERFACES.length; i++) {
 			types.put(INTERFACES[i].getValue(), INTERFACES[i].getClazz());
