@@ -96,18 +96,9 @@ public class DataValidatorImpl implements DataValidator {
             Object attribute = null;
             try {
                 attribute = fetchAttribute(object, cattr);
-            } catch (NoSuchMethodException ex) {
+            } catch (Exception ex) {
                 throw new GenericValidationException(archetype, path,
-                        "Atributo não existe");
-            } catch (IllegalAccessException ex) {
-                throw new GenericValidationException(archetype, path,
-                        "Atributo não acessível");
-            } catch (IllegalArgumentException ex) {
-                throw new GenericValidationException(archetype, path,
-                        "Argumento ilegal");
-            } catch (InvocationTargetException ex) {
-                throw new GenericValidationException(archetype, path,
-                        "InvocationTargetException");
+                        "Erro na recuperação do atributo");
             }
 
             log.debug("attribute " + cattr.getRmAttributeName()
