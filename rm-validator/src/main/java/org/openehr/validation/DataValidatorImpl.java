@@ -97,18 +97,15 @@ public class DataValidatorImpl implements DataValidator {
             try {
                 attribute = fetchAttribute(object, cattr);
             } catch (Exception ex) {
+                String messageError = ex.getMessage()!=null? ex.getMessage(): "No detailed message";
                 throw new GenericValidationException(archetype, path,
-                        "Erro na recuperação do atributo");
+                        "Erro na recuperação do atributo:" + messageError);
             }
 
             log.debug("attribute " + cattr.getRmAttributeName()
                     + " isRequired: " + cattr.isRequired()
                     + ", attribute == null ? " + (attribute == null));
-
-            newPath = path;
-            if (!path.equals(Locatable.PATH_SEPARATOR)) {
-                newPath += Locatable.PATH_SEPARATOR;
-            }
+            newPath = updatePath(path);
             newPath += cattr.getRmAttributeName();
             String description = getErrorDescription(archetype, ccobj, null);
             if (cattr.isRequired() && attribute == null) {
@@ -136,6 +133,13 @@ public class DataValidatorImpl implements DataValidator {
 
             }
         }
+    }
+
+    private String updatePath(String path) {
+        if (!path.equals(Locatable.PATH_SEPARATOR)) {
+            return path + Locatable.PATH_SEPARATOR;
+        }
+        return path;
     }
 
     void validateSingleAttribute(CSingleAttribute cattr, Object attribute,
