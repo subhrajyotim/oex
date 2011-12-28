@@ -171,13 +171,7 @@ enum KnownTypes {
 			TerminologyAccess.class), CODESETACCESS(CodeSetAccess.class), MEASUREMENTSERVICE(
 			MeasurementService.class);
 
-        private KnownTypes(Class clazz) {
-		this.value = clazz.getSimpleName().toUpperCase();
-		this.clazz = clazz;
-	}
-
-	private final String value;
-	private final Class clazz;
+        
 
 	private final static KnownTypes[] BASIC_TYPES = { BYTE, BOOLEAN, CHAR, DOUBLE,
 			FLOAT, INT, LONG, SHORT, STRING, INTEGER };
@@ -210,17 +204,12 @@ enum KnownTypes {
 			COMPOSITION, EVENTCONTEXT, ADDRESS, PARTYIDENTITY, AGENT, GROUP,
 			ORGANISATION, PERSON, CONTACT, PARTYRELATIONSHIP, ROLE, CAPABILITY,
 			EHRSTATUS };
+        
+        private final String value;
+
+	private final Class clazz;
 
 	private final static KnownTypes[] CONTAINER_TYPES = { LIST, SET };
-
-        private String getValue() {
-		return value;
-	}
-
-	@SuppressWarnings("rawtypes")
-	private Class getClazz() {
-		return clazz;
-	}
 
 	@SuppressWarnings("rawtypes")
 	public static Map<String, Class> getUidBasedIds() {
@@ -309,6 +298,21 @@ enum KnownTypes {
 			types.put(RM_TYPES[i].getValue(), RM_TYPES[i].getClazz());
 		}
 		return types;
+	}
+
+
+        private KnownTypes(Class clazz) {
+		this.value = clazz.getSimpleName().toUpperCase();
+		this.clazz = clazz;
+	}
+
+        private String getValue() {
+		return value;
+	}
+
+	@SuppressWarnings("rawtypes")
+	private Class getClazz() {
+		return clazz;
 	}
 
 }
