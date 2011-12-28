@@ -391,9 +391,10 @@ public class DataValidatorImpl implements DataValidator {
     void validatePrimitive(Archetype archetype, CPrimitiveObject cpo,
             Object value, String path, List<ValidationError> errors) {
         log.debug("validate CPrimitiveObject..");
+        Object primitiveValue = value;
 
         Class klass = types.get(cpo.getItem().getType().toUpperCase());
-        if (value instanceof String) {
+        if (primitiveValue instanceof String) {
             Constructor constructor = null;
             for (Constructor constr : klass.getConstructors()) {
                 if (constr.getParameterTypes().length == 1
@@ -405,8 +406,8 @@ public class DataValidatorImpl implements DataValidator {
             if (constructor != null) {
                 try {
                     Object[] params = new Object[1];
-                    params[0] = value;
-                    value = constructor.newInstance(params);
+                    params[0] = primitiveValue;
+                    primitiveValue = constructor.newInstance(params);
                 } catch (InstantiationException ex) {
                     java.util.logging.Logger.getLogger(
                             DataValidatorImpl.class.getName()).log(
@@ -427,7 +428,7 @@ public class DataValidatorImpl implements DataValidator {
             }
         }
 
-        if (!cpo.getItem().validValue(value)) {
+        if (!cpo.getItem().validValue(primitiveValue)) {
             errors.add(new ValidationError(archetype, path, cpo.path(),
                     ErrorType.PRIMITIVE_TYPE_VALUE_ERROR, getErrorDescription(
                     archetype, cpo, null))); // DUMMY ERROR TYPE
