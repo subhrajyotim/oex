@@ -517,9 +517,7 @@ public class DataValidatorImpl implements DataValidator {
         return false;
     }
 
-    Object fetchAttribute(Object object, CAttribute cattr)
-            throws NoSuchMethodException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException {
+    Object fetchAttribute(Object object, CAttribute cattr) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException{
         String[] names = cattr.getRmAttributeName().split("_");
         StringBuilder attrName = new StringBuilder();
         for (String name : names) {
