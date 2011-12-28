@@ -406,22 +406,8 @@ public class DataValidatorImpl implements DataValidator {
                     Object[] params = new Object[1];
                     params[0] = primitiveValue;
                     primitiveValue = constructor.newInstance(params);
-                } catch (InstantiationException ex) {
-                    java.util.logging.Logger.getLogger(
-                            DataValidatorImpl.class.getName()).log(
-                            Level.SEVERE, null, ex);
-                } catch (IllegalAccessException ex) {
-                    java.util.logging.Logger.getLogger(
-                            DataValidatorImpl.class.getName()).log(
-                            Level.SEVERE, null, ex);
-                } catch (IllegalArgumentException ex) {
-                    java.util.logging.Logger.getLogger(
-                            DataValidatorImpl.class.getName()).log(
-                            Level.SEVERE, null, ex);
-                } catch (InvocationTargetException ex) {
-                    java.util.logging.Logger.getLogger(
-                            DataValidatorImpl.class.getName()).log(
-                            Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    java.util.logging.Logger.getLogger(DataValidatorImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
