@@ -180,32 +180,80 @@ public class DataValidatorImpl implements DataValidator {
 
         Cardinality cardinality = cattr.getCardinality();
         List<CObject> children = cattr.getChildren();
+        if (children == null) {
+            return;
+        }
         Collection<Object> values = (Collection<Object>) attribute;
 
+        ValidationError errorCardinality = validateCardinality(cardinality, values, archetype, path, cattr);
+        if(errorCardinality!=null){
+            errors.add(errorCardinality);
+            return;
+        }
+
+
+        log.debug("validating total cobj: " + children.size() + ", values: "
+                + values.size());
+
+        List<Object> objects = null;
+        String newPath = null;
+        int contador = 0;
+        for (CObject cobj : children) {
+
+            log.debug("validating sub-cobj at: " + cobj.path());
+
+            objects = findMatchingNodes(values, cobj);
+            contador += objects.size();
+
+            ValidationError occurrenceError = validateOccurrence(cobj, objects, archetype, path, errors);
+            if(occurrenceError!=null){
+                errors.add(occurrenceError);
+                return;
+            }
+
+            for (Object obj : objects) {
+                newPath = path + "[" + cobj.getNodeId() + "]";
+                validateObject(cobj, obj, newPath, errors, archetype);
+            }
+        }
+        if (contador != values.size()) {
+            errors.add(new ValidationError(archetype, path, cattr.path(),
+                    ErrorType.OCCURRENCES_NOT_DESCRIBED, null));
+        }
+    }
+
+    private ValidationError validateOccurrence(CObject cobj, List<Object> objects, Archetype archetype, String path, List<ValidationError> errors) {
+        Interval<Integer> occurrences = cobj.getOccurrences();
+        if (occurrences != null) {
+            if (occurrences.getLower() != null && occurrences.getLower() > objects.size()) {
+                return new ValidationError(archetype, path, cobj.path(), ErrorType.OCCURRENCES_TOO_FEW, null);
+            } else if (occurrences.getUpper() != null && occurrences.getUpper() < objects.size()) {
+                return new ValidationError(archetype, path, cobj.path(), ErrorType.OCCURRENCES_TOO_MANY, null);
+            }
+        }
+        return null;
+    }
+
+    private ValidationError validateCardinality(
+            Cardinality cardinality, Collection<Object> values, Archetype archetype,
+            String path, CAttribute cattr){
         Interval<Integer> interval = cardinality.getInterval();
 
         log.debug("cardinality.interval: " + interval);
 
-        if (children == null) {
-            return;
-        }
-
         if (interval.getLower() != null && interval.getLower() > values.size()) {
 
-            ValidationError error = new ValidationError(archetype, path, cattr.path(),
+            return new ValidationError(archetype, path, cattr.path(),
                     ErrorType.ITEMS_TOO_FEW, null);
-            errors.add(error);
-            return;
 
         } else if (interval.getUpper() != null
                 && interval.getUpper() < values.size()) {
 
-            ValidationError error = new ValidationError(archetype, path, cattr.path(),
+            return new ValidationError(archetype, path, cattr.path(),
                     ErrorType.ITEMS_TOO_MANY, null);
-            errors.add(error);
-            return;
         }
-
+        return null;
+        
         // The archetype must respect the constraints on reference model
         /**
         if (cardinality.isList() && values instanceof Set) {
@@ -226,51 +274,6 @@ public class DataValidatorImpl implements DataValidator {
         }
          *
          */
-
-        log.debug("validating total cobj: " + children.size() + ", values: "
-                + values.size());
-
-        List<Object> objects = null;
-        String newPath = null;
-        int contador = 0;
-        for (CObject cobj : children) {
-
-            log.debug("validating sub-cobj at: " + cobj.path());
-
-            objects = findMatchingNodes(values, cobj);
-            contador += objects.size();
-            // TODO occurrences should be checked here
-            // the difficult is to locate possible match
-            // for objects constrained by occurrences
-
-            Interval<Integer> occurrences = cobj.getOccurrences();
-
-            if (occurrences != null) {
-                if (occurrences.getLower() != null
-                        && occurrences.getLower() > objects.size()) {
-                    ValidationError error = new ValidationError(archetype, path, cobj.path(),
-                            ErrorType.OCCURRENCES_TOO_FEW, null);
-                    errors.add(error);
-                    return;
-
-                } else if (occurrences.getUpper() != null
-                        && occurrences.getUpper() < objects.size()) {
-                    ValidationError error = new ValidationError(archetype, path, cobj.path(),
-                            ErrorType.OCCURRENCES_TOO_MANY, null);
-                    errors.add(error);
-                    return;
-                }
-            }
-
-            for (Object obj : objects) {
-                newPath = path + "[" + cobj.getNodeId() + "]";
-                validateObject(cobj, obj, newPath, errors, archetype);
-            }
-        }
-        if (contador != values.size()) {
-            errors.add(new ValidationError(archetype, path, cattr.path(),
-                    ErrorType.OCCURRENCES_NOT_DESCRIBED, null));
-        }
     }
 
     /**
