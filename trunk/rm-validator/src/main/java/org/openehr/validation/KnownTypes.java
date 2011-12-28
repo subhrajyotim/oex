@@ -213,7 +213,14 @@ enum KnownTypes {
 
 	private final static KnownTypes[] CONTAINER_TYPES = { LIST, SET };
 
+        private String getValue() {
+		return value;
+	}
 
+	@SuppressWarnings("rawtypes")
+	private Class getClazz() {
+		return clazz;
+	}
 
 	@SuppressWarnings("rawtypes")
 	public static Map<String, Class> getUidBasedIds() {
@@ -304,12 +311,4 @@ enum KnownTypes {
 		return types;
 	}
 
-        private String getValue() {
-		return value;
-	}
-
-	@SuppressWarnings("rawtypes")
-	private Class getClazz() {
-		return clazz;
-	}
 }
