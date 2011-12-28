@@ -457,11 +457,12 @@ public class DataValidatorImpl implements DataValidator {
             CSingleAttribute singleAttribute = (CSingleAttribute) constraint;
             validateSingleAttribute(singleAttribute, value, path, errors,
                     archetype);
-        } else if (constraint instanceof CSingleAttribute) {
-            throw new RuntimeException(
+        } else if (constraint instanceof CMultipleAttribute) {
+            throw new GenericValidationException(archetype, path,
                     "CmultipleAttribute to CSingleAttribute impossible");
-        } else if (constraint instanceof CSingleAttribute) {
-            throw new RuntimeException("CSingleAttribute to CObject impossible");
+        } else if (constraint instanceof CObject) {
+            throw new GenericValidationException(archetype, path,
+                    "CSingleAttribute to CObject impossible");
         }
     }
 
