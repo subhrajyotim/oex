@@ -40,7 +40,7 @@ import org.openehr.validation.exceptions.GenericValidationException;
  */
 public class DataValidatorImpl implements DataValidator {
 
-    private static final Map<String, Class> types = KnownTypes.getAllTypes();
+    private static final Map<String, Class> TYPES = KnownTypes.getAllTypes();
 
     /**
 	 * Validates the data using given archetype
@@ -307,7 +307,7 @@ public class DataValidatorImpl implements DataValidator {
 	 */
     List<Object> findMatchingNodes(Collection<Object> values, CObject cObj) {
         String type = cObj.getRmTypeName().toUpperCase().replace("_", "");
-        Class klasse = types.get(type);
+        Class klasse = TYPES.get(type);
 
         if(Locatable.class.isAssignableFrom(klasse)){
             return findMatchingLocatables(values, cObj);
@@ -367,7 +367,7 @@ public class DataValidatorImpl implements DataValidator {
         String restrictionType = cobj.getRmTypeName().replace("_", "").toUpperCase();
         restrictionType = restrictionType.split("<")[0];
 
-        Class restClass = types.get(restrictionType);
+        Class restClass = TYPES.get(restrictionType);
         if (!restClass.isAssignableFrom(klass)
                 && (!(cobj instanceof CPrimitiveObject))) {
             // verificar se o tipo eh primitivo e se o dado eh String
@@ -413,7 +413,7 @@ public class DataValidatorImpl implements DataValidator {
         log.debug("validate CPrimitiveObject..");
         Object primitiveValue = value;
 
-        Class klass = types.get(cpo.getItem().getType().toUpperCase());
+        Class klass = TYPES.get(cpo.getItem().getType().toUpperCase());
         if (primitiveValue instanceof String) {
             Constructor constructor = null;
             for (Constructor constr : klass.getConstructors()) {
