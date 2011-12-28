@@ -306,7 +306,6 @@ public class DataValidatorImpl implements DataValidator {
 	 */
     List<Object> findMatchingNodes(Collection<Object> values, CObject cObj) {
         String type = cObj.getRmTypeName().toUpperCase(KnownTypes.getLocale()).replace("_", "");
-        type = cObj.getRmTypeName().toUpperCase(KnownTypes.getLocale()).replace("_", "");
         Class klasse = TYPES.get(type);
 
         if(Locatable.class.isAssignableFrom(klasse)){
