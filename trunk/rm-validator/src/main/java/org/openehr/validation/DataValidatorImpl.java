@@ -97,12 +97,8 @@ public class DataValidatorImpl implements DataValidator {
             try {
                 attribute = fetchAttribute(object, cattr);
             } catch (Exception ex) {
-                String messageError = ex.getMessage() != null ? ex.getMessage() : "Sem mensagem de erro";
-                GenericValidationException validationException =
-                        new GenericValidationException(archetype, path,
-                        "Erro na recuperação do atributo: " + messageError);
-                validationException.setStackTrace(ex.getStackTrace());
-                throw validationException;
+                throw new GenericValidationException(archetype, path,
+                        "Erro na recuperação do atributo");
             }
 
             log.debug("attribute " + cattr.getRmAttributeName()
