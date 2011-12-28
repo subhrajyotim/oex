@@ -205,7 +205,7 @@ public class DataValidatorImpl implements DataValidator {
             objects = findMatchingNodes(values, cobj);
             contador += objects.size();
 
-            ValidationError occurrenceError = validateOccurrence(cobj, objects, archetype, path, errors);
+            ValidationError occurrenceError = validateOccurrence(cobj, objects, archetype, path);
             if(occurrenceError!=null){
                 errors.add(occurrenceError);
                 return;
@@ -222,7 +222,7 @@ public class DataValidatorImpl implements DataValidator {
         }
     }
 
-    private ValidationError validateOccurrence(CObject cobj, List<Object> objects, Archetype archetype, String path, List<ValidationError> errors) {
+    private ValidationError validateOccurrence(CObject cobj, List<Object> objects, Archetype archetype, String path) {
         Interval<Integer> occurrences = cobj.getOccurrences();
         if (occurrences != null) {
             if (occurrences.getLower() != null && occurrences.getLower() > objects.size()) {
