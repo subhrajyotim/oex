@@ -179,10 +179,10 @@ enum KnownTypes {
 		this.clazz = clazz;
 	}
 
-	private static KnownTypes[] basicTypes = { BYTE, BOOLEAN, CHAR, DOUBLE,
+	private final static KnownTypes[] BASIC_TYPES = { BYTE, BOOLEAN, CHAR, DOUBLE,
 			FLOAT, INT, LONG, SHORT, STRING, INTEGER };
 
-	private static KnownTypes[] abstractTypes = { AUTHOREDRESOURCE,
+	private final static KnownTypes[] ABSTRACT_TYPES = { AUTHOREDRESOURCE,
 			DATASTRUCTURE, DATAVALUE, DVABSOLUTEQUANTITY, DVAMOUNT,
 			DVENCAPSULATED, DVORDERED, DVQUANTIFIED, DVTEMPORAL,
 			DVTIMESPECIFICATION, EVENT, ITEM, ITEMSTRUCTURE, LOCATABLE,
@@ -190,12 +190,12 @@ enum KnownTypes {
 
 	private static KnownTypes[] UIDIdentifiers = { UUID, INTERNETID, ISO_OID };
 
-	private static KnownTypes[] Interfaces = { TERMINOLOGYSERVICE,
+	private final static KnownTypes[] INTERFACES = { TERMINOLOGYSERVICE,
 			TERMINOLOGYACCESS, CODESETACCESS, MEASUREMENTSERVICE };
 
-	private static KnownTypes[] UIDBasedIds = { OBJECTVERSIONID, HIEROBJECTID };
+	private final static KnownTypes[] UID_BASED_ID = { OBJECTVERSIONID, HIEROBJECTID };
 
-	private static KnownTypes[] rmTypes = { PARTYSELF, ARCHETYPED, ATTESTATION,
+	private final static KnownTypes[] RM_TYPES = { PARTYSELF, ARCHETYPED, ATTESTATION,
 			AUDITDETAILS, PARTICIPATION, PARTYIDENTIFIED, PARTYRELATED,
 			PARTYSELF, ORIGINALVERSION, CONTRIBUTION, TERMINOLOGYID,
 			ARCHETYPEID, HIEROBJECTID, ACCESSGROUPREF, GENERICID, INTERNETID,
@@ -211,29 +211,29 @@ enum KnownTypes {
 			ORGANISATION, PERSON, CONTACT, PARTYRELATIONSHIP, ROLE, CAPABILITY,
 			EHRSTATUS };
 
-	private static KnownTypes[] containerTypes = { LIST, SET };
+	private final static KnownTypes[] CONTAINER_TYPES = { LIST, SET };
 
 	@SuppressWarnings("rawtypes")
 	public static Map<String, Class> getUidBasedIds() {
 		Map<String, Class> types = new HashMap<String, Class>();
-		for (int i = 0; i < UIDBasedIds.length; i++) {
-			types.put(UIDBasedIds[i].getValue(), UIDBasedIds[i].getClazz());
+		for (int i = 0; i < UID_BASED_ID.length; i++) {
+			types.put(UID_BASED_ID[i].getValue(), UID_BASED_ID[i].getClazz());
 		}
 		return types;
 	}
 
 	public static Map<String, Class> getBasicTypes() {
 		Map<String, Class> types = new HashMap<String, Class>();
-		for (int i = 0; i < basicTypes.length; i++) {
-			types.put(basicTypes[i].getValue(), basicTypes[i].getClazz());
+		for (int i = 0; i < BASIC_TYPES.length; i++) {
+			types.put(BASIC_TYPES[i].getValue(), BASIC_TYPES[i].getClazz());
 		}
 		return types;
 	}
 
 	public static Map<String, Class> getAbstractTypes() {
 		Map<String, Class> types = new HashMap<String, Class>();
-		for (int i = 0; i < abstractTypes.length; i++) {
-			types.put(abstractTypes[i].getValue(), abstractTypes[i].getClazz());
+		for (int i = 0; i < ABSTRACT_TYPES.length; i++) {
+			types.put(ABSTRACT_TYPES[i].getValue(), ABSTRACT_TYPES[i].getClazz());
 		}
 		return types;
 	}
@@ -249,17 +249,17 @@ enum KnownTypes {
 
 	public static Map<String, Class> getInterfacesTypes() {
 		Map<String, Class> types = new HashMap<String, Class>();
-		for (int i = 0; i < Interfaces.length; i++) {
-			types.put(Interfaces[i].getValue(), Interfaces[i].getClazz());
+		for (int i = 0; i < INTERFACES.length; i++) {
+			types.put(INTERFACES[i].getValue(), INTERFACES[i].getClazz());
 		}
 		return types;
 	}
 
 	public static Map<String, Class> getContainerTypes() {
 		Map<String, Class> types = new HashMap<String, Class>();
-		for (int i = 0; i < containerTypes.length; i++) {
-			types.put(containerTypes[i].getValue(),
-					containerTypes[i].getClazz());
+		for (int i = 0; i < CONTAINER_TYPES.length; i++) {
+			types.put(CONTAINER_TYPES[i].getValue(),
+					CONTAINER_TYPES[i].getClazz());
 		}
 		return types;
 	}
@@ -267,8 +267,8 @@ enum KnownTypes {
 	@SuppressWarnings("unchecked")
 	public static Map<String, Class<RMObject>> getRmTypes() {
 		Map<String, Class<RMObject>> types = new HashMap<String, Class<RMObject>>();
-		for (int i = 0; i < rmTypes.length; i++) {
-			types.put(rmTypes[i].getValue(), rmTypes[i].getClazz());
+		for (int i = 0; i < RM_TYPES.length; i++) {
+			types.put(RM_TYPES[i].getValue(), RM_TYPES[i].getClazz());
 		}
 		return types;
 	}
@@ -276,28 +276,28 @@ enum KnownTypes {
 	@SuppressWarnings("rawtypes")
 	public static Map<String, Class> getAllTypes() {
 		Map<String, Class> types = new HashMap<String, Class>();
-		for (int i = 0; i < UIDBasedIds.length; i++) {
-			types.put(UIDBasedIds[i].getValue(), UIDBasedIds[i].getClazz());
+		for (int i = 0; i < UID_BASED_ID.length; i++) {
+			types.put(UID_BASED_ID[i].getValue(), UID_BASED_ID[i].getClazz());
 		}
-		for (int i = 0; i < basicTypes.length; i++) {
-			types.put(basicTypes[i].getValue(), basicTypes[i].getClazz());
+		for (int i = 0; i < BASIC_TYPES.length; i++) {
+			types.put(BASIC_TYPES[i].getValue(), BASIC_TYPES[i].getClazz());
 		}
-		for (int i = 0; i < abstractTypes.length; i++) {
-			types.put(abstractTypes[i].getValue(), abstractTypes[i].getClazz());
+		for (int i = 0; i < ABSTRACT_TYPES.length; i++) {
+			types.put(ABSTRACT_TYPES[i].getValue(), ABSTRACT_TYPES[i].getClazz());
 		}
 		for (int i = 0; i < UIDIdentifiers.length; i++) {
 			types.put(UIDIdentifiers[i].getValue(),
 					UIDIdentifiers[i].getClazz());
 		}
-		for (int i = 0; i < Interfaces.length; i++) {
-			types.put(Interfaces[i].getValue(), Interfaces[i].getClazz());
+		for (int i = 0; i < INTERFACES.length; i++) {
+			types.put(INTERFACES[i].getValue(), INTERFACES[i].getClazz());
 		}
-		for (int i = 0; i < containerTypes.length; i++) {
-			types.put(containerTypes[i].getValue(),
-					containerTypes[i].getClazz());
+		for (int i = 0; i < CONTAINER_TYPES.length; i++) {
+			types.put(CONTAINER_TYPES[i].getValue(),
+					CONTAINER_TYPES[i].getClazz());
 		}
-		for (int i = 0; i < rmTypes.length; i++) {
-			types.put(rmTypes[i].getValue(), rmTypes[i].getClazz());
+		for (int i = 0; i < RM_TYPES.length; i++) {
+			types.put(RM_TYPES[i].getValue(), RM_TYPES[i].getClazz());
 		}
 		return types;
 	}
