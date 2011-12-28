@@ -382,7 +382,6 @@ public class DataValidatorImpl implements DataValidator {
         log.debug("validate CDomaingType..");
         if (!cdomain.validValue(value)) {
             log.debug("error found at " + cdomain.path());
-            java.lang.String a = "";
             errors.add(new ValidationError(archetype, path, cdomain.path(),
                     ErrorType.DOMAIN_TYPE_VALUE_ERROR, getErrorDescription(
                     archetype, cdomain, null))); // DUMMY ERROR TYPE
