@@ -7,7 +7,7 @@
     <groupId>pep</groupId>
     <artifactId>validator</artifactId>
     <packaging>jar</packaging>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
     <name>pep:rm-validator</name>
     <url>http://oex.googlecode.com</url>
 	
