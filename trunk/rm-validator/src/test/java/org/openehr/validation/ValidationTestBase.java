@@ -16,18 +16,15 @@ package org.openehr.validation;
 
 import java.io.InputStream;
 import java.util.List;
-
+import junit.framework.TestCase;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
+import org.openehr.am.parser.ContentObject;
+import org.openehr.am.parser.DADLParser;
 import org.openehr.rm.RMObject;
 import org.openehr.rm.binding.DADLBinding;
 import org.openehr.rm.common.archetyped.Locatable;
-import org.openehr.am.parser.ContentObject;
-import org.openehr.am.parser.DADLParser;
-
 import se.acode.openehr.parser.ADLParser;
-
-import junit.framework.TestCase;
 
 public class ValidationTestBase extends TestCase {
 
