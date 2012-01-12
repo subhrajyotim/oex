@@ -8,7 +8,8 @@
     <artifactId>validator</artifactId>
     <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
-    <name>pep:rm-validator</name>
+    
+    <name>pep:validator</name>
     <url>http://oex.googlecode.com</url>
 	
     <build>
