@@ -4,8 +4,7 @@ package org.openehr.validation.exceptions;
 import org.openehr.am.archetype.Archetype;
 
 /**
- *
- * @author Danillo Guimaraes
+ * TODO documentar
  */
 public class GenericValidationException extends Exception {
 
