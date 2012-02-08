@@ -37,9 +37,9 @@
 	
     <dependencies>
         <dependency>
-            <groupId>pep</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>archetypes</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>openehr</groupId>
