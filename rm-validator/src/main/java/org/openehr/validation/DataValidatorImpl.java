@@ -38,7 +38,7 @@ import org.openehr.validation.exceptions.GenericValidationException;
 
 /**
  * Implementation of an archetype-based data validator
- *
+ * TODO documentar (métodos não estão documentados)
  * @author rong.chen
  */
 public class DataValidatorImpl implements DataValidator {
