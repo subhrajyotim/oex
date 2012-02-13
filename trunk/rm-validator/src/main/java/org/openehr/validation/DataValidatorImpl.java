@@ -82,6 +82,15 @@ public class DataValidatorImpl implements DataValidator {
         return errors;
     }
 
+    /**
+     * Valida as restrições contidas em um CComplexObject
+     * @param ccobj
+     * @param object
+     * @param path
+     * @param errors
+     * @param archetype
+     * @throws GenericValidationException
+     */
     void validateComplex(CComplexObject ccobj, Object object, String path,
             List<ValidationError> errors, Archetype archetype)
             throws GenericValidationException {
@@ -89,7 +98,6 @@ public class DataValidatorImpl implements DataValidator {
         log.debug("validate CComplexObject of type: " + ccobj.getRmTypeName()
                 + " at path: " + path);
 
-        ValidationError error = null;
         String newPath = null;
 
         // loop through the attributes
@@ -99,8 +107,7 @@ public class DataValidatorImpl implements DataValidator {
             try {
                 attribute = fetchAttribute(object, cattr);
             } catch (Exception ex) {
-                throw new GenericValidationException(archetype.getArchetypeId(),
-                        path, ex);
+                continue;
             }
 
             log.debug("attribute " + cattr.getRmAttributeName()
@@ -109,31 +116,75 @@ public class DataValidatorImpl implements DataValidator {
             newPath = updatePath(path);
             newPath += cattr.getRmAttributeName();
             String description = getErrorDescription(archetype, ccobj, null);
-            if (cattr.isRequired() && attribute == null) {
+            validateAttribute(cattr, attribute, path, archetype, description,
+                    errors, newPath);
 
-                log.debug("ERROR --> attribute missing at " + path);
-
-                error = new ValidationError(archetype, path, cattr.path(),
-                        ErrorType.ATTRIBUTE_MISSING, description);
-                errors.add(error);
-
-            } else if (!cattr.isAllowed() && attribute != null) {
-
-                error = new ValidationError(archetype, path, cattr.path(),
-                        ErrorType.ATTRIBUTE_NOT_ALLOWED, description);
-                errors.add(error);
-
-            } else if (attribute != null) {
-                if (cattr instanceof CSingleAttribute) {
-                    validateSingleAttribute((CSingleAttribute) cattr,
-                            attribute, newPath, errors, archetype);
-                } else {
-                    validateMultipleAttribute((CMultipleAttribute) cattr,
-                            attribute, newPath, errors, archetype);
-                }
-
-            }
         }
+    }
+
+    /**
+     * Valida as restrições contidas em um CAttribute
+     * @param cattr
+     * @param attribute
+     * @param path
+     * @param archetype
+     * @param description
+     * @param errors
+     * @param newPath
+     * @throws GenericValidationException
+     */
+    private void validateAttribute(CAttribute cattr, Object attribute,
+            String path, Archetype archetype, String description,
+            List<ValidationError> errors,String newPath)
+            throws GenericValidationException {
+
+        if (cattr.isRequired() && attribute == null) {
+            log.debug("ERROR --> attribute missing at " + path);
+            errors.add(new ValidationError(archetype, path, cattr.path(),
+                    ErrorType.ATTRIBUTE_MISSING, description));
+
+        } else if (!cattr.isAllowed() && attribute != null) {
+            errors.add(new ValidationError(archetype, path, cattr.path(),
+                    ErrorType.ATTRIBUTE_NOT_ALLOWED, description));
+            
+        } else if (attribute != null) {
+            defineTipoAtributoParaValidar(cattr, attribute, newPath, errors,
+                    archetype);
+        }
+    }
+
+    /**
+     * Decide se a restrição é um CSingleAttribute ou CMultipleAttribute
+     * @param cattr
+     * @param attribute
+     * @param newPath
+     * @param errors
+     * @param archetype
+     * @throws GenericValidationException
+     */
+    private void defineTipoAtributoParaValidar(CAttribute cattr, Object attribute, String newPath, List<ValidationError> errors, Archetype archetype) throws GenericValidationException {
+        if (cattr instanceof CSingleAttribute) {
+            validateSingleAttribute((CSingleAttribute) cattr, attribute, newPath, errors, archetype);
+        } else {
+            validateMultipleAttribute((CMultipleAttribute) cattr, attribute, newPath, errors, archetype);
+        }
+    }
+
+    /**
+     * Executar o método de obtenção do valor de um atributo
+     * @param object
+     * @param getter
+     * @return
+     * @throws SecurityException
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     */
+    private Object executeGetter(Object object, String getter) throws SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        Method method = null;
+        method = object.getClass().getMethod(getter, null);
+        return method.invoke(object, null);
     }
 
     private String extractTerm(Archetype archetype, String language, String nodeId) {
@@ -528,9 +579,7 @@ public class DataValidatorImpl implements DataValidator {
         }
 
         String getter = "get" + attrName.toString();
-        Method method = null;
-        method = object.getClass().getMethod(getter, null);
-        return method.invoke(object, null);
+        return executeGetter(object, getter);
     }
 
     String upperFirstLetter(String value) {
