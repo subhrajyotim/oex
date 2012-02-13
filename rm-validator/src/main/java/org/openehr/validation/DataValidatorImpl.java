@@ -123,6 +123,43 @@ public class DataValidatorImpl implements DataValidator {
     }
 
     /**
+     * Obtem termo arquétipo
+     * @param archetypeTerms
+     * @param nodeId
+     * @return
+     */
+    private String getArchetypeTerm(List<ArchetypeTerm> archetypeTerms, String nodeId) {
+        String description = null;
+        if (archetypeTerms != null) {
+            for (ArchetypeTerm archetypeTerm : archetypeTerms) {
+                String term = archetypeTerm.getCode();
+                if (nodeId.equals(term)) {
+                    description = archetypeTerm.getDescription();
+                    break;
+                }
+            }
+        }
+        return description;
+    }
+
+    /**
+     * Extrai lista de termos arquétipos de um determinado idioma
+     * @param ontologyDefinitions
+     * @param lang
+     * @return
+     */
+    private List<ArchetypeTerm> getArchetypeTerms(List<OntologyDefinitions> ontologyDefinitions, String lang) {
+        List<ArchetypeTerm> archetypeTerms = null;
+        for (OntologyDefinitions ontologyDefinition : ontologyDefinitions) {
+            if (ontologyDefinition.getLanguage().equals(lang)) {
+                archetypeTerms = ontologyDefinition.getDefinitions();
+                break;
+            }
+        }
+        return archetypeTerms;
+    }
+
+    /**
      * Valida as restrições contidas em um CAttribute
      * @param cattr
      * @param attribute
@@ -187,27 +224,21 @@ public class DataValidatorImpl implements DataValidator {
         return method.invoke(object, null);
     }
 
+    /**
+     * Extrai determinado termo arquétipo de um respectivo idioma
+     * @param archetype
+     * @param language
+     * @param nodeId
+     * @return
+     */
     private String extractTerm(Archetype archetype, String language, String nodeId) {
         ArchetypeOntology ontology = archetype.getOntology();
         String lang = language == null ? "pt-br" : language;
         String description = null;
         List<OntologyDefinitions> ontologyDefinitions = ontology.getTermDefinitionsList();
         List<ArchetypeTerm> archetypeTerms = null;
-        for (OntologyDefinitions ontologyDefinition : ontologyDefinitions) {
-            if (ontologyDefinition.getLanguage().equals(lang)) {
-                archetypeTerms = ontologyDefinition.getDefinitions();
-                break;
-            }
-        }
-        if (archetypeTerms != null) {
-            for (ArchetypeTerm archetypeTerm : archetypeTerms) {
-                String term = archetypeTerm.getCode();
-                if (nodeId.equals(term)) {
-                    description = archetypeTerm.getDescription();
-                    break;
-                }
-            }
-        }
+        archetypeTerms = getArchetypeTerms(ontologyDefinitions, lang);
+        description = getArchetypeTerm(archetypeTerms, nodeId);
         return description;
     }
 
@@ -225,22 +256,18 @@ public class DataValidatorImpl implements DataValidator {
         log.debug("validateSingleAttribute..");
 
         if (cattr.alternatives().size() > 1) {
-            boolean valid = false;
             List<ValidationError> newErrors = null;
             for (CObject cobj : cattr.alternatives()) {
                 newErrors = new ArrayList<ValidationError>();
                 validateObject(cobj, attribute, path, newErrors, archetype);
                 if (newErrors.isEmpty()) {
-                    valid = true;
                     return;
                 }
             }
-            if (!valid) {
-                ValidationError error = new ValidationError(archetype, path,
-                        path, ErrorType.ALTERNATIVES_NOT_SATISFIED,
-                        getErrorDescription(archetype, cattr, null));
-                errors.add(error);
-            }
+            ValidationError error = new ValidationError(archetype, path,
+                    path, ErrorType.ALTERNATIVES_NOT_SATISFIED,
+                    getErrorDescription(archetype, cattr, null));
+            errors.add(error);
         } else if (cattr.alternatives().size() == 1) {
             CObject cobj = cattr.alternatives().get(0);
             validateObject(cobj, attribute, path, errors, archetype);
