@@ -113,7 +113,7 @@ public class DataValidatorImpl implements DataValidator {
             log.debug("attribute " + cattr.getRmAttributeName()
                     + " isRequired: " + cattr.isRequired()
                     + ", attribute == null ? " + (attribute == null));
-            newPath = updatePath(path);
+            newPath = includePathSeparator(path);
             newPath += cattr.getRmAttributeName();
             String description = getErrorDescription(archetype, ccobj, null);
             validateAttribute(cattr, attribute, path, archetype, description,
@@ -157,6 +157,19 @@ public class DataValidatorImpl implements DataValidator {
             }
         }
         return archetypeTerms;
+    }
+
+    private void validaAlternativasSingleAttribute(CSingleAttribute cattr, Object attribute, String path, Archetype archetype, List<ValidationError> errors) throws GenericValidationException {
+        List<ValidationError> newErrors = null;
+        for (CObject cobj : cattr.alternatives()) {
+            newErrors = new ArrayList<ValidationError>();
+            validateObject(cobj, attribute, path, newErrors, archetype);
+            if (newErrors.isEmpty()) {
+                return;
+            }
+        }
+        ValidationError error = new ValidationError(archetype, path, path, ErrorType.ALTERNATIVES_NOT_SATISFIED, getErrorDescription(archetype, cattr, null));
+        errors.add(error);
     }
 
     /**
@@ -242,13 +255,27 @@ public class DataValidatorImpl implements DataValidator {
         return description;
     }
 
-    private String updatePath(String path) {
+    /**
+     * Inclui path separator "/" no path
+     * @param path
+     * @return
+     */
+    private String includePathSeparator(String path) {
         if (!path.equals(Locatable.PATH_SEPARATOR)) {
             return path + Locatable.PATH_SEPARATOR;
         }
         return path;
     }
 
+    /**
+     * Valida a conformidade de restrições descritas em {@link CSingleAttribute}
+     * @param cattr
+     * @param attribute
+     * @param path
+     * @param errors
+     * @param archetype
+     * @throws GenericValidationException
+     */
     void validateSingleAttribute(CSingleAttribute cattr, Object attribute,
             String path, List<ValidationError> errors, Archetype archetype)
             throws GenericValidationException {
@@ -256,18 +283,7 @@ public class DataValidatorImpl implements DataValidator {
         log.debug("validateSingleAttribute..");
 
         if (cattr.alternatives().size() > 1) {
-            List<ValidationError> newErrors = null;
-            for (CObject cobj : cattr.alternatives()) {
-                newErrors = new ArrayList<ValidationError>();
-                validateObject(cobj, attribute, path, newErrors, archetype);
-                if (newErrors.isEmpty()) {
-                    return;
-                }
-            }
-            ValidationError error = new ValidationError(archetype, path,
-                    path, ErrorType.ALTERNATIVES_NOT_SATISFIED,
-                    getErrorDescription(archetype, cattr, null));
-            errors.add(error);
+            validaAlternativasSingleAttribute(cattr, attribute, path, archetype, errors);
         } else if (cattr.alternatives().size() == 1) {
             CObject cobj = cattr.alternatives().get(0);
             validateObject(cobj, attribute, path, errors, archetype);
@@ -278,7 +294,6 @@ public class DataValidatorImpl implements DataValidator {
     void validateMultipleAttribute(CMultipleAttribute cattr, Object attribute,
             String path, List<ValidationError> errors, Archetype archetype)
             throws GenericValidationException {
-
         log.debug("validateMultipleAttribute..");
 
         Cardinality cardinality = cattr.getCardinality();
@@ -288,12 +303,12 @@ public class DataValidatorImpl implements DataValidator {
         }
         Collection<Object> values = (Collection<Object>) attribute;
 
-        ValidationError errorCardinality = validateCardinality(cardinality, values, archetype, path, cattr);
+        ValidationError errorCardinality = validateCardinality(cardinality,
+                values, archetype, path, cattr);
         if(errorCardinality!=null){
             errors.add(errorCardinality);
             return;
         }
-
 
         log.debug("validating total cobj: " + children.size() + ", values: "
                 + values.size());
@@ -357,26 +372,6 @@ public class DataValidatorImpl implements DataValidator {
         }
         return null;
         
-        // The archetype must respect the constraints on reference model
-        /**
-        if (cardinality.isList() && values instanceof Set) {
-            ValidationError error = new ValidationError(archetype, path, cattr.path(),
-                    ErrorType.ITEMS_NOT_ORDERED, null);
-            errors.add(error);
-        } else if (cardinality.isSet() && values instanceof List) {
-            Set<Object> set = new HashSet<Object>(values);
-            if (set.size() != values.size()) {
-                ValidationError error = new ValidationError(archetype, path, cattr.path(),
-                        ErrorType.ITEMS_NOT_UNIQUE, null);
-                errors.add(error);
-            }
-        } else if (cardinality.isBag() && values instanceof Set) {
-            ValidationError error = new ValidationError(archetype, path, cattr.path(),
-                    ErrorType.ITEMS_NOT_NON_UNIQUE, null);
-            errors.add(error);
-        }
-         *
-         */
     }
 
     /**
