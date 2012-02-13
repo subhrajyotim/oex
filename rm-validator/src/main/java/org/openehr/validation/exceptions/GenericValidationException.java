@@ -1,7 +1,7 @@
 
 package org.openehr.validation.exceptions;
 
-import org.openehr.am.archetype.Archetype;
+import org.openehr.rm.support.identification.ArchetypeID;
 
 /**
  * TODO documentar
@@ -16,12 +16,12 @@ public class GenericValidationException extends Exception {
         super(mens, cause);
     }
 
-    public GenericValidationException(Archetype archetype, String path, String cause) {
-        this(cause + " em " + path + " de " + archetype.getArchetypeId().getValue());
+    public GenericValidationException(ArchetypeID archetypeID, String path, String cause) {
+        this(cause + " em " + path + " de " + archetypeID.getValue());
     }
 
-    public GenericValidationException(Archetype archetype, String path, Exception ex) {
-        this(ex.getMessage() + " em " + path + " de " + archetype.getArchetypeId().getValue(), ex.getCause());
+    public GenericValidationException(ArchetypeID archetypeID, String path, Exception ex) {
+        this(ex.getMessage() + " em " + path + " de " + archetypeID.getValue(), ex.getCause());
     }
 
 
