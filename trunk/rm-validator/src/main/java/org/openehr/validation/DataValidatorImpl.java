@@ -99,7 +99,8 @@ public class DataValidatorImpl implements DataValidator {
             try {
                 attribute = fetchAttribute(object, cattr);
             } catch (Exception ex) {
-                throw new GenericValidationException(archetype, path, ex);
+                throw new GenericValidationException(archetype.getArchetypeId(),
+                        path, ex);
             }
 
             log.debug("attribute " + cattr.getRmAttributeName()
@@ -474,11 +475,11 @@ public class DataValidatorImpl implements DataValidator {
             validateSingleAttribute(singleAttribute, value, path, errors,
                     archetype);
         } else if (constraint instanceof CMultipleAttribute) {
-            throw new GenericValidationException(archetype, path,
-                    "CmultipleAttribute to CSingleAttribute impossible");
+            throw new GenericValidationException(archetype.getArchetypeId(), 
+                    path, "CmultipleAttribute to CSingleAttribute impossible");
         } else if (constraint instanceof CObject) {
-            throw new GenericValidationException(archetype, path,
-                    "CSingleAttribute to CObject impossible");
+            throw new GenericValidationException(archetype.getArchetypeId(), 
+                    path, "CSingleAttribute to CObject impossible");
         }
     }
 
