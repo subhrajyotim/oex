@@ -106,7 +106,11 @@ public class DataValidatorImpl implements DataValidator {
             Object attribute = null;
             try {
                 attribute = fetchAttribute(object, cattr);
-            } catch (Exception ex) {
+            } catch (NoSuchMethodException ex) {
+                continue;
+            } catch (IllegalAccessException ex) {
+                continue;
+            } catch (InvocationTargetException ex) {
                 continue;
             }
 
