@@ -157,7 +157,7 @@ public class DataValidatorImpl implements DataValidator {
     private Object build(Constructor constructor, Object argument) {
         if (constructor != null) {
             try {
-                argument = constructor.newInstance(argument);
+                return constructor.newInstance(argument);
             } catch (Exception ex) {
                 Trace.log(ex.getMessage());
             }
