@@ -472,7 +472,8 @@ public class DataValidatorImpl implements DataValidator {
                 errors.add(occurrenceError);
                 return;
             }
-            validaObjetosEmCollections(objects, path, cobj, errors, archetype);
+            validaObjetosEmCollections(objects, path, cobj, errors,
+                    archetype);
         }
         if (contador != values.size()) {
             errors.add(new ValidationError(archetype, path, cattr.path(),
