@@ -19,8 +19,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.archetype.assertion.Assertion;
@@ -214,8 +212,7 @@ public class DataValidatorImpl implements DataValidator {
      * @return
      * @throws SecurityException
      */
-    private Constructor getConstructorWithStringArgument(Class klass)
-            throws SecurityException {
+    private Constructor getConstructorWithStringArgument(Class klass){
         Constructor constructor = null;
         
         for (Constructor constr : klass.getConstructors()) {
@@ -364,8 +361,8 @@ public class DataValidatorImpl implements DataValidator {
      * @throws InvocationTargetException
      */
     private Object executeGetter(Object object, String getter) throws 
-            SecurityException, IllegalArgumentException, IllegalAccessException,
-            NoSuchMethodException, InvocationTargetException {
+            IllegalAccessException,NoSuchMethodException,
+            InvocationTargetException {
 
         Method method = null;
         method = object.getClass().getMethod(getter, null);
