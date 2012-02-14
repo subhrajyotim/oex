@@ -286,11 +286,11 @@ public class DataValidatorImpl implements DataValidator {
      * @throws GenericValidationException
      */
     private void validaObjetosEmCollections(List<Object> objects, String path,
-            CObject cobj, String newPath, List<ValidationError> errors,
+            CObject cobj, List<ValidationError> errors,
             Archetype archetype) throws GenericValidationException {
         
         for (Object obj : objects) {
-            newPath = path + "[" + cobj.getNodeId() + "]";
+            String newPath = path + "[" + cobj.getNodeId() + "]";
             validateObject(cobj, obj, newPath, errors, archetype);
         }
     }
@@ -458,7 +458,6 @@ public class DataValidatorImpl implements DataValidator {
                 + values.size());
 
         List<Object> objects = null;
-        String newPath = null;
         int contador = 0;
         for (CObject cobj : children) {
 
@@ -473,8 +472,7 @@ public class DataValidatorImpl implements DataValidator {
                 errors.add(occurrenceError);
                 return;
             }
-            validaObjetosEmCollections(objects, path, cobj, newPath, errors,
-                    archetype);
+            validaObjetosEmCollections(objects, path, cobj, errors, archetype);
         }
         if (contador != values.size()) {
             errors.add(new ValidationError(archetype, path, cattr.path(),
