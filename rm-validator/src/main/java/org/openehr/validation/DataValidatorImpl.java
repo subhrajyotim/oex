@@ -12,6 +12,7 @@
 package org.openehr.validation;
 
 import br.ufg.inf.fs.pep.archetypes.ArchetypeRepositoryFactory;
+import br.ufg.inf.fs.pep.utils.log.Trace;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -42,7 +43,6 @@ import org.openehr.validation.exceptions.GenericValidationException;
  * @author rong.chen
  */
 public class DataValidatorImpl implements DataValidator {
-    private static final Map<String, Class> TYPES = KnownTypes.getAllTypes();
 
     /**
 	 * Validates the data using given archetype
@@ -123,15 +123,59 @@ public class DataValidatorImpl implements DataValidator {
     }
 
     /**
+     * Verifica se a quantidade de membros de values é menor do que o mínimo
+     * permitido
+     * @param interval
+     * @param values
+     * @return
+     */
+    private boolean abaixoDoMinimo(Interval interval, Collection values) {
+
+        return interval.getLower() != null &&
+                interval.getLower().compareTo(values.size()) > 0;
+    }
+
+    /**
+     * Verifica se a quantidade de membros de values é maior do que o máximo
+     * permitido
+     * @param interval
+     * @param values
+     * @return
+     */
+    private boolean acimaMaximo(Interval interval, Collection values) {
+        return interval.getUpper() != null && 
+                interval.getUpper().compareTo(values.size())<0;
+    }
+
+    /**
+     * A partir de um construtor e de um argumento para o construtor, retorna
+     * o objeto construido.
+     * @param constructor
+     * @param argument
+     * @return
+     */
+    private Object build(Constructor constructor, Object argument) {
+        if (constructor != null) {
+            try {
+                argument = constructor.newInstance(argument);
+            } catch (Exception ex) {
+                Trace.log(ex.getMessage());
+            }
+        }
+        return argument;
+    }
+
+    /**
      * Obtem termo arquétipo
-     * @param archetypeTerms
+     * @param termosArquetipos
      * @param nodeId
      * @return
      */
-    private String getArchetypeTerm(List<ArchetypeTerm> archetypeTerms, String nodeId) {
+    private String getArchetypeTerm(List<ArchetypeTerm> termosArquetipos,
+            String nodeId) {
         String description = null;
-        if (archetypeTerms != null) {
-            for (ArchetypeTerm archetypeTerm : archetypeTerms) {
+        if (termosArquetipos != null) {
+            for (ArchetypeTerm archetypeTerm : termosArquetipos) {
                 String term = archetypeTerm.getCode();
                 if (nodeId.equals(term)) {
                     description = archetypeTerm.getDescription();
@@ -145,13 +189,14 @@ public class DataValidatorImpl implements DataValidator {
     /**
      * Extrai lista de termos arquétipos de um determinado idioma
      * @param ontologyDefinitions
-     * @param lang
+     * @param idioma
      * @return
      */
-    private List<ArchetypeTerm> getArchetypeTerms(List<OntologyDefinitions> ontologyDefinitions, String lang) {
+    private List<ArchetypeTerm> getArchetypeTerms(
+            List<OntologyDefinitions> ontologyDefinitions, String idioma) {
         List<ArchetypeTerm> archetypeTerms = null;
         for (OntologyDefinitions ontologyDefinition : ontologyDefinitions) {
-            if (ontologyDefinition.getLanguage().equals(lang)) {
+            if (ontologyDefinition.getLanguage().equals(idioma)) {
                 archetypeTerms = ontologyDefinition.getDefinitions();
                 break;
             }
@@ -159,7 +204,65 @@ public class DataValidatorImpl implements DataValidator {
         return archetypeTerms;
     }
 
-    private void validaAlternativasSingleAttribute(CSingleAttribute cattr, Object attribute, String path, Archetype archetype, List<ValidationError> errors) throws GenericValidationException {
+    /**
+     * Retorna construtor de um parametro {@link String}
+     * @param klass
+     * @return
+     * @throws SecurityException
+     */
+    private Constructor getConstructorWithStringArgument(Class klass)
+            throws SecurityException {
+        Constructor constructor = null;
+        
+        for (Constructor constr : klass.getConstructors()) {
+            if (constr.getParameterTypes().length == 1 &&
+                    constr.getParameterTypes()[0].equals(String.class)) {
+                constructor = constr;
+                break;
+            }
+        }
+        return constructor;
+    }
+
+    /**
+     * Retorna se a restrição é instancia de {@link ArchetypeSlot}
+     * @param cObj
+     * @return
+     */
+    private boolean instanciaArchetypeSlot(CObject cObj) {
+        return cObj instanceof ArchetypeSlot;
+    }
+
+    /**
+     * Retorna se uma restrição é atendida no dado
+     * @param cObj
+     * @param data
+     * @return
+     */
+    private boolean objetoAtendeRestricao(CObject cObj, Locatable data) {
+        if (instanciaArchetypeSlot(cObj)) {
+            log.debug("ArchetypeSlot : " + data.getArchetypeNodeId());
+            ArchetypeSlot slot = (ArchetypeSlot) cObj;
+            return validateRootSlot(slot, data);
+        } else {
+            return cObj.getNodeId().equals(data.getArchetypeNodeId());
+        }
+    }
+
+    /**
+     * Valida {@link CSingleAttribute} quando a restrição possui mais de uma
+     * alternativa
+     * @param cattr
+     * @param attribute
+     * @param path
+     * @param archetype
+     * @param errors
+     * @throws GenericValidationException
+     */
+    private void validaAlternativasSingleAttribute(CSingleAttribute cattr, 
+            Object attribute, String path, Archetype archetype,
+            List<ValidationError> errors) throws GenericValidationException {
+
         List<ValidationError> newErrors = null;
         for (CObject cobj : cattr.alternatives()) {
             newErrors = new ArrayList<ValidationError>();
@@ -170,6 +273,26 @@ public class DataValidatorImpl implements DataValidator {
         }
         ValidationError error = new ValidationError(archetype, path, path, ErrorType.ALTERNATIVES_NOT_SATISFIED, getErrorDescription(archetype, cattr, null));
         errors.add(error);
+    }
+
+    /**
+     * Percorre os objetos em uma lista validando cada um dos membros
+     * @param objects
+     * @param path
+     * @param cobj
+     * @param newPath
+     * @param errors
+     * @param archetype
+     * @throws GenericValidationException
+     */
+    private void validaObjetosEmCollections(List<Object> objects, String path,
+            CObject cobj, String newPath, List<ValidationError> errors,
+            Archetype archetype) throws GenericValidationException {
+        
+        for (Object obj : objects) {
+            newPath = path + "[" + cobj.getNodeId() + "]";
+            validateObject(cobj, obj, newPath, errors, archetype);
+        }
     }
 
     /**
@@ -212,11 +335,16 @@ public class DataValidatorImpl implements DataValidator {
      * @param archetype
      * @throws GenericValidationException
      */
-    private void defineTipoAtributoParaValidar(CAttribute cattr, Object attribute, String newPath, List<ValidationError> errors, Archetype archetype) throws GenericValidationException {
+    private void defineTipoAtributoParaValidar(CAttribute cattr,
+            Object attribute, String newPath, List<ValidationError> errors,
+            Archetype archetype) throws GenericValidationException {
+
         if (cattr instanceof CSingleAttribute) {
-            validateSingleAttribute((CSingleAttribute) cattr, attribute, newPath, errors, archetype);
+            validateSingleAttribute((CSingleAttribute) cattr, attribute,
+                    newPath, errors, archetype);
         } else {
-            validateMultipleAttribute((CMultipleAttribute) cattr, attribute, newPath, errors, archetype);
+            validateMultipleAttribute((CMultipleAttribute) cattr, attribute,
+                    newPath, errors, archetype);
         }
     }
 
@@ -231,7 +359,10 @@ public class DataValidatorImpl implements DataValidator {
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
      */
-    private Object executeGetter(Object object, String getter) throws SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    private Object executeGetter(Object object, String getter) throws 
+            SecurityException, IllegalArgumentException, IllegalAccessException,
+            NoSuchMethodException, InvocationTargetException {
+
         Method method = null;
         method = object.getClass().getMethod(getter, null);
         return method.invoke(object, null);
@@ -244,11 +375,13 @@ public class DataValidatorImpl implements DataValidator {
      * @param nodeId
      * @return
      */
-    private String extractTerm(Archetype archetype, String language, String nodeId) {
+    private String extractTerm(Archetype archetype, String language,
+            String nodeId) {
         ArchetypeOntology ontology = archetype.getOntology();
         String lang = language == null ? "pt-br" : language;
         String description = null;
-        List<OntologyDefinitions> ontologyDefinitions = ontology.getTermDefinitionsList();
+        List<OntologyDefinitions> ontologyDefinitions =
+                ontology.getTermDefinitionsList();
         List<ArchetypeTerm> archetypeTerms = null;
         archetypeTerms = getArchetypeTerms(ontologyDefinitions, lang);
         description = getArchetypeTerm(archetypeTerms, nodeId);
@@ -283,7 +416,8 @@ public class DataValidatorImpl implements DataValidator {
         log.debug("validateSingleAttribute..");
 
         if (cattr.alternatives().size() > 1) {
-            validaAlternativasSingleAttribute(cattr, attribute, path, archetype, errors);
+            validaAlternativasSingleAttribute(cattr, attribute, path,
+                    archetype, errors);
         } else if (cattr.alternatives().size() == 1) {
             CObject cobj = cattr.alternatives().get(0);
             validateObject(cobj, attribute, path, errors, archetype);
@@ -291,20 +425,30 @@ public class DataValidatorImpl implements DataValidator {
 
     }
 
+    /**
+     * Verificar conformidade de objetos {@link Collection} com as restrições
+     * contidas em {@link CMultipleAttribute}
+     * @param cattr
+     * @param attribute
+     * @param path
+     * @param errors
+     * @param archetype
+     * @throws GenericValidationException
+     */
     void validateMultipleAttribute(CMultipleAttribute cattr, Object attribute,
             String path, List<ValidationError> errors, Archetype archetype)
             throws GenericValidationException {
         log.debug("validateMultipleAttribute..");
 
-        Cardinality cardinality = cattr.getCardinality();
+        
         List<CObject> children = cattr.getChildren();
         if (children == null) {
             return;
         }
         Collection<Object> values = (Collection<Object>) attribute;
 
-        ValidationError errorCardinality = validateCardinality(cardinality,
-                values, archetype, path, cattr);
+        ValidationError errorCardinality = validateCardinality(values,
+                archetype, path, cattr);
         if(errorCardinality!=null){
             errors.add(errorCardinality);
             return;
@@ -323,16 +467,14 @@ public class DataValidatorImpl implements DataValidator {
             objects = findMatchingNodes(values, cobj);
             contador += objects.size();
 
-            ValidationError occurrenceError = validateOccurrence(cobj, objects, archetype, path);
+            ValidationError occurrenceError = validateOccurrence(cobj, objects,
+                    archetype, path);
             if(occurrenceError!=null){
                 errors.add(occurrenceError);
                 return;
             }
-
-            for (Object obj : objects) {
-                newPath = path + "[" + cobj.getNodeId() + "]";
-                validateObject(cobj, obj, newPath, errors, archetype);
-            }
+            validaObjetosEmCollections(objects, path, cobj, newPath, errors,
+                    archetype);
         }
         if (contador != values.size()) {
             errors.add(new ValidationError(archetype, path, cattr.path(),
@@ -340,32 +482,54 @@ public class DataValidatorImpl implements DataValidator {
         }
     }
 
-    private ValidationError validateOccurrence(CObject cobj, List<Object> objects, Archetype archetype, String path) {
+    /**
+     * Valida a ocorrencia de cada {@link CObject} em um {@link Collection}
+     * @param cobj
+     * @param objects
+     * @param archetype
+     * @param path
+     * @return
+     */
+    private ValidationError validateOccurrence(CObject cobj, 
+            Collection<Object> objects, Archetype archetype, String path) {
+
         Interval<Integer> occurrences = cobj.getOccurrences();
-        if (occurrences != null) {
-            if (occurrences.getLower() != null && occurrences.getLower() > objects.size()) {
-                return new ValidationError(archetype, path, cobj.path(), ErrorType.OCCURRENCES_TOO_FEW, null);
-            } else if (occurrences.getUpper() != null && occurrences.getUpper() < objects.size()) {
-                return new ValidationError(archetype, path, cobj.path(), ErrorType.OCCURRENCES_TOO_MANY, null);
-            }
+        if (occurrences == null) {
+            return null;
         }
-        return null;
+
+        ValidationError error = null;
+        if (abaixoDoMinimo(occurrences, objects)) {
+            error = new ValidationError(archetype, path, cobj.path(),
+                    ErrorType.OCCURRENCES_TOO_FEW, null);
+        } else if (acimaMaximo(occurrences, objects)) {
+            error = new ValidationError(archetype, path, cobj.path(),
+                    ErrorType.OCCURRENCES_TOO_MANY, null);
+        }
+        return error;
     }
 
-    private ValidationError validateCardinality(
-            Cardinality cardinality, Collection<Object> values, Archetype archetype,
-            String path, CAttribute cattr){
+    /**
+     *
+     * @param values
+     * @param archetype
+     * @param path
+     * @param cattr
+     * @return
+     */
+    private ValidationError validateCardinality(Collection<Object> values, 
+            Archetype archetype, String path, CMultipleAttribute cattr){
+        Cardinality cardinality = cattr.getCardinality();
         Interval<Integer> interval = cardinality.getInterval();
 
         log.debug("cardinality.interval: " + interval);
 
-        if (interval.getLower() != null && interval.getLower() > values.size()) {
+        if (abaixoDoMinimo(interval, values)){
 
             return new ValidationError(archetype, path, cattr.path(),
                     ErrorType.ITEMS_TOO_FEW, null);
 
-        } else if (interval.getUpper() != null
-                && interval.getUpper() < values.size()) {
+        } else if (acimaMaximo(interval, values)) {
 
             return new ValidationError(archetype, path, cattr.path(),
                     ErrorType.ITEMS_TOO_MANY, null);
@@ -382,96 +546,128 @@ public class DataValidatorImpl implements DataValidator {
 	 * @return empty list if not found
 	 */
     List<Object> findMatchingNodes(Collection<Object> values, CObject cObj) {
-        String type = cObj.getRmTypeName().toUpperCase(KnownTypes.getLocale()).replace("_", "");
-        Class klasse = TYPES.get(type);
+        String type = cObj.getRmTypeName().
+                toUpperCase(KnownTypes.getLocale()).replace("_", "");
+        Class klasse = KnownTypes.getAllTypes().get(type);
 
         if(Locatable.class.isAssignableFrom(klasse)){
-            return findMatchingLocatables(values, cObj);
+            return findMatchingObjects(values, cObj);
         }
         
         return findMatchingDataValue(values, cObj, klasse);
     }
 
-    private List<Object> findMatchingLocatables(Collection<Object> values, CObject cObj) {
+    /**
+     * Captura objetos em um {@link Collection} que esteja em conformidade com
+     * uma restrição
+     * @param dados
+     * @param constraint
+     * @return
+     */
+    private List<Object> findMatchingObjects(Collection<Object> dados,
+            CObject constraint) {
         List<Object> objects = new ArrayList<Object>();
         Locatable lo = null;
-        for (Object value : values) {
-            if (value instanceof Locatable) {
-                lo = (Locatable) value;
-                if (cObj instanceof ArchetypeSlot) {
-                    log.debug("ArchetypeSlot : " + lo.getArchetypeNodeId());
-                    ArchetypeSlot slot = (ArchetypeSlot) cObj;
-                    if (validateRootSlot(slot, lo)) {
-                        objects.add(lo);
-                    }
-                } else {
-                    if (cObj.getNodeId().equals(lo.getArchetypeNodeId())) {
-                        log.debug("value found for code: " + cObj.getNodeId());
-                        objects.add(lo);
-                    }
-                }
-            } else {
+        for (Object value : dados) {
+            if (!(value instanceof Locatable)) {
                 log.warn("trying to find matching value on un-pathable obj..");
+                continue;
+            }
+
+            lo = (Locatable) value;
+            if(objetoAtendeRestricao(constraint, lo)){
+                objects.add(lo);
             }
         }
         return objects;
     }
 
-    private List<Object> findMatchingDataValue(Collection<Object> values, CObject cObj, Class klass) {
+    /**
+     * Captura os objetos que herdam de {@link DataValue}
+     * @param values
+     * @param cObj
+     * @param klass
+     * @return
+     */
+    private List<Object> findMatchingDataValue(Collection<Object> values,
+            CObject cObj, Class klass) {
         List<Object> objects = new ArrayList<Object>();
         DataValue dv = null;
         for (Object value : values) {
-            if (value instanceof DataValue) {
-                dv = (DataValue) value;
-                if(klass.isAssignableFrom(value.getClass())){
-                    log.debug("value found for code: " + cObj.getNodeId());
-                    objects.add(dv);
-                }
-            } else {
+            if (!(value instanceof DataValue)) {
                 log.warn("trying to find matching value on un-pathable obj..");
+                continue;
+            }
+            dv = (DataValue) value;
+            if(klass.isAssignableFrom(value.getClass())){
+                log.debug("value found for code: " + cObj.getNodeId());
+                objects.add(dv);
             }
         }
         return objects;
     }
 
+    /**
+     * Confronta um dado com um objeto de restrição
+     * @param cobj
+     * @param value
+     * @param path
+     * @param errors
+     * @param archetype
+     * @throws GenericValidationException
+     */
     void validateObject(CObject cobj, Object value, String path,
             List<ValidationError> errors, Archetype archetype)
             throws GenericValidationException {
 
         log.debug("validate CObject..");
-        Class klass = value.getClass();
-        String restrictionType = cobj.getRmTypeName().replace("_", "").toUpperCase(KnownTypes.getLocale());
+        Class dataClass = value.getClass();
+        String restrictionType = cobj.getRmTypeName().replace("_", "").
+                toUpperCase(KnownTypes.getLocale());
         restrictionType = restrictionType.split("<")[0];
 
-        Class restClass = TYPES.get(restrictionType);
-        if (!restClass.isAssignableFrom(klass)
+        Class restClass = KnownTypes.getAllTypes().get(restrictionType);
+        if (!restClass.isAssignableFrom(dataClass)
                 && (!(cobj instanceof CPrimitiveObject))) {
             // verificar se o tipo eh primitivo e se o dado eh String
             errors.add(new ValidationError(archetype, path, cobj.path(),
                     ErrorType.RM_TYPE_INVALID, getErrorDescription(archetype,
                     cobj, null)));
-        } else if (!cobj.isAnyAllowed()) {
-            if (cobj instanceof CComplexObject) {
-                validateComplex((CComplexObject) cobj, value, path, errors,
-                        archetype);
-            } else if (cobj instanceof CDomainType) {
-                validateDomain(archetype, (CDomainType) cobj, value, path,
-                        errors);
-            } else if (cobj instanceof CPrimitiveObject) {
-                validatePrimitive(archetype, (CPrimitiveObject) cobj, value,
-                        path, errors);
-            } else if (cobj instanceof ArchetypeSlot) {
-                this.validateArchetypeSlot((ArchetypeSlot) cobj, value, path,
-                        errors);
-            } else if (cobj instanceof ArchetypeInternalRef) {
-                this.validateArchetypeInternalRef(archetype,
-                        (ArchetypeInternalRef) cobj, value, path, errors);
-            } else {
-                log.error("Unknown CObject type..");
-            }
+            return;
         }
+        if(cobj.isAnyAllowed()){
+            return;
+        }
+        
+        if (cobj instanceof CComplexObject) {
+            validateComplex((CComplexObject) cobj, value, path, errors,
+                    archetype);
+        } else if (cobj instanceof CDomainType) {
+            validateDomain(archetype, (CDomainType) cobj, value, path,
+                    errors);
+        } else if (cobj instanceof CPrimitiveObject) {
+            validatePrimitive(archetype, (CPrimitiveObject) cobj, value,
+                    path, errors);
+        } else if (instanciaArchetypeSlot(cobj)) {
+            this.validateArchetypeSlot((ArchetypeSlot) cobj, value, path,
+                    errors);
+        } else if (cobj instanceof ArchetypeInternalRef) {
+            this.validateArchetypeInternalRef(archetype,
+                    (ArchetypeInternalRef) cobj, value, path, errors);
+        } else {
+            log.error("Unknown CObject type..");
+        }
+        
     }
 
+    /**
+     * Confronta um dado com uma restrição {@link CDomainType}
+     * @param archetype
+     * @param cdomain
+     * @param value
+     * @param path
+     * @param errors
+     */
     void validateDomain(Archetype archetype, CDomainType cdomain, Object value,
             String path, List<ValidationError> errors) {
 
@@ -484,30 +680,24 @@ public class DataValidatorImpl implements DataValidator {
         }
     }
 
+    /**
+     * Confronta um dado com uma restrição {@link CPrimitiveObject}
+     * @param archetype
+     * @param cpo
+     * @param value
+     * @param path
+     * @param errors
+     */
     void validatePrimitive(Archetype archetype, CPrimitiveObject cpo,
             Object value, String path, List<ValidationError> errors) {
         log.debug("validate CPrimitiveObject..");
         Object primitiveValue = value;
 
-        Class klass = TYPES.get(cpo.getItem().getType().toUpperCase(KnownTypes.getLocale()));
+        Class klass = KnownTypes.getAllTypes().get(cpo.getItem().getType().
+                toUpperCase(KnownTypes.getLocale()));
         if (primitiveValue instanceof String) {
-            Constructor constructor = null;
-            for (Constructor constr : klass.getConstructors()) {
-                if (constr.getParameterTypes().length == 1
-                        && constr.getParameterTypes()[0].equals(String.class)) {
-                    constructor = constr;
-                    break;
-                }
-            }
-            if (constructor != null) {
-                try {
-                    Object[] params = new Object[1];
-                    params[0] = primitiveValue;
-                    primitiveValue = constructor.newInstance(params);
-                } catch (Exception ex) {
-                    java.util.logging.Logger.getLogger(DataValidatorImpl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            Constructor constructor = getConstructorWithStringArgument(klass);
+            primitiveValue = build(constructor, primitiveValue);
         }
 
         if (!cpo.getItem().validValue(primitiveValue)) {
@@ -517,6 +707,14 @@ public class DataValidatorImpl implements DataValidator {
         }
     }
 
+    /**
+     * Confronta um dado com uma restrição {@link ArchetypeSlot}
+     * @param slot
+     * @param value
+     * @param path
+     * @param errors
+     * @throws GenericValidationException
+     */
     void validateArchetypeSlot(ArchetypeSlot slot, Object value, String path,
             List<ValidationError> errors) throws GenericValidationException {
 
@@ -538,6 +736,15 @@ public class DataValidatorImpl implements DataValidator {
 
     }
 
+    /**
+     * Confronta um dado com uma restrição {@link ArchetypeInternalRef}
+     * @param archetype
+     * @param internalRef
+     * @param value
+     * @param path
+     * @param errors
+     * @throws GenericValidationException
+     */
     void validateArchetypeInternalRef(Archetype archetype,
             ArchetypeInternalRef internalRef, Object value, String path,
             List<ValidationError> errors) throws GenericValidationException {
@@ -556,6 +763,12 @@ public class DataValidatorImpl implements DataValidator {
         }
     }
 
+    /**
+     * Valida um objeto que seja raíz de um arquétipo
+     * @param slot
+     * @param locatable
+     * @return
+     */
     private boolean validateRootSlot(ArchetypeSlot slot, Locatable locatable) {
 
         String archetypeName = locatable.getArchetypeNodeId();
@@ -570,8 +783,10 @@ public class DataValidatorImpl implements DataValidator {
 
         if (slot.getExcludes() != null) {
             for (Assertion assertion : slot.getExcludes()) {
-                ExpressionBinaryOperator operator = (ExpressionBinaryOperator) assertion.getExpression();
-                ExpressionLeaf rightLeaf = (ExpressionLeaf) operator.getRightOperand();
+                ExpressionBinaryOperator operator =
+                        (ExpressionBinaryOperator) assertion.getExpression();
+                ExpressionLeaf rightLeaf =
+                        (ExpressionLeaf) operator.getRightOperand();
                 CString cString = (CString) rightLeaf.getItem();
                 if (cString.validValue(conceptName)
                         || cString.validValue(archetypeName)) {
@@ -581,8 +796,10 @@ public class DataValidatorImpl implements DataValidator {
         }
         if (slot.getIncludes() != null) {
             for (Assertion assertion : slot.getIncludes()) {
-                ExpressionBinaryOperator operator = (ExpressionBinaryOperator) assertion.getExpression();
-                ExpressionLeaf rightLeaf = (ExpressionLeaf) operator.getRightOperand();
+                ExpressionBinaryOperator operator =
+                        (ExpressionBinaryOperator) assertion.getExpression();
+                ExpressionLeaf rightLeaf =
+                        (ExpressionLeaf) operator.getRightOperand();
                 CString cString = (CString) rightLeaf.getItem();
                 if (cString.validValue(conceptName)
                         || cString.validValue(archetypeName)) {
@@ -593,7 +810,18 @@ public class DataValidatorImpl implements DataValidator {
         return false;
     }
 
-    Object fetchAttribute(Object object, CAttribute cattr) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException{
+    /**
+     * Retora o objeto que representa o valor de um {@link CAttribute}
+     * @param object
+     * @param cattr
+     * @return
+     * @throws NoSuchMethodException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    private Object fetchAttribute(Object object, CAttribute cattr)
+            throws NoSuchMethodException, IllegalAccessException,
+            InvocationTargetException{
         String[] names = cattr.getRmAttributeName().split("_");
         StringBuilder attrName = new StringBuilder();
         for (String name : names) {
@@ -604,17 +832,23 @@ public class DataValidatorImpl implements DataValidator {
         return executeGetter(object, getter);
     }
 
-    String upperFirstLetter(String value) {
-        return value.substring(0, 1).toUpperCase(KnownTypes.getLocale()) + value.substring(1);
+    /**
+     * Retorna a {@link String} capitular, ou seja, o primeiro caracter em
+     * maiúsculo
+     * @param value
+     * @return
+     */
+    private String upperFirstLetter(String value) {
+        return value.substring(0, 1).toUpperCase(KnownTypes.getLocale()) +
+                value.substring(1);
     }
 
     /**
-	 * Fetches name of the archetype term of given AT code
-	 * 
-	 * @param code
-	 * @param archetype
-	 * @return
-	 */
+     * Busca determinado termo em um arquétipo
+     * @param code
+     * @param archetype
+     * @return
+     */
     String getTermText(String code, Archetype archetype) {
         ArchetypeOntology ont = archetype.getOntology();
         String lang = archetype.getOriginalLanguage().getCodeString();
@@ -625,8 +859,16 @@ public class DataValidatorImpl implements DataValidator {
         return null;
 
     }
+
     private static Logger log = Logger.getLogger(DataValidator.class);
 
+    /**
+     * Retorna a descrição do erro
+     * @param archetype
+     * @param constraint
+     * @param language
+     * @return
+     */
     private String getErrorDescription(Archetype archetype,
             ArchetypeConstraint constraint, String language) {
         if (archetype == null) {
@@ -639,7 +881,8 @@ public class DataValidatorImpl implements DataValidator {
         if (constraint instanceof CObject) {
             nodeId = ((CObject) constraint).getNodeId();
         } else if (constraint instanceof CSingleAttribute) {
-            nodeId = ((CSingleAttribute) constraint).getChildren().get(0).getNodeId();
+            nodeId = ((CSingleAttribute)
+                    constraint).getChildren().get(0).getNodeId();
         }
 
         String description = null;
