@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.openehr.am.archetype.Archetype;
 import org.openehr.am.archetype.assertion.Assertion;
@@ -149,6 +150,25 @@ public class DataValidatorImpl implements DataValidator {
     }
 
     /**
+     * Assegurar que o argumento desejado não nulo e/ou vazio
+     * @param argument
+     * @param argumentName
+     * @throws IllegalArgumentException
+     */
+    private void argumentoNaoVazioENaoNulo(Object argument, String argumentName) throws IllegalArgumentException {
+        
+        String mens = null;
+        if(argument instanceof String && StringUtils.isEmpty((String)argument)){
+            mens = argumentName + " is null or is empty";
+        } else if(argument == null){
+            mens = argumentName + " is null";
+        } else {
+            return;
+        }
+        throw new IllegalArgumentException(mens);
+    }
+
+    /**
      * A partir de um construtor e de um argumento para o construtor, retorna
      * o objeto construido.
      * @param constructor
@@ -166,7 +186,9 @@ public class DataValidatorImpl implements DataValidator {
         return argument;
     }
 
-    private void decideSubtipoConstraint(ArchetypeConstraint constraint, Object value, String path, List<ValidationError> errors, Archetype archetype) throws GenericValidationException {
+    private void decideSubtipoConstraint(ArchetypeConstraint constraint, 
+            Object value, String path, List<ValidationError> errors,
+            Archetype archetype) throws GenericValidationException {
         if (restricaoCObject(constraint)) {
             CObject cObject = castToCobject(constraint);
             validateObject(cObject, value, path, errors, archetype);
@@ -419,8 +441,6 @@ public class DataValidatorImpl implements DataValidator {
      * @param object
      * @param getter
      * @return
-     * @throws SecurityException
-     * @throws IllegalArgumentException
      * @throws IllegalAccessException
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
@@ -928,11 +948,8 @@ public class DataValidatorImpl implements DataValidator {
      */
     private String getErrorDescription(Archetype archetype,
             ArchetypeConstraint constraint, String language) {
-        if (archetype == null) {
-            throw new IllegalArgumentException("Archetype is null");
-        } else if (constraint == null) {
-            throw new IllegalArgumentException("Constraint is null");
-        }
+        argumentoNaoVazioENaoNulo(archetype, "archetype");
+        argumentoNaoVazioENaoNulo(constraint, "archetype");
 
         String nodeId = null;
         if (restricaoCObject(constraint)) {

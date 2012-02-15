@@ -1,12 +1,15 @@
 package org.openehr.validation;
 
+import java.lang.reflect.InvocationTargetException;
 import static org.junit.Assert.*;
 import br.ufg.inf.fs.pep.archetypes.ArchetypeRepository;
 import br.ufg.inf.fs.pep.archetypes.ArchetypeRepositoryFactory;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
@@ -394,6 +397,43 @@ public class DataValidatorImplTest extends PepBaseTest {
     }
 
     /**
+     * Testa se o método lançará a excessão
+     * @throws NoSuchMethodException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     */
+    @Test
+    public void argumentoNaoVazioENaoNuloTest()
+            throws NoSuchMethodException,IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException{
+        DataValidatorImpl dv = new DataValidatorImpl();
+        Method method = getMethod(DataValidatorImpl.class, "argumentoNaoVazioENaoNulo",
+                Object.class, String.class);
+        executeMethod(dv, method, "objeto", "nome");
+    }
+
+    @Test(expected=InvocationTargetException.class)
+    public void argumentoNaoVazioENaoNuloTestEmptyArgument()
+            throws NoSuchMethodException,IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException{
+        DataValidatorImpl dv = new DataValidatorImpl();
+        Method method = getMethod(DataValidatorImpl.class, "argumentoNaoVazioENaoNulo",
+                Object.class, String.class);
+        executeMethod(dv, method, StringUtils.EMPTY, "nome");
+    }
+
+    @Test(expected=InvocationTargetException.class)
+    public void argumentoNaoVazioENaoNuloTestNullArgument() throws NoSuchMethodException,
+            IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException{
+        DataValidatorImpl dv = new DataValidatorImpl();
+        Method method = getMethod(DataValidatorImpl.class, "argumentoNaoVazioENaoNulo",
+                Object.class, String.class);
+        executeMethod(dv, method, null, "nome");
+    }
+
+    /**
      * Respons·vel por verificar se o validador est· realmente pegando o erro.
      * Para isso È preciso de um Person  com algum inconsistÍncia em relaÁ„o ‡s
      * restriÁıes que o arquÈtipo impoem e o ErrorType equivalente ‡ inconsistÍncia.
@@ -417,5 +457,15 @@ public class DataValidatorImplTest extends PepBaseTest {
             erros.add(validationError.getErrorType());
         }
         return erros;
+    }
+
+    private Method getMethod(Class klass, String methodName, Class...parametersTypes) throws NoSuchMethodException{
+        return klass.getDeclaredMethod(methodName, parametersTypes);
+    }
+
+    private Object executeMethod(Object hostObject, Method method,
+            Object...arguments) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+        method.setAccessible(true);
+        return method.invoke(hostObject, arguments);
     }
 }
