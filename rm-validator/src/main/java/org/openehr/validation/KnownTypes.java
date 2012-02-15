@@ -207,29 +207,13 @@ enum KnownTypes {
     @SuppressWarnings("rawtypes")
     public static Map<String, Class> getAllTypes() {
         Map<String, Class> types = new HashMap<String, Class>();
-        for (int i = 0; i < UID_BASED_ID.length; i++) {
-            types.put(UID_BASED_ID[i].getValue(), UID_BASED_ID[i].getClazz());
-        }
-        for (int i = 0; i < BASIC_TYPES.length; i++) {
-            types.put(BASIC_TYPES[i].getValue(), BASIC_TYPES[i].getClazz());
-        }
-        for (int i = 0; i < ABSTRACT_TYPES.length; i++) {
-            types.put(ABSTRACT_TYPES[i].getValue(), ABSTRACT_TYPES[i].getClazz());
-        }
-        for (int i = 0; i < UID_IDENTIFIERS.length; i++) {
-            types.put(UID_IDENTIFIERS[i].getValue(),
-                    UID_IDENTIFIERS[i].getClazz());
-        }
-        for (int i = 0; i < INTERFACES.length; i++) {
-            types.put(INTERFACES[i].getValue(), INTERFACES[i].getClazz());
-        }
-        for (int i = 0; i < CONTAINER_TYPES.length; i++) {
-            types.put(CONTAINER_TYPES[i].getValue(),
-                    CONTAINER_TYPES[i].getClazz());
-        }
-        for (int i = 0; i < RM_TYPES.length; i++) {
-            types.put(RM_TYPES[i].getValue(), RM_TYPES[i].getClazz());
-        }
+        types.putAll(getUidBasedIds());
+        types.putAll(getBasicTypes());
+        types.putAll(getAbstractTypes());
+        types.putAll(getUidIdentifiers());
+        types.putAll(getInterfacesTypes());
+        types.putAll(getContainerTypes());
+        types.putAll(getRmTypes());
         return types;
     }
 
