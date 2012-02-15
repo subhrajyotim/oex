@@ -37,7 +37,6 @@ import org.openehr.validation.exceptions.GenericValidationException;
 
 /**
  * Implementation of an archetype-based data validator
- * TODO documentar (métodos não estão documentados)
  * @author rong.chen
  */
 public class DataValidatorImpl implements DataValidator {
@@ -167,6 +166,70 @@ public class DataValidatorImpl implements DataValidator {
         return argument;
     }
 
+    private void decideSubtipoConstraint(ArchetypeConstraint constraint, Object value, String path, List<ValidationError> errors, Archetype archetype) throws GenericValidationException {
+        if (restricaoCObject(constraint)) {
+            CObject cObject = castToCobject(constraint);
+            validateObject(cObject, value, path, errors, archetype);
+        } else {
+            defineTipoAtributoParaValidar((CAttribute) constraint, value, path,
+                    errors, archetype);
+        }
+    }
+
+    /**
+     * Realiza cast para {@link CObject}
+     * @param object
+     * @return
+     */
+    private CObject castToCobject(Object object) {
+        return (CObject) object;
+    }
+
+    /**
+     * Realiza cast para {@link CMultipleAttribute}
+     * @param object
+     * @return
+     */
+    private CMultipleAttribute castToCMultipleAttribute(Object object) {
+        return (CMultipleAttribute) object;
+    }
+
+    /**
+     * Realiza cast para {@link CSingleAttribute}
+     * @param object
+     * @return
+     */
+    private CSingleAttribute castToCSingleAttribute(Object object) {
+        return (CSingleAttribute) object;
+    }
+
+    /**
+     * Verifica se a restrição é um {@link CObject}
+     * @param constraint
+     * @return
+     */
+    private boolean restricaoCObject(ArchetypeConstraint constraint) {
+        return constraint instanceof CObject;
+    }
+
+    /**
+     * Verifica se a restrição é um {@link CPrimitiveObject}
+     * @param cobj
+     * @return
+     */
+    private boolean restricaoCPrimitiveObject(CObject cobj) {
+        return cobj instanceof CPrimitiveObject;
+    }
+
+    /**
+     * Verifica se a restrição é um {@link CSingleAttribute}
+     * @param constraint
+     * @return
+     */
+    private boolean restricaoSingleAttribute(ArchetypeConstraint constraint) {
+        return constraint instanceof CSingleAttribute;
+    }
+
     /**
      * Obtem termo arquétipo
      * @param termosArquetipos
@@ -227,11 +290,11 @@ public class DataValidatorImpl implements DataValidator {
 
     /**
      * Retorna se a restrição é instancia de {@link ArchetypeSlot}
-     * @param cObj
+     * @param constraint
      * @return
      */
-    private boolean instanciaArchetypeSlot(CObject cObj) {
-        return cObj instanceof ArchetypeSlot;
+    private boolean restricaoArchetypeSlot(ArchetypeConstraint constraint) {
+        return constraint instanceof ArchetypeSlot;
     }
 
     /**
@@ -241,7 +304,7 @@ public class DataValidatorImpl implements DataValidator {
      * @return
      */
     private boolean objetoAtendeRestricao(CObject cObj, Locatable data) {
-        if (instanciaArchetypeSlot(cObj)) {
+        if (restricaoArchetypeSlot(cObj)) {
             log.debug("ArchetypeSlot : " + data.getArchetypeNodeId());
             ArchetypeSlot slot = (ArchetypeSlot) cObj;
             return validateRootSlot(slot, data);
@@ -342,11 +405,11 @@ public class DataValidatorImpl implements DataValidator {
             Object attribute, String newPath, List<ValidationError> errors,
             Archetype archetype) throws GenericValidationException {
 
-        if (cattr instanceof CSingleAttribute) {
-            validateSingleAttribute((CSingleAttribute) cattr, attribute,
+        if (restricaoSingleAttribute(cattr)) {
+            validateSingleAttribute(castToCSingleAttribute(cattr), attribute,
                     newPath, errors, archetype);
         } else {
-            validateMultipleAttribute((CMultipleAttribute) cattr, attribute,
+            validateMultipleAttribute(castToCMultipleAttribute(cattr), attribute,
                     newPath, errors, archetype);
         }
     }
@@ -630,7 +693,7 @@ public class DataValidatorImpl implements DataValidator {
 
         Class restClass = KnownTypes.getAllTypes().get(restrictionType);
         if (!restClass.isAssignableFrom(dataClass)
-                && (!(cobj instanceof CPrimitiveObject))) {
+                && (!(restricaoCPrimitiveObject(cobj)))) {
             // verificar se o tipo eh primitivo e se o dado eh String
             errors.add(new ValidationError(archetype.getArchetypeId(), path,
                     cobj.path(), ErrorType.RM_TYPE_INVALID,
@@ -647,10 +710,10 @@ public class DataValidatorImpl implements DataValidator {
         } else if (cobj instanceof CDomainType) {
             validateDomain(archetype, (CDomainType) cobj, value, path,
                     errors);
-        } else if (cobj instanceof CPrimitiveObject) {
+        } else if (restricaoCPrimitiveObject(cobj)) {
             validatePrimitive(archetype, (CPrimitiveObject) cobj, value,
                     path, errors);
-        } else if (instanciaArchetypeSlot(cobj)) {
+        } else if (restricaoArchetypeSlot(cobj)) {
             this.validateArchetypeSlot((ArchetypeSlot) cobj, value, path,
                     errors);
         } else if (cobj instanceof ArchetypeInternalRef) {
@@ -754,17 +817,7 @@ public class DataValidatorImpl implements DataValidator {
         log.debug("validate ArchetypeInternalRef..");
         ArchetypeConstraint constraint =
                 archetype.node(internalRef.getTargetPath());
-        if (constraint instanceof CSingleAttribute) {
-            CSingleAttribute singleAttribute = (CSingleAttribute) constraint;
-            validateSingleAttribute(singleAttribute, value, path, errors,
-                    archetype);
-        } else if (constraint instanceof CMultipleAttribute) {
-            throw new GenericValidationException(archetype.getArchetypeId(), 
-                    path, "CmultipleAttribute to CSingleAttribute impossible");
-        } else if (constraint instanceof CObject) {
-            throw new GenericValidationException(archetype.getArchetypeId(), 
-                    path, "CSingleAttribute to CObject impossible");
-        }
+        decideSubtipoConstraint(constraint, value, path, errors, archetype);
     }
 
     /**
@@ -882,11 +935,10 @@ public class DataValidatorImpl implements DataValidator {
         }
 
         String nodeId = null;
-        if (constraint instanceof CObject) {
-            nodeId = ((CObject) constraint).getNodeId();
-        } else if (constraint instanceof CSingleAttribute) {
-            nodeId = ((CSingleAttribute)
-                    constraint).getChildren().get(0).getNodeId();
+        if (restricaoCObject(constraint)) {
+            nodeId = (castToCobject(constraint)).getNodeId();
+        } else if (restricaoSingleAttribute(constraint)) {
+            nodeId = (castToCSingleAttribute(constraint)).getChildren().get(0).getNodeId();
         }
 
         String description = null;
