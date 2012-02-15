@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
 import org.openehr.rm.RMObject;
+import org.openehr.rm.demographic.Person;
 
 public class KnownTypesTest {
 
@@ -63,6 +64,15 @@ public class KnownTypesTest {
         Map<String, Class> map = KnownTypes.getAllTypes();
         assertNotNull("Map de tipos é nulo", map);
         assertFalse("Map de tipos é vazio", map.entrySet().isEmpty());
+    }
+
+    @Test
+    public void knownTypesGettersTest(){
+        KnownTypes kt = KnownTypes.PERSON;
+        assertEquals("The name is different from expected", "PERSON",
+                kt.getValue());
+        assertSame("The name is different from expected", Person.class,
+                kt.getClazz());
     }
 
 }

@@ -222,12 +222,12 @@ enum KnownTypes {
         this.clazz = clazz;
     }
 
-    private String getValue() {
+    public String getValue() {
         return value;
     }
 
     @SuppressWarnings("rawtypes")
-    private Class getClazz() {
+    public Class getClazz() {
         return clazz;
     }
 }
