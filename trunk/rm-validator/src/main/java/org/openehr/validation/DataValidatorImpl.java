@@ -155,7 +155,7 @@ public class DataValidatorImpl implements DataValidator {
      * @param argumentName
      * @throws IllegalArgumentException
      */
-    private void argumentoNaoVazioENaoNulo(Object argument, String argumentName) throws IllegalArgumentException {
+    private void argumentoNaoVazioENaoNulo(Object argument, String argumentName) {
         
         String mens = null;
         if(argument instanceof String && StringUtils.isEmpty((String)argument)){
