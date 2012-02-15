@@ -272,7 +272,9 @@ public class DataValidatorImpl implements DataValidator {
                 return;
             }
         }
-        ValidationError error = new ValidationError(archetype, path, path, ErrorType.ALTERNATIVES_NOT_SATISFIED, getErrorDescription(archetype, cattr, null));
+        ValidationError error = new ValidationError(archetype.getArchetypeId(),
+                path, path, ErrorType.ALTERNATIVES_NOT_SATISFIED,
+                getErrorDescription(archetype, cattr, null));
         errors.add(error);
     }
 
@@ -314,12 +316,12 @@ public class DataValidatorImpl implements DataValidator {
 
         if (cattr.isRequired() && attribute == null) {
             log.debug("ERROR --> attribute missing at " + path);
-            errors.add(new ValidationError(archetype, path, cattr.path(),
-                    ErrorType.ATTRIBUTE_MISSING, description));
+            errors.add(new ValidationError(archetype.getArchetypeId(), path,
+                    cattr.path(), ErrorType.ATTRIBUTE_MISSING, description));
 
         } else if (!cattr.isAllowed() && attribute != null) {
-            errors.add(new ValidationError(archetype, path, cattr.path(),
-                    ErrorType.ATTRIBUTE_NOT_ALLOWED, description));
+            errors.add(new ValidationError(archetype.getArchetypeId(), path,
+                    cattr.path(), ErrorType.ATTRIBUTE_NOT_ALLOWED, description));
             
         } else if (attribute != null) {
             defineTipoAtributoParaValidar(cattr, attribute, newPath, errors,
@@ -477,8 +479,8 @@ public class DataValidatorImpl implements DataValidator {
                     archetype);
         }
         if (contador != values.size()) {
-            errors.add(new ValidationError(archetype, path, cattr.path(),
-                    ErrorType.OCCURRENCES_NOT_DESCRIBED, null));
+            errors.add(new ValidationError(archetype.getArchetypeId(), path,
+                    cattr.path(), ErrorType.OCCURRENCES_NOT_DESCRIBED, null));
         }
     }
 
@@ -500,11 +502,11 @@ public class DataValidatorImpl implements DataValidator {
 
         ValidationError error = null;
         if (abaixoDoMinimo(occurrences, objects)) {
-            error = new ValidationError(archetype, path, cobj.path(),
-                    ErrorType.OCCURRENCES_TOO_FEW, null);
+            error = new ValidationError(archetype.getArchetypeId(), path,
+                    cobj.path(), ErrorType.OCCURRENCES_TOO_FEW, null);
         } else if (acimaMaximo(occurrences, objects)) {
-            error = new ValidationError(archetype, path, cobj.path(),
-                    ErrorType.OCCURRENCES_TOO_MANY, null);
+            error = new ValidationError(archetype.getArchetypeId(), path,
+                    cobj.path(), ErrorType.OCCURRENCES_TOO_MANY, null);
         }
         return error;
     }
@@ -526,13 +528,13 @@ public class DataValidatorImpl implements DataValidator {
 
         if (abaixoDoMinimo(interval, values)){
 
-            return new ValidationError(archetype, path, cattr.path(),
-                    ErrorType.ITEMS_TOO_FEW, null);
+            return new ValidationError(archetype.getArchetypeId(), path,
+                    cattr.path(), ErrorType.ITEMS_TOO_FEW, null);
 
         } else if (acimaMaximo(interval, values)) {
 
-            return new ValidationError(archetype, path, cattr.path(),
-                    ErrorType.ITEMS_TOO_MANY, null);
+            return new ValidationError(archetype.getArchetypeId(), path,
+                    cattr.path(), ErrorType.ITEMS_TOO_MANY, null);
         }
         return null;
         
@@ -630,9 +632,9 @@ public class DataValidatorImpl implements DataValidator {
         if (!restClass.isAssignableFrom(dataClass)
                 && (!(cobj instanceof CPrimitiveObject))) {
             // verificar se o tipo eh primitivo e se o dado eh String
-            errors.add(new ValidationError(archetype, path, cobj.path(),
-                    ErrorType.RM_TYPE_INVALID, getErrorDescription(archetype,
-                    cobj, null)));
+            errors.add(new ValidationError(archetype.getArchetypeId(), path,
+                    cobj.path(), ErrorType.RM_TYPE_INVALID,
+                    getErrorDescription(archetype, cobj, null)));
             return;
         }
         if(cobj.isAnyAllowed()){
@@ -674,9 +676,9 @@ public class DataValidatorImpl implements DataValidator {
         log.debug("validate CDomaingType..");
         if (!cdomain.validValue(value)) {
             log.debug("error found at " + cdomain.path());
-            errors.add(new ValidationError(archetype, path, cdomain.path(),
-                    ErrorType.DOMAIN_TYPE_VALUE_ERROR, getErrorDescription(
-                    archetype, cdomain, null))); // DUMMY ERROR TYPE
+            errors.add(new ValidationError(archetype.getArchetypeId(), path,
+                    cdomain.path(), ErrorType.DOMAIN_TYPE_VALUE_ERROR,
+                    getErrorDescription(archetype, cdomain, null))); // DUMMY ERROR TYPE
         }
     }
 
@@ -701,9 +703,9 @@ public class DataValidatorImpl implements DataValidator {
         }
 
         if (!cpo.getItem().validValue(primitiveValue)) {
-            errors.add(new ValidationError(archetype, path, cpo.path(),
-                    ErrorType.PRIMITIVE_TYPE_VALUE_ERROR, getErrorDescription(
-                    archetype, cpo, null))); // DUMMY ERROR TYPE
+            errors.add(new ValidationError(archetype.getArchetypeId(), path,
+                    cpo.path(), ErrorType.PRIMITIVE_TYPE_VALUE_ERROR,
+                    getErrorDescription(archetype, cpo, null))); // DUMMY ERROR TYPE
         }
     }
 
@@ -721,14 +723,15 @@ public class DataValidatorImpl implements DataValidator {
         log.debug("validate ArchetypeSlot..");
         Locatable lo = (Locatable) value;
         String archetypeId = lo.getArchetypeNodeId();
-        Archetype archetype = ArchetypeRepositoryFactory.getInstance().getArchetype(archetypeId);
+        Archetype archetype = ArchetypeRepositoryFactory.getInstance().
+                getArchetype(archetypeId);
 
         List<ValidationError> errorsSlot = new ArrayList<ValidationError>();
 
         if (!validateRootSlot(slot, lo)) {
-            errorsSlot.add(new ValidationError(archetype, path, slot.path(),
-                    ErrorType.OCCURRENCES_NOT_DESCRIBED, getErrorDescription(
-                    archetype, slot, null)));
+            errorsSlot.add(new ValidationError(archetype.getArchetypeId(), path,
+                    slot.path(), ErrorType.OCCURRENCES_NOT_DESCRIBED,
+                    getErrorDescription(archetype, slot, null)));
         }
         errorsSlot = this.validate(lo, archetype);
 
@@ -749,7 +752,8 @@ public class DataValidatorImpl implements DataValidator {
             ArchetypeInternalRef internalRef, Object value, String path,
             List<ValidationError> errors) throws GenericValidationException {
         log.debug("validate ArchetypeInternalRef..");
-        ArchetypeConstraint constraint = archetype.node(internalRef.getTargetPath());
+        ArchetypeConstraint constraint =
+                archetype.node(internalRef.getTargetPath());
         if (constraint instanceof CSingleAttribute) {
             CSingleAttribute singleAttribute = (CSingleAttribute) constraint;
             validateSingleAttribute(singleAttribute, value, path, errors,

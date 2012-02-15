@@ -14,7 +14,7 @@
  */
 package org.openehr.validation;
 
-import org.openehr.am.archetype.Archetype;
+import org.openehr.rm.support.identification.ArchetypeID;
 
 public class ValidationError {
 
@@ -26,8 +26,8 @@ public class ValidationError {
      * @param archetypePath
      * @param errorType
      */
-    public ValidationError(String archetype, String runtimePath, String archetypePath,
-            ErrorType errorType, String description) {
+    public ValidationError(String archetype, String runtimePath, 
+            String archetypePath, ErrorType errorType, String description) {
         this.archetype = archetype;
         this.runtimePath = runtimePath;
         this.archetypePath = archetypePath;
@@ -43,9 +43,9 @@ public class ValidationError {
      * @param archetypePath
      * @param errorType
      */
-    public ValidationError(Archetype archetype, String runtimePath, String archetypePath,
+    public ValidationError(ArchetypeID archetypeID, String runtimePath, String archetypePath,
             ErrorType errorType, String description) {
-        this.archetype = archetype.getArchetypeId().getValue();
+        this.archetype = archetypeID.getValue();
         this.runtimePath = runtimePath;
         this.archetypePath = archetypePath;
         this.errorType = errorType;
