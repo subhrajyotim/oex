@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import static org.junit.Assert.*;
 import br.ufg.inf.fs.pep.archetypes.ArchetypeRepository;
 import br.ufg.inf.fs.pep.archetypes.ArchetypeRepositoryFactory;
+import br.ufg.inf.fs.pep.archetypes.ArchetypeRepositoryImpl;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,6 +14,10 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openehr.am.archetype.Archetype;
+import org.openehr.am.archetype.constraintmodel.ArchetypeInternalRef;
+import org.openehr.am.archetype.constraintmodel.CAttribute;
+import org.openehr.am.archetype.constraintmodel.CObject;
+import org.openehr.am.archetype.constraintmodel.CSingleAttribute;
 import org.openehr.rm.common.archetyped.Archetyped;
 import org.openehr.rm.datastructure.itemstructure.ItemTree;
 import org.openehr.rm.datastructure.itemstructure.representation.Cluster;
@@ -32,6 +37,7 @@ import org.openehr.rm.demographic.Address;
 import org.openehr.rm.demographic.Contact;
 import org.openehr.rm.demographic.PartyIdentity;
 import org.openehr.rm.demographic.Person;
+import org.openehr.rm.support.basic.Interval;
 import org.openehr.rm.support.identification.ArchetypeID;
 import org.openehr.rm.support.identification.ObjectVersionID;
 
@@ -395,6 +401,42 @@ public class DataValidatorImplTest extends PepBaseTest {
 
         assertTrue(getConjuntoDeErros(person).contains(ErrorType.DOMAIN_TYPE_VALUE_ERROR));
     }
+
+    @Test
+    public void validateArchetypeInternalRefTest() throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+
+        List<ValidationError> errors = new ArrayList<ValidationError>();
+        Method method = getMethod(DataValidatorImpl.class, 
+                "validateArchetypeInternalRef", Archetype.class,
+                ArchetypeInternalRef.class, Object.class, String.class,
+                List.class);
+        executeMethod(validator, method, getArchetype(),
+                getArchetypeInternalRef(), new DvDateTime(), "", errors);
+        assertEquals("Lista contem erros de validacao", 0, errors.size());
+
+    }
+
+    private ArchetypeInternalRef getArchetypeInternalRef() {
+        Archetype archetype = getArchetype();
+        CObject cObject = (CObject) archetype.node("/value");
+        String path = "/";
+        String rmTypeName = cObject.getRmTypeName();
+        Interval<Integer> occurrences = cObject.getOccurrences();
+        String nodeId = cObject.getNodeId();
+        CAttribute parent = cObject.getParent();
+        String targetPath = cObject.path();
+        ArchetypeInternalRef air = new ArchetypeInternalRef(path, rmTypeName, occurrences, nodeId, parent, targetPath);
+        return air;
+    }
+
+    private Archetype getArchetype() {
+        String archetypeID = "openEHR-EHR-ELEMENT.last_normal_menstrual_period.v1";
+        Archetype archetype = new ArchetypeRepositoryImpl().getArchetype(archetypeID);
+        return archetype;
+    }
+
+
+
 
     /**
      * Testa se o método lançará a excessão
