@@ -1,0 +1,1 @@
+Extensão experimental do openEHR com o propósito de persistir o Modelo de Referência usando JPA.
